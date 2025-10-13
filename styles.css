@@ -1,0 +1,181 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Segoe UI", sans-serif;
+}
+
+body {
+  background: #f9f9f9;
+  color: #333;
+}
+
+/* Navbar */
+.navbar {
+  background:#004080;
+  border-bottom: 1px solid;
+  padding: 10px;
+  display: block;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.navbar .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1500px;
+    margin: 0 auto;
+}
+
+.logo img {
+  width: 50px;
+  height: 50px;
+  object-fit: contain; /* agar logo tidak terpotong */
+  vertical-align: middle;
+}
+
+.navbar .nav-links {
+    list-style: none;
+    display: flex;
+    margin-right: 20px;
+}
+.navbar .nav-links li {
+    margin-left: 20px;
+}
+.navbar .nav-links a {
+    color: #1e3a8a;
+    text-decoration: none;
+    font-size: 1rem;
+    transition: color 0.3s;
+}
+.navbar .nav-links a:hover {
+    color: #ff6347;
+}
+
+.nav-search {
+  padding: 5px 8px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+/* Container */
+.container {
+  max-width: 960px;
+  background: #fff;
+  margin: 30px auto;
+  padding: 30px;
+  border-radius: 16px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}
+
+.title {
+  text-align: center;
+  font-size: 26px;
+  color: #1e3a8a;
+  margin-bottom: 20px;
+}
+
+.info p {
+  margin-bottom: 6px;
+}
+
+.info ol {
+  padding-left: 20px;
+}
+
+.agenda {
+  margin-top: 20px;
+}
+
+.agenda ol {
+  padding-left: 20px;
+}
+
+/* Table */
+.table-section {
+  margin-top: 20px;
+}
+
+.table-section table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+.table-section th, 
+.table-section td {
+  border: 1px solid #ccc;
+  padding: 8px;
+  text-align: left;
+}
+
+.table-section th {
+  background: #f0f0f0;
+  font-weight: 600;
+}
+
+/* Catatan */
+.catatan {
+  margin-top: 20px;
+}
+
+.catatan ul {
+  padding-left: 20px;
+}
+
+/* Status */
+.status {
+  margin-top: 20px;
+}
+
+.status label {
+  margin-right: 15px;
+}
+
+/* Footer Info */
+.footer-info {
+  margin-top: 20px;
+  font-size: 14px;
+}
+
+/* Buttons */
+.button-group {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.button-group button {
+  padding: 8px 14px;
+  border: none;
+  border-radius: 6px;
+  background: #1e40af;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.button-group button:hover {
+  background: #e2e8f0;
+}
+
+button.share {
+  border: 1px solid #1e40af;
+  color: #1e40af;
+  background: #eff6ff;
+}
+
+button.share:hover {
+  background: #1e40af;
+  color: white;
+}
+
+button.download {
+  background: #1e40af;
+  color: white;
+}
+
+button.download:hover {
+  background: #1e3a8a;
+}
