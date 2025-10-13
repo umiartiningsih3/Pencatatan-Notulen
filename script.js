@@ -1,4 +1,4 @@
-function tambahCatatan() {
+function tambahAgenda() {
   const ol = document.getElementById('noteList');
   const li = document.createElement('li');
   li.contentEditable = "true";
