@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hasil Rapat - Notulen Tracker</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="header.css">
 </head>
 <body>
     <!-- Header -->
@@ -25,7 +25,7 @@
 
     <!-- Main Content -->
     <h2 class="title">Hasil Rapat</h2>
-    <link rel="stylesheet" href="style4.css">
+    <link rel="stylesheet" href="main_content.css">
     <form>
       <div class="form-group">
         <label>Judul Rapat</label>
@@ -66,14 +66,15 @@
     </form>
   </div>
 
-    <div class="agenda">
+    <div class="note-container">
+        <link rel="stylesheet" href="agenda.css">
         <h3>Agenda Rapat</h3>
-        <ol>
-            <li></li>
-            <li></li>
-            <li></li>
+        <ol id="noteList">
+            <button onclick="tambahAgenda()">Tambah Agenda</button>
         </ol>
     </div>
+
+    <script src="script1.js"></script>
 
     <!-- Tabel Hasil Pembahasan -->
     <div class="table-section">
@@ -116,17 +117,6 @@
     </div>
 
     <script src="script1.js"></script><br>
-
-    <!-- Catatan Tambahan -->
-    <div class="note-container">
-        <link rel="stylesheet" href="style3.css">
-        <h3>Catatan Tambahan</h3>
-        <ol id="noteList">
-            <button onclick="tambahCatatan()">Tambah Catatan</button>
-        </ol>
-    </div>
-
-    <script src="script.js"></script>
 
     <!-- Status -->
     <div class="status">
