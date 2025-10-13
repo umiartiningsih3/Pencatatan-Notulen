@@ -1,0 +1,121 @@
+/* Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body, html {
+  height: 100vh;
+  background: linear-gradient(90deg, #0d47a1, #1976d2); /* dua warna biru */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.container {
+  display: flex;
+  width: 900px;
+  max-width: 95vw;
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+}
+
+/* Kiri - tulisan */
+.left-text {
+  flex: 1;
+  background-color: #0d47a1; /* biru tua */
+  color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 60px 50px;
+  text-align: center;
+}
+
+.left-text h1 {
+  font-size: 3rem;
+  margin-bottom: 20px;
+  font-weight: 700;
+}
+
+.left-text p {
+  font-size: 1.25rem;
+  line-height: 1.5;
+}
+
+/* Kanan - form */
+.login-form {
+  flex: 1;
+  background-color: #e3f2fd; /* biru muda */
+  padding: 60px 50px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.login-form h2 {
+  margin-bottom: 40px;
+  color: #0d47a1;
+  font-weight: 700;
+  font-size: 2rem;
+  text-align: center;
+}
+
+.login-form label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: #0d47a1;
+}
+
+.login-form input {
+  width: 100%;
+  padding: 12px 15px;
+  margin-bottom: 30px;
+  border: 2px solid #0d47a1;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: border-color 0.3s ease;
+}
+
+.login-form input:focus {
+  border-color: #1976d2;
+  outline: none;
+  box-shadow: 0 0 8px rgba(25, 118, 210, 0.6);
+}
+
+.login-form button {
+  background-color: #0d47a1;
+  color: white;
+  font-size: 1.25rem;
+  padding: 15px;
+  margin: 0 auto;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 700;
+  transition: background-color 0.3s ease;
+}
+
+.login-form button:hover {
+  background-color: #1976d2;
+}
+
+
+@media (max-width: 750px) {
+  .container {
+    flex-direction: column;
+    width: 90vw;
+  }
+  .left-text, .login-form {
+    flex: none;
+    padding: 40px 30px;
+  }
+  .left-text {
+    text-align: center;
+  }
+}
