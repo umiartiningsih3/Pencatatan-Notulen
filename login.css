@@ -8,7 +8,7 @@
 
 body, html {
   height: 100vh;
-  background: linear-gradient(90deg, #0d47a1, #1976d2); /* dua warna biru */
+  background: linear-gradient(120deg, #1a237e, #1976d2); 
   display: flex;
   justify-content: center;
   align-items: center;
@@ -24,10 +24,9 @@ body, html {
   box-shadow: 0 8px 24px rgba(0,0,0,0.2);
 }
 
-/* Kiri - tulisan */
 .left-text {
   flex: 1;
-  background-color: #0d47a1; /* biru tua */
+  background-color: #0d47a1; 
   color: white;
   display: flex;
   flex-direction: column;
@@ -119,3 +118,18 @@ body, html {
     text-align: center;
   }
 }
+.back-button {
+  display: inline-block;
+  margin-top: 20px;
+  text-decoration: none;
+  color: #2c3e50;
+  font-weight: 500;
+  font-size: 14px;
+  transition: color 0.3s ease;
+}
+
+.back-button:hover {
+  color: #1a252f;
+  text-decoration: underline;
+}
+
