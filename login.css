@@ -119,3 +119,18 @@ body, html {
     text-align: center;
   }
 }
+.back-button {
+  display: inline-block;
+  margin-top: 20px;
+  text-decoration: none;
+  color: #2c3e50;
+  font-weight: 500;
+  font-size: 14px;
+  transition: color 0.3s ease;
+}
+
+.back-button:hover {
+  color: #1a252f;
+  text-decoration: underline;
+}
+
