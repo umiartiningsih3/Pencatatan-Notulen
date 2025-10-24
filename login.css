@@ -1,4 +1,3 @@
-/* Reset */
 * {
   margin: 0;
   padding: 0;
@@ -13,7 +12,11 @@ body, html {
   justify-content: center;
   align-items: center;
 }
-
+img {
+  border-radius: 50%;
+  width: 50%;
+  margin-left: 90px;
+}
 .container {
   display: flex;
   width: 900px;
@@ -46,10 +49,9 @@ body, html {
   line-height: 1.5;
 }
 
-/* Kanan - form */
 .login-form {
   flex: 1;
-  background-color: #e3f2fd; /* biru muda */
+  background-color: #e3f2fd; 
   padding: 60px 50px;
   display: flex;
   flex-direction: column;
@@ -57,13 +59,19 @@ body, html {
 }
 
 .login-form h2 {
-  margin-bottom: 40px;
   color: #0d47a1;
   font-weight: 700;
   font-size: 2rem;
   text-align: center;
 }
 
+.login-form h3 {
+  margin-bottom: 30;
+  color: #0d47a1;
+  font-weight: 200;
+  font-size: 2rem;
+  text-align: center;
+}
 .login-form label {
   display: block;
   margin-bottom: 8px;
@@ -88,6 +96,7 @@ body, html {
 }
 
 .login-form button {
+  width: 100%;
   background-color: #0d47a1;
   color: white;
   font-size: 1.25rem;
