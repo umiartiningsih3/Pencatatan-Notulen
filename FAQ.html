@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FAQ</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+<style>
+    body {
+      background-color: #f4f6f9;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    .navbar {
+      background-color: #1a237e;
+    }
+    .navbar-brand {
+      color: white;
+      font-weight: bold;
+    }
+    .navbar-nav .nav-link {
+      color: white;
+      margin-right: 1rem;
+    }
+    .navbar-nav .nav-link.active {
+      font-weight: bold;
+      text-decoration: underline;
+    }
+    .nav-search {
+        padding: 5px 8px;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+    }
+</style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark">
+    <div class="container-fluid px-4">
+      <a class="navbar-brand" href="#">Notulen Tracker</a>
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item"><a class="nav-link" href="#">Dashboard</a></li>
+        <li class="nav-item"><a class="nav-link" href="#">Agenda</a></li>
+        <li class="nav-item"><a class="nav-link" href="#">Notulen</a></li>
+        <li class="nav-item"><a class="nav-link" href="#">Arsip</a></li>
+        <li class="nav-item"><a class="nav-link" href="#">FAQ</a></li>
+        <li><a href="#"><input type="text" placeholder="Search in site" class="nav-search"></a></li>
+      </ul>
+    </div>
+</nav>
+<div class="container mb-5">
+    <h2 class="text-center m-4">Pertanyaan Umum (FAQ)</h2> <p>
+        <button class="btn btn-outline-primary w-100 text-start" type="button" data-bs-toggle="collapse"data-bs-target="#faq1">
+            Apa itu Bootstrap?
+        </button> </p>
+        <div class="collapse" id="faq1">
+            <div class="card card-body">
+                Bootstrap adalah framework CSS yang membantu membuat tampilan website responsif dengan cepat.
+            </div> </div><p>
+                <button class="btn btn-outline-secondary w-100 text-start" type="button" data-bstoggle="collapse" data-bs-target="#faq2">
+                    Apa fungsi Carousel di atas?
+                </button> </p>
+                <div class="collapse" id="faq2">
+                    <div class="card card-body">
+                        Carousel digunakan untuk menampilkan beberapa gambar atau konten secara bergantian dalam satu area.
+                    </div>
+                </div>
+            </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
