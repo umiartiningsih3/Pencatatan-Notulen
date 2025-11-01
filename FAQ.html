@@ -1,72 +1,173 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FAQ</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    
-<style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FAQ | Notulen Tracker</title>
+
+  <!-- Bootstrap & Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+
+  <style>
     body {
-      background-color: #f4f6f9;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f5f7fa;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      margin: 0;
     }
+
+    /* Navbar */
     .navbar {
       background-color: #1a237e;
     }
+
     .navbar-brand {
       color: white;
-      font-weight: bold;
+      font-weight: 600;
     }
+
     .navbar-nav .nav-link {
-      color: white;
-      margin-right: 1rem;
+      color: #cfd8dc !important;
+      margin-right: 15px;
     }
+
     .navbar-nav .nav-link.active {
+      color: #fff !important;
+      font-weight: 600;
+    }
+
+    .btn-logout {
+      color: white;
+      background-color: #d32f2f;
+      border: none;
+      border-radius: 6px;
+      font-weight: 500;
+    }
+
+    .btn-logout:hover {
+      background-color: #b71c1c;
+    }
+
+    /* Konten */
+    main {
+      flex: 1;
+    }
+
+    h2 {
+      color: #1a237e;
       font-weight: bold;
-      text-decoration: underline;
     }
-    .nav-search {
-        padding: 5px 8px;
-        border: 1px solid #ccc;
-        border-radius: 6px;
+
+    .accordion-button:focus {
+      box-shadow: none;
     }
-    .btn-primary {
-        background: #ff0000;
+
+    .accordion-button:not(.collapsed) {
+      background-color: #1a237e;
+      color: white;
     }
-</style>
+
+    .accordion-body {
+      background-color: #ffffff;
+    }
+
+    /* Footer */
+    footer {
+      background-color: #1a237e;
+      color: #ffffff;
+      text-align: center;
+      padding: 15px 0;
+      font-size: 0.9rem;
+      margin-top: auto;
+    }
+  </style>
 </head>
+
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark">
-    <div class="container-fluid px-4">
-      <a class="navbar-brand" href="#">Notulen Tracker</a>
+
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-dark px-4">
+    <a class="navbar-brand" href="#">Notulen Tracker</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav ms-auto">
         <li class="nav-item"><a class="nav-link" href="dashboard.html">Dashboard</a></li>
         <li class="nav-item"><a class="nav-link" href="daftar_notulen.html">Daftar Notulen</a></li>
         <li class="nav-item"><a class="nav-link" href="kontak.html">Kontak</a></li>
-        <li class="nav-item"><a class="nav-link" href="FAQ.html">FAQ</a></li>
-    </ul>
-    <li class="nav-item btn btn-primary"><a class="nav-link" href="login.html">Logout</a></li>
+        <li class="nav-item"><a class="nav-link active" href="faq.html">FAQ</a></li>
+      </ul>
+      <button class="btn btn-logout ms-3">Log Out</button>
     </div>
-</nav>
-<div class="container mb-5">
-    <h2 class="text-center m-4">Pertanyaan Umum (FAQ)</h2> <p>
-        <button class="btn btn-outline-primary w-100 text-start" type="button" data-bs-toggle="collapse"data-bs-target="#faq1">
-            Apa itu Notulen Tracker?
-        </button> </p>
-        <div class="collapse" id="faq1">
-            <div class="card card-body">
-                Bootstrap adalah framework CSS yang membantu membuat tampilan website responsif dengan cepat.
-            </div> </div><p>
-                <button class="btn btn-outline-secondary w-100 text-start" type="button" data-bstoggle="collapse" data-bs-target="#faq2">
-                    Apa fungsi Carousel di atas?
-                </button> </p>
-                <div class="collapse" id="faq2">
-                    <div class="card card-body">
-                        Carousel digunakan untuk menampilkan beberapa gambar atau konten secara bergantian dalam satu area.
-                    </div>
-                </div>
+  </nav>
+
+  <!-- Konten Utama -->
+  <main>
+    <div class="container my-5">
+      <h2 class="text-center mb-4 text-primary fw-bold">Pertanyaan Umum (FAQ)</h2>
+
+      <div class="accordion" id="faqAccordion">
+        <div class="accordion-item">
+          <h2 class="accordion-header" id="headingOne">
+            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faq1" aria-expanded="true">
+              Apa itu Notulen Tracker?
+            </button>
+          </h2>
+          <div id="faq1" class="accordion-collapse collapse show" data-bs-parent="#faqAccordion">
+            <div class="accordion-body">
+              Notulen Tracker adalah aplikasi berbasis web yang digunakan untuk mencatat, menyimpan, dan mengelola hasil rapat (notulen) secara digital agar mudah diakses kapan saja.
             </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+          </div>
+        </div>
+
+        <div class="accordion-item mt-2">
+          <h2 class="accordion-header" id="headingTwo">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">
+              Apa fungsi fitur "Filter" pada daftar notulen?
+            </button>
+          </h2>
+          <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+            <div class="accordion-body">
+              Fitur filter berfungsi untuk mempermudah pencarian data notulen berdasarkan judul, tanggal, PIC, atau status rapat.
+            </div>
+          </div>
+        </div>
+
+        <div class="accordion-item mt-2">
+          <h2 class="accordion-header" id="headingThree">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq3">
+              Bagaimana cara menambahkan notulen rapat baru?
+            </button>
+          </h2>
+          <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+            <div class="accordion-body">
+              Anda dapat menambahkan notulen baru melalui tombol <b>“+ Tambah Notulen”</b> pada halaman daftar notulen, lalu isi detail rapat sesuai form yang tersedia.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    ©2025 Notulen Tracker. Semua hak cipta dilindungi
+  </footer>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Fungsi -->
+  <script>
+    // Tombol logout
+    const logoutBtn = document.querySelector(".btn-logout");
+    logoutBtn.addEventListener("click", () => {
+      const konfirmasi = confirm("Apakah Anda yakin ingin logout dari Notulen Tracker?");
+      if (konfirmasi) window.location.href = "login.html";
+    });
+  </script>
 </body>
 </html>
