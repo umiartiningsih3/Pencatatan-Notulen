@@ -33,6 +33,24 @@
           <li class="nav-item"><a class="nav-link text-white fw-semibold" href="FAQ.html">FAQ</a></li>
         </ul>
       <button class="btn btn-logout ms-3">Log Out</button>
+ <script>
+  // Ubah warna tombol logout jadi merah
+  const logoutBtn = document.querySelector(".btn-logout");
+  logoutBtn.style.backgroundColor = "#d32f2f"; // merah
+  logoutBtn.style.border = "none";
+  logoutBtn.addEventListener("mouseover", () => logoutBtn.style.backgroundColor = "#b71c1c");
+  logoutBtn.addEventListener("mouseout", () => logoutBtn.style.backgroundColor = "#d32f2f");
+
+  // Tambahkan event konfirmasi logout
+  logoutBtn.addEventListener("click", () => {
+    const konfirmasi = confirm("Apakah Anda yakin ingin logout dari Notulen Tracker?");
+    if (konfirmasi) {
+      // Redirect ke halaman login
+      window.location.href = "login.html";
+    }
+  });
+
+</script>
       </div>
     </div>
   </nav>
