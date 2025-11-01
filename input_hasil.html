@@ -17,7 +17,7 @@
       min-height: 100vh;
       font-family: 'Poppins', sans-serif;
       margin: 0;
-      padding-top: 80px; /* agar konten tidak tertutup navbar */
+      padding-top: 80px;
     }
 
     /* Navbar */
@@ -57,9 +57,26 @@
       background-color: #b71c1c;
     }
 
-    /* Konten */
+    /* Card */
     .card {
       border-radius: 12px;
+    }
+
+    /* Table Textarea Styling */
+    #tabelHasil textarea {
+      width: 100%;
+      border: none;
+      resize: none;
+      overflow: hidden;
+      background-color: transparent;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      outline: none;
+    }
+
+    #tabelHasil td {
+      vertical-align: top;
+      word-break: break-word;
     }
 
     /* Footer */
@@ -108,16 +125,28 @@
           <input type="text" class="form-control" id="namaRapat" placeholder="Masukkan nama rapat" required>
         </div>
 
-        <!-- Tanggal Rapat -->
-        <div class="mb-3">
-          <label for="tanggalRapat" class="form-label">Tanggal Rapat</label>
-          <input type="date" class="form-control" id="tanggalRapat" required>
+        <!-- Tanggal & Waktu -->
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label for="tanggalRapat" class="form-label">Tanggal Rapat</label>
+            <input type="date" class="form-control" id="tanggalRapat" required>
+          </div>
+          <div class="col-md-6 mb-3">
+            <label for="waktuRapat" class="form-label">Waktu Rapat</label>
+            <input type="time" class="form-control" id="waktuRapat" required>
+          </div>
         </div>
 
-        <!-- Tempat Rapat -->
-        <div class="mb-3">
-          <label for="tempatRapat" class="form-label">Tempat Rapat</label>
-          <input type="text" class="form-control" id="tempatRapat" placeholder="Masukkan tempat rapat">
+        <!-- Tempat & Penyelenggara -->
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label for="tempatRapat" class="form-label">Tempat Rapat</label>
+            <input type="text" class="form-control" id="tempatRapat" placeholder="Masukkan tempat rapat">
+          </div>
+          <div class="col-md-6 mb-3">
+            <label for="penyelenggara" class="form-label">Penyelenggara Rapat</label>
+            <input type="text" class="form-control" id="penyelenggara" placeholder="Masukkan penyelenggara rapat">
+          </div>
         </div>
 
         <!-- Notulis -->
@@ -126,30 +155,66 @@
           <input type="text" class="form-control" id="notulis" placeholder="Nama notulis">
         </div>
 
-        <!-- Peserta Rapat -->
+        <!-- Peserta -->
         <div class="mb-3">
           <label for="peserta" class="form-label">Peserta Rapat</label>
           <textarea class="form-control" id="peserta" rows="3" placeholder="Daftar peserta rapat"></textarea>
         </div>
 
-        <!-- Hasil / Notulen -->
+        <!-- Hasil Rapat -->
         <div class="mb-3">
-          <label for="notulen" class="form-label">Agenda/Pembahasan</label>
-          <textarea class="form-control" id="notulen" rows="4" placeholder="Catatan hasil rapat"></textarea>
+          <label class="form-label">Hasil Rapat</label>
+          <table class="table table-bordered align-middle" id="tabelHasil">
+            <thead class="table-primary">
+              <tr>
+                <th>No</th>
+                <th>Topik</th>
+                <th>Pembahasan</th>
+                <th>Tindak Lanjut</th>
+                <th>PIC</th>
+                <th>Aksi</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>1</td>
+                <td><textarea placeholder="Masukkan topik"></textarea></td>
+                <td><textarea placeholder="Masukkan pembahasan"></textarea></td>
+                <td><textarea placeholder="Masukkan tindak lanjut"></textarea></td>
+                <td><textarea placeholder="Nama PIC"></textarea></td>
+                <td><button type="button" class="btn btn-danger btn-sm" onclick="hapusBaris(this)">Hapus</button></td>
+              </tr>
+            </tbody>
+          </table>
+          <button type="button" class="btn btn-outline-primary btn-sm" id="tambahBaris">+ Tambah Baris</button>
         </div>
 
-        <!-- Upload File -->
+        <!-- Catatan Tambahan -->
+        <div class="mb-3">
+          <label for="catatan" class="form-label">Catatan Tambahan</label>
+          <textarea class="form-control" id="catatan" rows="3" placeholder="Tambahkan catatan tambahan di sini..."></textarea>
+        </div>
+
+        <!-- Status -->
+        <div class="mb-3">
+          <label for="status" class="form-label">Status Rapat</label>
+          <select class="form-select" id="status">
+            <option value="Belum Selesai">Belum Selesai</option>
+            <option value="Selesai">Selesai</option>
+          </select>
+        </div>
+
+        <!-- Upload -->
         <div class="mb-3">
           <label for="fileRapat" class="form-label">Upload Dokumen Rapat (PDF/DOC)</label>
           <input class="form-control" type="file" id="fileRapat" accept=".pdf,.doc,.docx">
         </div>
 
-        <!-- Tombol Submit -->
+        <!-- Tombol -->
         <div class="text-center">
-          <button type="submit" class="btn btn-success px-4">Simpan Arsip</button>
+          <button type="submit" class="btn btn-success px-4">Simpan</button>
           <button type="button" class="btn btn-secondary px-4" id="btnBatal">Batal</button>
         </div>
-
       </form>
     </div>
   </div>
@@ -159,47 +224,53 @@
     ©2025 Notulen Tracker. Semua hak cipta dilindungi
   </footer>
 
-  <!-- Bootstrap JS -->
+  <!-- JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
-  <!-- Script Simpan Data Arsip -->
   <script>
-    // Fungsi simpan data
-    document.getElementById("formRapat").addEventListener("submit", function(e) {
-      e.preventDefault();
-
-      const namaRapat = document.getElementById("namaRapat").value;
-      const tanggalRapat = document.getElementById("tanggalRapat").value;
-      const tempatRapat = document.getElementById("tempatRapat").value;
-      const notulis = document.getElementById("notulis").value;
-      const peserta = document.getElementById("peserta").value;
-      const notulen = document.getElementById("notulen").value;
-      const fileInput = document.getElementById("fileRapat");
-      const fileRapat = fileInput.files[0] ? fileInput.files[0].name : "";
-
-      let arsipList = JSON.parse(localStorage.getItem("arsipRapat")) || [];
-      arsipList.push({ namaRapat, tanggalRapat, tempatRapat, notulis, peserta, notulen, fileRapat });
-      localStorage.setItem("arsipRapat", JSON.stringify(arsipList));
-
-      alert("Data arsip berhasil disimpan!");
-      window.location.href = "daftar_arsip.html";
+    // Otomatis tinggi textarea sesuai isi
+    document.addEventListener("input", function (e) {
+      if (e.target.tagName.toLowerCase() === "textarea") {
+        e.target.style.height = "auto";
+        e.target.style.height = e.target.scrollHeight + "px";
+      }
     });
 
-    // Fungsi tombol batal → kembali ke menu utama
-    document.getElementById("btnBatal").addEventListener("click", function() {
-      const konfirmasi = confirm("Apakah Anda yakin ingin membatalkan? Anda akan kembali ke menu utama.");
-      if (konfirmasi) {
+    // Tambah baris tabel
+    document.getElementById("tambahBaris").addEventListener("click", () => {
+      const tbody = document.querySelector("#tabelHasil tbody");
+      const rowCount = tbody.rows.length + 1;
+      const newRow = `
+        <tr>
+          <td>${rowCount}</td>
+          <td><textarea placeholder="Masukkan topik"></textarea></td>
+          <td><textarea placeholder="Masukkan pembahasan"></textarea></td>
+          <td><textarea placeholder="Masukkan tindak lanjut"></textarea></td>
+          <td><textarea placeholder="Nama PIC"></textarea></td>
+          <td><button type="button" class="btn btn-danger btn-sm" onclick="hapusBaris(this)">Hapus</button></td>
+        </tr>`;
+      tbody.insertAdjacentHTML("beforeend", newRow);
+    });
+
+    // Hapus baris tabel
+    function hapusBaris(btn) {
+      btn.closest("tr").remove();
+      const rows = document.querySelectorAll("#tabelHasil tbody tr");
+      rows.forEach((r, i) => r.cells[0].textContent = i + 1);
+    }
+
+    // Batal
+    document.getElementById("btnBatal").addEventListener("click", () => {
+      if (confirm("Apakah Anda yakin ingin membatalkan?")) {
         window.location.href = "daftar_notulen.html";
       }
     });
 
-    // Tombol Logout
-    const logoutBtn = document.querySelector(".btn-logout");
-    logoutBtn.addEventListener("click", () => {
-      const konfirmasi = confirm("Apakah Anda yakin ingin logout dari Notulen Tracker?");
-      if (konfirmasi) window.location.href = "login.html";
+    // Logout
+    document.querySelector(".btn-logout").addEventListener("click", () => {
+      if (confirm("Apakah Anda yakin ingin logout?")) {
+        window.location.href = "login.html";
+      }
     });
   </script>
-
 </body>
 </html>
