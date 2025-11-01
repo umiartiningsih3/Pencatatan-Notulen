@@ -29,8 +29,7 @@
       color: #fff !important; 
       font-weight: 600; 
     }
-    .btn-logout { 
-      background-color: #0d47a1; 
+     .btn-logout { 
       color: white; 
       border-radius: 6px; 
       font-weight: 500; 
@@ -109,13 +108,12 @@
     <div class="collapse navbar-collapse">
       <ul class="navbar-nav ms-auto">
         <li class="nav-item"><a class="nav-link active" href="dashboard.html">Dashboard</a></li>
-        <li class="nav-item"><a class="nav-link" href="#">Agenda</a></li>
-        <li class="nav-item"><a class="nav-link" href="#">Notulen</a></li>
-        <li class="nav-item"><a class="nav-link" href="#">Arsip</a></li>
+        <li class="nav-item"><a class="nav-link" href="daftar_notulen.html">Daftar Notulen</a></li>
+        <li class="nav-item"><a class="nav-link" href="kontak.html">Kontak</a></li>
         <li class="nav-item"><a class="nav-link" href="FAQ.html">FAQ</a></li>
       </ul>
     </div>
-    <button class="btn btn-logout ms-3">Logout</button>
+    <button class="btn btn-logout ms-3">Log Out</button>
   </nav>
 
   <!-- Konten -->
@@ -311,10 +309,19 @@
             jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
           }).save();
         });
+
         document.getElementById("btnShare").addEventListener("click", () => {
-          navigator.clipboard.writeText(`https://notulen-tracker.example.com/rapat/${encodeURIComponent(data.judul)}`);
-          alert("🔗 Link hasil rapat berhasil disalin!");
-        });
+          const currentUrl = window.location.href;
+            if (navigator.share) {
+            navigator.share({
+            title: "Notulen Rapat",
+            text: "Lihat notulen rapat lengkap di link berikut:",
+            url: currentUrl
+          }).catch(err => console.error("Gagal membagikan:", err));
+          } else {
+    }
+  });
+
         document.getElementById("btnEdit").addEventListener("click", () => {
           document.getElementById("editJudul").value = data.judul;
           document.getElementById("editTanggal").value = data.tanggal;
@@ -331,5 +338,24 @@
       bootstrap.Modal.getInstance(document.getElementById("editModal")).hide();
     });
   </script>
+
+ <script>
+  // Ubah warna tombol logout jadi merah
+  const logoutBtn = document.querySelector(".btn-logout");
+  logoutBtn.style.backgroundColor = "#d32f2f"; // merah
+  logoutBtn.style.border = "none";
+  logoutBtn.addEventListener("mouseover", () => logoutBtn.style.backgroundColor = "#b71c1c");
+  logoutBtn.addEventListener("mouseout", () => logoutBtn.style.backgroundColor = "#d32f2f");
+
+  // Tambahkan event konfirmasi logout
+  logoutBtn.addEventListener("click", () => {
+    const konfirmasi = confirm("Apakah Anda yakin ingin logout dari Notulen Tracker?");
+    if (konfirmasi) {
+      // Redirect ke halaman login
+      window.location.href = "login.html";
+    }
+  });
+
+</script>
 </body>
 </html>
