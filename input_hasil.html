@@ -17,7 +17,7 @@
       min-height: 100vh;
       font-family: 'Poppins', sans-serif;
       margin: 0;
-      padding-top: 80px;
+      padding-top: 80px; /* agar konten tidak tertutup navbar */
     }
 
     /* Navbar */
@@ -90,7 +90,7 @@
         <li class="nav-item"><a class="nav-link" href="dashboard.html">Dashboard</a></li>
         <li class="nav-item"><a class="nav-link" href="daftar_notulen.html">Daftar Notulen</a></li>
         <li class="nav-item"><a class="nav-link" href="kontak.html">Kontak</a></li>
-        <li class="nav-item"><a class="nav-link active" href="FAQ.html">FAQ</a></li>
+        <li class="nav-item"><a class="nav-link active" href="faq.html">FAQ</a></li>
       </ul>
       <button class="btn btn-logout ms-3">Log Out</button>
     </div>
@@ -100,7 +100,7 @@
   <div class="container mt-5 mb-5">
     <div class="card shadow p-4">
       <h4 class="text-center mb-4 text-primary fw-bold">Formulir Hasil Rapat</h4>
-      <form>
+      <form id="formRapat">
 
         <!-- Nama Rapat -->
         <div class="mb-3">
@@ -146,8 +146,8 @@
 
         <!-- Tombol Submit -->
         <div class="text-center">
-          <button type="submit" class="btn btn-success px-4">Simpan</button>
-          <button type="reset" class="btn btn-secondary px-4">Batal</button>
+          <button type="submit" class="btn btn-success px-4">Simpan Arsip</button>
+          <button type="button" class="btn btn-secondary px-4" id="btnBatal">Batal</button>
         </div>
 
       </form>
@@ -164,7 +164,8 @@
 
   <!-- Script Simpan Data Arsip -->
   <script>
-    document.querySelector("form").addEventListener("submit", function(e) {
+    // Fungsi simpan data
+    document.getElementById("formRapat").addEventListener("submit", function(e) {
       e.preventDefault();
 
       const namaRapat = document.getElementById("namaRapat").value;
@@ -182,6 +183,14 @@
 
       alert("Data arsip berhasil disimpan!");
       window.location.href = "daftar_arsip.html";
+    });
+
+    // Fungsi tombol batal → kembali ke menu utama
+    document.getElementById("btnBatal").addEventListener("click", function() {
+      const konfirmasi = confirm("Apakah Anda yakin ingin membatalkan? Anda akan kembali ke menu utama.");
+      if (konfirmasi) {
+        window.location.href = "daftar_notulen.html";
+      }
     });
 
     // Tombol Logout
