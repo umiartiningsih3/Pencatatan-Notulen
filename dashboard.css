@@ -6,7 +6,8 @@
     }
     header {
       text-align: center;
-      margin-top: 30px;
+      margin-top: 100px;
+      font-style: italic;
     }
     footer {
       text-align: center;
@@ -21,4 +22,39 @@
     table th {
       background-color: #003366 !important;
       color: white;
+    }
+    .btn-logout {
+      color: white;
+      background-color: #d32f2f;
+      border: none;
+      border-radius: 6px;
+      font-weight: 500;
+    }
+
+    .btn-logout:hover {
+      background-color: #b71c1c;
+    }
+    .navbar {
+      background-color: #003366;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 80px;
+      z-index: 1030;
+    }
+
+    .navbar-brand {
+      color: white;
+      font-weight: 600;
+    }
+
+    .navbar-nav .nav-link {
+      color: #cfd8dc !important;
+      margin-right: 15px;
+    }
+
+    .navbar-nav .nav-link.active {
+      color: #fff !important;
+      font-weight: 600;
     }
