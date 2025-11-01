@@ -47,14 +47,14 @@
       text-align: center; 
       font-weight: 600; 
     }
-    .status-draft { 
+    .status-belum { 
       background-color: #fbc02d; 
       color: #000; 
       padding: 4px 10px; 
       border-radius: 5px; 
       font-size: 0.85rem; 
     }
-    .status-final { 
+    .status-selesai { 
       background-color: #2e7d32; 
       color: white; 
       padding: 4px 10px; 
@@ -141,9 +141,9 @@
               <div class="col-md-3"><input type="text" id="filterPIC" class="form-control" placeholder="Cari PIC..."></div>
               <div class="col-md-2">
                 <select id="filterStatus" class="form-select">
-                  <option value="All" selected>All</option>
-                  <option value="Draft">Draft</option>
-                  <option value="Final">Final</option>
+                  <option value="Semua" selected>Semua</option>
+                  <option value="Belum Selesai">Belum Selesai</option>
+                  <option value="Selesai">Selesai</option>
                 </select>
               </div>
               <div class="col-12 text-end">
@@ -171,7 +171,7 @@
                 <td>Rapat Evaluasi Bulanan</td>
                 <td>2025-09-30</td>
                 <td>Umiarti Ningsih</td>
-                <td class="text-center"><span class="status-draft">Draft</span></td>
+                <td class="text-center"><span class="status-belum">Belum Selesai</span></td>
                 <td class="text-center">
                   <button class="btn btn-lihat btn-sm">Lihat</button>
                   <button class="btn btn-edit btn-sm">Edit</button>
@@ -181,7 +181,7 @@
                 <td>Koordinasi Proyek B</td>
                 <td>2025-09-25</td>
                 <td>Robbi Akraman</td>
-                <td class="text-center"><span class="status-final">Final</span></td>
+                <td class="text-center"><span class="status-selesai">Selesai</span></td>
                 <td class="text-center">
                   <button class="btn btn-lihat btn-sm">Lihat</button>
                   <button class="btn btn-edit btn-sm">Edit</button>
@@ -258,7 +258,7 @@
         if (judul && !judulText.includes(judul)) visible = false;
         if (tanggal && tanggalText !== tanggal) visible = false;
         if (pic && !picText.includes(pic)) visible = false;
-        if (status !== "All" && !statusText.includes(status)) visible = false;
+        if (status !== "Semua" && statusText !==status) visible = false;
         row.style.display = visible ? "" : "none";
       }
     });
