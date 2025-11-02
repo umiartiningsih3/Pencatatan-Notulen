@@ -430,5 +430,37 @@
   });
 
 </script>
+<script>
+  // === Kirim data tabel ke localStorage ===
+  function updateDashboardData() {
+    const rows = document.querySelectorAll("#notulenTable tbody tr");
+    let selesai = 0;
+    let belum = 0;
+
+    rows.forEach(row => {
+      const statusText = row.cells[3].innerText.trim();
+      if (statusText === "Selesai") selesai++;
+      else if (statusText === "Belum Selesai") belum++;
+    });
+
+    const data = {
+      selesai,
+      belum,
+      total: selesai + belum
+    };
+
+    // Simpan ke localStorage agar dashboard bisa ambil
+    localStorage.setItem("notulenStats", JSON.stringify(data));
+    console.log("✅ Data dikirim ke Dashboard:", data);
+  }
+
+  // Jalankan setiap kali halaman dibuka
+  updateDashboardData();
+
+  // Jalankan juga tiap kali tabel difilter
+  document.getElementById("filterForm").addEventListener("submit", updateDashboardData);
+  document.getElementById("resetFilter").addEventListener("click", updateDashboardData);
+</script>
+
 </body>
 </html>
