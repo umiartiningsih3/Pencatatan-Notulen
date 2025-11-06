@@ -171,7 +171,7 @@
               </div>
               <div class="col-12 text-end">
                 <button type="submit" class="btn btn-primary btn-sm"><i class="bi bi-search"></i> Terapkan Filter</button>
-                <button type="button" id="resetFilter" class="btn btn-secondary btn-sm ms-1"><i class="bi bi-arrow-repeat"></i> Reset</button>
+                <button type="button" id="resetFilter" class="btn btn-secondary btn-sm ms-1"><i class="bi bi-arrow-repeat"></i> Muat Ulang</button>
               </div>
             </form>
           </div>
@@ -364,7 +364,7 @@
           <div class="text-end mt-4">
             <button class="btn btn-success me-2" id="btnEdit"><i class="bi bi-pencil-square"></i> Edit</button>
             <button class="btn btn-secondary me-2" id="btnShare"><i class="bi bi-share"></i> Bagikan</button>
-            <button class="btn btn-dark" id="btnDownload"><i class="bi bi-file-earmark-pdf"></i> Download PDF</button>
+            <button class="btn btn-dark" id="btnDownload"><i class="bi bi-file-earmark-pdf"></i> Simpanr PDF</button>
           </div>`;
         document.getElementById("detailContent").innerHTML = content;
         new bootstrap.Modal(document.getElementById("detailModal")).show();
@@ -422,7 +422,7 @@
 
   // Tambahkan event konfirmasi logout
   logoutBtn.addEventListener("click", () => {
-    const konfirmasi = confirm("Apakah Anda yakin ingin logout dari Notulen Tracker?");
+    const konfirmasi = confirm("Apakah Anda yakin ingin keluar dari Notulen Tracker?");
     if (konfirmasi) {
       // Redirect ke halaman login
       window.location.href = "login.html";
