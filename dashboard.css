@@ -16,4 +16,9 @@
     .btn-logout:hover {
       background-color: #b71c1c;
     }
-    
+    #notulenTable thead th {
+      background-color: #003366;
+      color: white;
+      font-weight: bold;
+      text-align: center;
+    }
