@@ -3,8 +3,25 @@
       background-color: #f5f7fa;
       padding-top: 80px;
     }
-    .navbar {
+    .navbar { 
       background-color: #003366;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 1030;
+    }
+    .navbar-brand { 
+      color: white; 
+      font-weight: 600; 
+    }
+    .navbar-nav .nav-link { 
+      color: #cfd8dc !important; 
+      margin-right: 15px; 
+    }
+    .navbar-nav .nav-link.active { 
+      color: #fff !important; 
+      font-weight: 600; 
     }
     .btn-logout {
       background-color: #d32f2f;
