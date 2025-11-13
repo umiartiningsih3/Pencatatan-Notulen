@@ -58,6 +58,14 @@ h4 {
     font-size: 30px;
     color: #007bff;
 }
+/* 🔹 Tambahan CSS untuk center bagian "Masuk sebagai" */
+.role-section {
+    text-align: center;
+}
+.role-section .form-check {
+    display: inline-block;
+    margin: 0 10px;
+}
 </style>
 </head>
 <body>
@@ -76,6 +84,19 @@ h4 {
         <input type="password" class="form-control" id="password" placeholder="Masukkan kata sandi" required>
       </div>
 
+      <!-- 🔹 Bagian "Masuk sebagai" sudah dibuat center -->
+      <div class="mb-3 role-section">
+        <label class="form-label d-block mb-1 fw-semibold">Masuk sebagai:</label>
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="checkbox" id="notulis" name="aktor" value="notulis">
+          <label class="form-check-label" for="notulis">Notulis</label>
+        </div>
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="checkbox" id="peserta" name="aktor" value="peserta">
+          <label class="form-check-label" for="peserta">Peserta</label>
+        </div>
+      </div>
+
       <button type="submit" class="btn btn-primary w-100">Masuk</button>
     </form>
 
@@ -92,25 +113,51 @@ h4 {
   function cekLogin() {
     const email = document.getElementById('email').value;
     const pass = document.getElementById('password').value;
+    const notulis = document.getElementById('notulis').checked;
+    const peserta = document.getElementById('peserta').checked;
       
     if (email.trim() === "" || pass.trim() === "") {
       alert("Silakan isi semua kolom!");
       return false;
     }
-    alert("Berhasil Masuk");
+
+    if (!notulis && !peserta) {
+      alert("Silakan pilih peran login terlebih dahulu!");
+      return false;
+    }
+
+    if (notulis && peserta) {
+      alert("Hanya boleh memilih salah satu peran!");
+      return false;
+    }
+
+    let peran = notulis ? "Notulis" : "Peserta";
+    alert("Berhasil masuk sebagai " + peran);
     return false;
   }
-  const form = document.getElementById('loginform')
+
+  const form = document.getElementById('loginform');
   form.addEventListener('submit', function(event) {
     event.preventDefault();
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
+    const notulis = document.getElementById('notulis').checked;
+    const peserta = document.getElementById('peserta').checked;
+
     if (email === '' || password === '' ) {
-      alert('email dan password harus diisi!');
+      alert('Email dan password harus diisi!');
+    } else if (!notulis && !peserta) {
+      alert('Pilih peran login terlebih dahulu!');
+    } else if (notulis && peserta) {
+      alert('Hanya boleh memilih satu peran!');
     } else {
-      window.location.href = 'dashboard.html';
+      if (notulis) {
+        window.location.href = 'dashboard_notulis.html';
+      } else {
+        window.location.href = 'dashboard_peserta.html';
+      }
     }
-});
+  });
 </script>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
