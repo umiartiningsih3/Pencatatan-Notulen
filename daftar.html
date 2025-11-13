@@ -46,9 +46,9 @@
       background: #003366;
     }
     h4 {
-    font-weight: bold;
-    font-size: 30px;
-    color: #007bff;
+      font-weight: bold;
+      font-size: 30px;
+      color: #007bff;
     }
   </style>
 </head>
@@ -67,6 +67,17 @@
         <label class="form-label">Email</label>
         <input type="email" class="form-control" id="email" placeholder="Masukkan email aktif" required>
       </div>
+
+      <!-- 🔹 Tambahan: Pilihan peran pengguna -->
+      <div class="mb-3">
+        <label class="form-label">Daftar Sebagai</label>
+        <select class="form-control" id="peran" required>
+          <option value="">-- Pilih Peran --</option>
+          <option value="notulis">Notulis</option>
+          <option value="peserta">Peserta</option>
+        </select>
+      </div>
+      <!-- 🔹 Akhir tambahan -->
 
       <div class="mb-3">
         <label class="form-label">Kata Sandi</label>
@@ -90,10 +101,20 @@
     function validasiPassword() {
       const pass = document.getElementById('password').value;
       const konfirmasi = document.getElementById('konfirmasi').value;
+      const peran = document.getElementById('peran').value;
+
       if (pass !== konfirmasi) {
         alert('Kata sandi dan konfirmasi tidak sama!');
         return false;
       }
+
+      if (peran === "") {
+        alert('Silakan pilih peran terlebih dahulu!');
+        return false;
+      }
+
+      // (opsional) tampilkan konfirmasi sebelum dikirim
+      alert(`Pendaftaran berhasil sebagai ${peran.charAt(0).toUpperCase() + peran.slice(1)}!`);
       return true;
     }
   </script>
