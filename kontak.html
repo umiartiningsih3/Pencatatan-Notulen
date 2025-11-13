@@ -41,16 +41,19 @@
       font-weight: 600;
     }
 
-    .btn-logout {
-      color: white;
-      background-color: #d32f2f;
-      border: none;
+    .navbar .dropdown-toggle {
+      background-color: rgba(128, 128, 128, 0.3) !important;
+      color: white !important;
       border-radius: 6px;
+      padding: 6px 14px;
       font-weight: 500;
+      transition: all 0.3s ease;
     }
 
-    .btn-logout:hover {
-      background-color: #b71c1c;
+    .navbar .dropdown-toggle:hover,
+    .navbar .dropdown-toggle:focus {
+      color: #fff !important;
+      transform: scale(1.05);
     }
 
     /* Konten */
@@ -105,8 +108,22 @@
         <li class="nav-item"><a class="nav-link" href="daftar_notulen.html">Daftar Notulen</a></li>
         <li class="nav-item"><a class="nav-link active" href="kontak.html">Kontak</a></li>
         <li class="nav-item"><a class="nav-link" href="faq.html">FAQ</a></li>
+        <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" data-bs-toggle="dropdown">
+          Notulis
+        </a>
+        <ul class="dropdown-menu dropdown-menu-end shadow-sm" aria-labelledby="userDropdown">
+          <li class="px-3 py-2">
+            <strong>Notulis Notulis</strong><br>
+            <small class="text-muted">notulis.notulis@gmail.com</small>
+          </li>
+          <li><hr class="dropdown-divider"></li>
+          <li><a class="dropdown-item" href="profile.html">Pengaturan</a></li>
+          <li><hr class="dropdown-divider"></li>
+          <li><a id="logoutLink" class="dropdown-item text-danger" href="#">Keluar</a></li>
+        </ul>
+        </li>
       </ul>
-      <button class="btn btn-logout ms-3">Keluar</button>
     </div>
   </nav>
 
@@ -166,12 +183,15 @@
       this.reset();
     });
 
-    // Tombol logout
-    const logoutBtn = document.querySelector(".btn-logout");
-    logoutBtn.addEventListener("click", () => {
-      const konfirmasi = confirm("Apakah Anda yakin ingin keluar dari Notulen Tracker?");
-      if (konfirmasi) window.location.href = "login.html";
-    });
+  // Fungsi logout melalui menu dropdown
+  document.getElementById("logoutLink").addEventListener("click", (e) => {
+    e.preventDefault();
+    const konfirmasi = confirm("Apakah Anda yakin ingin keluar dari Notulen Tracker?");
+    if (konfirmasi) {
+      window.location.href = "login.html";
+    }
+  });
+</script>
   </script>
 </body>
 </html>

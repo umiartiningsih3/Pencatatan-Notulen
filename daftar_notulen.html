@@ -42,13 +42,19 @@
       color: #fff !important; 
       font-weight: 600; 
     }
-     .btn-logout { 
-      color: white; 
-      border-radius: 6px; 
-      font-weight: 500; 
+    .navbar .dropdown-toggle {
+      background-color: rgba(128, 128, 128, 0.3) !important;
+      color: white !important;
+      border-radius: 6px;
+      padding: 6px 14px;
+      font-weight: 500;
+      transition: all 0.3s ease;
     }
-    .btn-logout:hover { 
-      background-color: #1565c0; 
+
+    .navbar .dropdown-toggle:hover,
+    .navbar .dropdown-toggle:focus {
+      color: #fff !important;
+      transform: scale(1.05);
     }
     .card { 
       border-radius: 10px; 
@@ -136,9 +142,23 @@
         <li class="nav-item"><a class="nav-link active" href="daftar_notulen.html">Daftar Notulen</a></li>
         <li class="nav-item"><a class="nav-link" href="kontak.html">Kontak</a></li>
         <li class="nav-item"><a class="nav-link" href="FAQ.html">FAQ</a></li>
+        <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" data-bs-toggle="dropdown">
+          Notulis
+        </a>
+        <ul class="dropdown-menu dropdown-menu-end shadow-sm" aria-labelledby="userDropdown">
+          <li class="px-3 py-2">
+            <strong>Notulis Notulis</strong><br>
+            <small class="text-muted">notulis.notulis@gmail.com</small>
+          </li>
+          <li><hr class="dropdown-divider"></li>
+          <li><a class="dropdown-item" href="profile.html">Pengaturan</a></li>
+          <li><hr class="dropdown-divider"></li>
+          <li><a id="logoutLink" class="dropdown-item text-danger" href="#">Keluar</a></li>
+        </ul>
+        </li>
       </ul>
     </div>
-    <button class="btn btn-logout ms-3">Keluar</button>
   </nav>
 
   <!-- Konten -->
@@ -410,23 +430,15 @@
     ©2025 Notulen Tracker. Semua hak cipta dilindungi
   </footer>
 
- <script>
-  // Ubah warna tombol logout jadi merah
-  const logoutBtn = document.querySelector(".btn-logout");
-  logoutBtn.style.backgroundColor = "#d32f2f"; // merah
-  logoutBtn.style.border = "none";
-  logoutBtn.addEventListener("mouseover", () => logoutBtn.style.backgroundColor = "#b71c1c");
-  logoutBtn.addEventListener("mouseout", () => logoutBtn.style.backgroundColor = "#d32f2f");
-
-  // Tambahkan event konfirmasi logout
-  logoutBtn.addEventListener("click", () => {
+<script>
+  // Fungsi logout melalui menu dropdown
+  document.getElementById("logoutLink").addEventListener("click", (e) => {
+    e.preventDefault();
     const konfirmasi = confirm("Apakah Anda yakin ingin keluar dari Notulen Tracker?");
     if (konfirmasi) {
-      // Redirect ke halaman login
       window.location.href = "login.html";
     }
   });
-
 </script>
 <script>
   // === Kirim data tabel ke localStorage ===

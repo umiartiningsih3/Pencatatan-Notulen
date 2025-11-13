@@ -29,15 +29,18 @@
       color: #fff !important; 
       font-weight: 600; 
     }
-    .btn-logout {
-      background-color: #d32f2f;
-      border: none;
-      color: white;
-      font-weight: 500;
+    .navbar .dropdown-toggle {
+      background-color: rgba(128, 128, 128, 0.3) !important;
+      color: white !important;
       border-radius: 6px;
+      padding: 6px 14px;
+      font-weight: 500;
+      transition: all 0.3s ease;
     }
-    .btn-logout:hover {
-      background-color: #b71c1c;
+    .navbar .dropdown-toggle:hover,
+    .navbar .dropdown-toggle:focus {
+      color: #fff !important;
+      transform: scale(1.05);
     }
     #notulenTable thead th {
       background-color: #003366;

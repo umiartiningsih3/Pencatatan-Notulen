@@ -32,9 +32,22 @@
           <li class="nav-item"><a class="nav-link text-white fw-semibold" href="daftar_notulen.html">Daftar Notulen</a></li>
           <li class="nav-item"><a class="nav-link text-white fw-semibold" href="kontak.html">Kontak</a></li>
           <li class="nav-item"><a class="nav-link text-white fw-semibold" href="FAQ.html">FAQ</a></li>
+          <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" data-bs-toggle="dropdown">
+          Notulis
+        </a>
+        <ul class="dropdown-menu dropdown-menu-end shadow-sm" aria-labelledby="userDropdown">
+          <li class="px-3 py-2">
+            <strong>Notulis Notulis</strong><br>
+            <small class="text-muted">notulis.notulis@gmail.com</small>
+          </li>
+          <li><hr class="dropdown-divider"></li>
+          <li><a class="dropdown-item" href="profile.html">Pengaturan</a></li>
+          <li><hr class="dropdown-divider"></li>
+          <li><a id="logoutLink" class="dropdown-item text-danger" href="#">Keluar</a></li>
         </ul>
-        <button class="btn btn-logout ms-3">Keluar</button>
-      </div>
+        </li>
+      </ul>
     </div>
   </nav>
 
@@ -226,22 +239,14 @@
     tampilkanPieChart(dataStat);
   </script>
   <script>
-  // Ubah warna tombol logout jadi merah
-  const logoutBtn = document.querySelector(".btn-logout");
-  logoutBtn.style.backgroundColor = "#d32f2f"; // merah
-  logoutBtn.style.border = "none";
-  logoutBtn.addEventListener("mouseover", () => logoutBtn.style.backgroundColor = "#b71c1c");
-  logoutBtn.addEventListener("mouseout", () => logoutBtn.style.backgroundColor = "#d32f2f");
-
-  // Tambahkan event konfirmasi logout
-  logoutBtn.addEventListener("click", () => {
+  // Fungsi logout melalui menu dropdown
+  document.getElementById("logoutLink").addEventListener("click", (e) => {
+    e.preventDefault();
     const konfirmasi = confirm("Apakah Anda yakin ingin keluar dari Notulen Tracker?");
     if (konfirmasi) {
-      // Redirect ke halaman login
       window.location.href = "login.html";
     }
   });
-
 </script>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
