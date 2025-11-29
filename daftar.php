@@ -57,21 +57,22 @@
   <div class="form-container">
     <h4 class="text-center mb-3">Daftar Akun Baru</h4>
 
-    <form onsubmit="return validasiPassword()">
+    <form action="proses_daftar.php" method="POST">
+      
       <div class="mb-3">
         <label class="form-label">Nama Lengkap</label>
-        <input type="text" class="form-control" id="nama" placeholder="Masukkan nama lengkap" required>
+        <input type="text" class="form-control" name="nama" id="nama" placeholder="Masukkan nama lengkap" required>
       </div>
 
       <div class="mb-3">
         <label class="form-label">Email</label>
-        <input type="email" class="form-control" id="email" placeholder="Masukkan email aktif" required>
+        <input type="email" class="form-control" name="email" id="email" placeholder="Masukkan email aktif" required>
       </div>
 
       <!-- 🔹 Tambahan: Pilihan peran pengguna -->
       <div class="mb-3">
         <label class="form-label">Daftar Sebagai</label>
-        <select class="form-control" id="peran" required>
+        <select class="form-control" name="peran" id="peran" required>
           <option value="">-- Pilih Peran --</option>
           <option value="notulis">Notulis</option>
           <option value="peserta">Peserta</option>
@@ -81,12 +82,12 @@
 
       <div class="mb-3">
         <label class="form-label">Kata Sandi</label>
-        <input type="password" class="form-control" id="password" placeholder="Buat kata sandi" required>
+        <input type="password" class="form-control" name="password" id="password" placeholder="Buat kata sandi" required>
       </div>
 
       <div class="mb-4">
         <label class="form-label">Ulangi Kata Sandi</label>
-        <input type="password" class="form-control" id="konfirmasi" placeholder="Ulangi kata sandi" required>
+        <input type="password" class="form-control" name="password2" id="konfirmasi" placeholder="Ulangi kata sandi" required>
       </div>
 
       <button type="submit" class="btn btn-primary w-100">Daftar Sekarang</button>
