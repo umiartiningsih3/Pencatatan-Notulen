@@ -104,6 +104,10 @@ $query = mysqli_query($conn, "SELECT * FROM rapat ORDER BY tanggal DESC");
         border: none; 
         padding: 8px 16px; 
       }
+      .modal-edit-header {
+        background-color: #003366 !important;
+        color: white !important;
+      }
       .btn-tambah-notulen:hover { 
         background-color: #303f9f;
       }
@@ -276,7 +280,7 @@ $query = mysqli_query($conn, "SELECT * FROM rapat ORDER BY tanggal DESC");
     <div class="modal fade" id="editModal" tabindex="-1">
       <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content">
-          <div class="modal-header bg-primary text-white">
+          <div class="modal-header modal-edit-header">
             <h5 class="modal-title">Edit Notulen Rapat</h5>
             <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
           </div>
