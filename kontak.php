@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kontak | Notulen Tracker</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: Poppins,system-ui,-apple-system,Segoe UI,Roboto;
+      background-color: #f5f7fa;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      padding-top: 80px;
+    }
+
+    /* Navbar */
+    .navbar {
+      background-color: #003366;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 1030;
+    }
+
+    .navbar-brand {
+      color: white;
+      font-weight: 600;
+    }
+
+    .navbar-nav .nav-link {
+      color: #cfd8dc !important;
+      margin-right: 15px;
+    }
+
+    .navbar-nav .nav-link.active {
+      color: #fff !important;
+      font-weight: 600;
+    }
+
+    .navbar .dropdown-toggle {
+      background-color: rgba(128, 128, 128, 0.3) !important;
+      color: white !important;
+      border-radius: 6px;
+      padding: 6px 14px;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+
+    .navbar .dropdown-toggle:hover,
+    .navbar .dropdown-toggle:focus {
+      color: #fff !important;
+      transform: scale(1.05);
+    }
+
+    /* Konten */
+    main {
+      flex: 1;
+    }
+
+    .container {
+      max-width: 700px;
+    }
+
+    .card {
+      border: none;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      border-radius: 10px;
+    }
+
+    .btn-primary {
+      background-color: #003366;
+      border: none;
+    }
+
+    .btn-primary:hover {
+      background-color: #303f9f;
+    }
+
+    /* Footer */
+    footer {
+      background-color: #003366;
+      color: white;
+      text-align: center;
+      padding: 15px 0;
+      font-size: 0.9rem;
+      margin-top: auto;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-dark px-4">
+    <a class="navbar-brand" href="#">
+        <img src="logono.jpeg" alt="Logo Notulen Tracker" width="50" class="me-2 rounded-circle">
+        Notulen Tracker
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item"><a class="nav-link" href="dashboard.html">Dashboard</a></li>
+        <li class="nav-item"><a class="nav-link" href="daftar_notulen.html">Daftar Notulen</a></li>
+        <li class="nav-item"><a class="nav-link active" href="kontak.html">Kontak</a></li>
+        <li class="nav-item"><a class="nav-link" href="faq.html">FAQ</a></li>
+        <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" data-bs-toggle="dropdown">
+          Notulis
+        </a>
+        <ul class="dropdown-menu dropdown-menu-end shadow-sm" aria-labelledby="userDropdown">
+          <li class="px-3 py-2">
+            <strong>Notulis Notulis</strong><br>
+            <small class="text-muted">notulis.notulis@gmail.com</small>
+          </li>
+          <li><hr class="dropdown-divider"></li>
+          <li><a class="dropdown-item" href="profile.html">Profil</a></li>
+          <li><hr class="dropdown-divider"></li>
+          <li><a id="logoutLink" class="dropdown-item text-danger" href="#">Keluar</a></li>
+        </ul>
+        </li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Konten Utama -->
+  <main>
+    <div class="container mt-5">
+      <h2 class="text-center mb-4 text-primary fw-bold">Hubungi Kami</h2>
+      <p class="text-center mb-5">Jika Anda memiliki pertanyaan, saran, atau kendala terkait aplikasi Notulen Tracker, silakan isi form di bawah ini.</p>
+
+      <div class="card p-4">
+        <form id="formKontak">
+          <div class="mb-3">
+            <label for="nama" class="form-label">Nama Lengkap</label>
+            <input type="text" id="nama" class="form-control" placeholder="Masukkan nama Anda" required>
+          </div>
+
+          <div class="mb-3">
+            <label for="email" class="form-label">Email</label>
+            <input type="email" id="email" class="form-control" placeholder="Masukkan email Anda" required>
+          </div>
+
+          <div class="mb-3">
+            <label for="pesan" class="form-label">Pesan</label>
+            <textarea id="pesan" rows="4" class="form-control" placeholder="Tulis pesan Anda di sini..." required></textarea>
+          </div>
+
+          <div class="text-center">
+            <button type="submit" class="btn btn-primary px-4">Kirim Pesan</button>
+            <button type="reset" class="btn btn-secondary px-4">Batal</button>
+          </div>
+        </form>
+      </div>
+
+      <div class="text-center mt-5">
+        <h5 class="text-primary fw-bold">Informasi Kontak Lainnya</h5>
+        <p class="mb-1">📍 Politeknik Negeri Batam</p>
+        <p class="mb-1">📞 0821-1234-5678</p>
+        <p>✉ notulentracker@gmail.com</p>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    ©2025 Notulen Tracker. Semua hak cipta dilindungi
+  </footer>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Fungsi -->
+  <script>
+    // Kirim pesan
+    document.getElementById("formKontak").addEventListener("submit", function(e) {
+      e.preventDefault();
+      alert("Pesan Anda berhasil dikirim! Terima kasih telah menghubungi kami 😊");
+      this.reset();
+    });
+
+  // Fungsi logout melalui menu dropdown
+  document.getElementById("logoutLink").addEventListener("click", (e) => {
+    e.preventDefault();
+    const konfirmasi = confirm("Apakah Anda yakin ingin keluar dari Notulen Tracker?");
+    if (konfirmasi) {
+      window.location.href = "login.html";
+    }
+  });
+</script>
+  </script>
+</body>
+</html>

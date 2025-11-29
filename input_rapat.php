@@ -106,10 +106,10 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav ms-auto">
-        <li class="nav-item"><a class="nav-link" href="dashboard.html">Dashboard</a></li>
-        <li class="nav-item"><a class="nav-link active" href="daftar_notulen.html">Daftar Notulen</a></li>
-        <li class="nav-item"><a class="nav-link" href="kontak.html">Kontak</a></li>
-        <li class="nav-item"><a class="nav-link" href="faq.html">FAQ</a></li>
+        <li class="nav-item"><a class="nav-link" href="dashboar.php">Dashboard</a></li>
+        <li class="nav-item"><a class="nav-link active" href="daftar_notulen.php">Daftar Notulen</a></li>
+        <li class="nav-item"><a class="nav-link" href="kontak.php">Kontak</a></li>
+        <li class="nav-item"><a class="nav-link" href="faq.php">FAQ</a></li>
         <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" href="#" id="userDropdown" data-bs-toggle="dropdown">
           Notulis
@@ -120,7 +120,7 @@
             <small class="text-muted">notulis.notulis@gmail.com</small>
           </li>
           <li><hr class="dropdown-divider"></li>
-          <li><a class="dropdown-item" href="profile.html">Profil</a></li>
+          <li><a class="dropdown-item" href="profile.php">Profil</a></li>
           <li><hr class="dropdown-divider"></li>
           <li><a id="logoutLink" class="dropdown-item text-danger" href="#">Keluar</a></li>
         </ul>
@@ -270,7 +270,7 @@
     // Batal
     document.getElementById("btnBatal").addEventListener("click", () => {
       if (confirm("Apakah Anda yakin ingin membatalkan?")) {
-        window.location.href = "daftar_notulen.html";
+        window.location.href = "daftar_notulen.php";
       }
     });
   </script>
@@ -282,7 +282,7 @@
     e.preventDefault();
     const konfirmasi = confirm("Apakah Anda yakin ingin keluar dari Notulen Tracker?");
     if (konfirmasi) {
-      window.location.href = "login.html";
+      window.location.href = "login.php";
     }
   });
   </script>
@@ -293,10 +293,10 @@ document.getElementById("formRapat").addEventListener("submit", function(e) {
 
   let error = [];
 
-  let judul = judulRapat.value.trim();
-  let tanggal = tanggalRapat.value;
-  let waktu = waktuRapat.value;
-  let notulis = notulis.value.trim();
+  let judul = document.getElementById("judulRapat").value.trim();
+  let tanggal = document.getElementById("tanggalRapat").value;
+  let waktu = document.getElementById("waktuRapat").value;
+  let notulis = document.getElementById("notulis").value.trim();
 
   if (!judul) error.push("Judul rapat wajib diisi");
   if (!tanggal) error.push("Tanggal wajib diisi");

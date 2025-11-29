@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Form Pendaftaran</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      background: linear-gradient(135deg, #003366, #007bff);
+      font-family: 'Segoe UI', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .form-container {
+      background: #e3f2fd;
+      border-radius: 15px;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.50);
+      padding: 20px 35px;
+      width: 100%;
+      max-width: 420px;
+      transition: all 0.3s ease;
+    }
+    .form-container:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(0,0,0,0.40);
+    }
+    .form-control {
+      font-size: 14px;
+      border: 1px solid #90caf9;
+      padding: 9px 10px;
+      border-radius: 10px;
+    }
+    .btn-primary {
+      background: #007bff;
+      border: none;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: 500;
+      padding: 10px 0;
+      transition: 0.3s;
+    }
+    .btn-primary:hover {
+      background: #003366;
+    }
+    h4 {
+      font-weight: bold;
+      font-size: 30px;
+      color: #007bff;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="form-container">
+    <h4 class="text-center mb-3">Daftar Akun Baru</h4>
+
+    <form onsubmit="return validasiPassword()">
+      <div class="mb-3">
+        <label class="form-label">Nama Lengkap</label>
+        <input type="text" class="form-control" id="nama" placeholder="Masukkan nama lengkap" required>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Email</label>
+        <input type="email" class="form-control" id="email" placeholder="Masukkan email aktif" required>
+      </div>
+
+      <!-- 🔹 Tambahan: Pilihan peran pengguna -->
+      <div class="mb-3">
+        <label class="form-label">Daftar Sebagai</label>
+        <select class="form-control" id="peran" required>
+          <option value="">-- Pilih Peran --</option>
+          <option value="notulis">Notulis</option>
+          <option value="peserta">Peserta</option>
+        </select>
+      </div>
+      <!-- 🔹 Akhir tambahan -->
+
+      <div class="mb-3">
+        <label class="form-label">Kata Sandi</label>
+        <input type="password" class="form-control" id="password" placeholder="Buat kata sandi" required>
+      </div>
+
+      <div class="mb-4">
+        <label class="form-label">Ulangi Kata Sandi</label>
+        <input type="password" class="form-control" id="konfirmasi" placeholder="Ulangi kata sandi" required>
+      </div>
+
+      <button type="submit" class="btn btn-primary w-100">Daftar Sekarang</button>
+    </form>
+
+    <p class="text-center mt-3 mb-0" style="font-size:13px;">
+      Sudah punya akun? <a href="login.html" class="text-decoration-none" style="color:#007bff;">Masuk</a>
+    </p>
+  </div>
+
+  <script>
+    function validasiPassword() {
+      const pass = document.getElementById('password').value;
+      const konfirmasi = document.getElementById('konfirmasi').value;
+      const peran = document.getElementById('peran').value;
+
+      if (pass !== konfirmasi) {
+        alert('Kata sandi dan konfirmasi tidak sama!');
+        return false;
+      }
+
+      if (peran === "") {
+        alert('Silakan pilih peran terlebih dahulu!');
+        return false;
+      }
+
+      // (opsional) tampilkan konfirmasi sebelum dikirim
+      alert(`Pendaftaran berhasil sebagai ${peran.charAt(0).toUpperCase() + peran.slice(1)}!`);
+      return true;
+    }
+  </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

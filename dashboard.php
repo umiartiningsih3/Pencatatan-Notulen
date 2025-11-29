@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Dashboard Notulen Tracker</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="dashboard.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0"></script>
+
+</head>
+<body>
+  <header class="text-center mt-4">
+    <h1 class="fw-bold text-primary">Selamat Datang di Notulen Tracker!</h1>
+    <p class="lead">Solusi digital terbaik untuk kebutuhan rapat Anda.</p>
+  </header>
+
+  <nav class="navbar navbar-expand-lg navbar-dark px-4">
+    <a class="navbar-brand" href="#">
+        <img src="logono.jpeg" alt="Logo" width="50" class="me-2 rounded-circle">
+        Notulen Tracker
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item"><a class="nav-link text-white fw-semibold active" href="dashboard.php">Dashboard</a></li>
+          <li class="nav-item"><a class="nav-link text-white fw-semibold" href="daftar_notulen.php">Daftar Notulen</a></li>
+          <li class="nav-item"><a class="nav-link text-white fw-semibold" href="kontak.php">Kontak</a></li>
+          <li class="nav-item"><a class="nav-link text-white fw-semibold" href="FAQ.php">FAQ</a></li>
+          <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" data-bs-toggle="dropdown">
+          Notulis
+        </a>
+        <ul class="dropdown-menu dropdown-menu-end shadow-sm" aria-labelledby="userDropdown">
+          <li class="px-3 py-2">
+            <strong>Notulis Notulis</strong><br>
+            <small class="text-muted">notulis.notulis@gmail.com</small>
+          </li>
+          <li><hr class="dropdown-divider"></li>
+          <li><a class="dropdown-item" href="profile.php">Profil</a></li>
+          <li><hr class="dropdown-divider"></li>
+          <li><a id="logoutLink" class="dropdown-item text-danger" href="login.php">Keluar</a></li>
+        </ul>
+        </li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="container mt-4">
+    <div class="row g-3 text-center">
+      <div class="col-md-4">
+        <div class="card shadow-sm p-3">
+          <h5 class="fw-bold text-primary">Total Rapat</h5>
+          <h3 id="totalRapat" class="fw-bold">0</h3>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card shadow-sm p-3">
+          <h5 class="fw-bold text-success">Selesai</h5>
+          <h3 id="rapatSelesai" class="fw-bold">0</h3>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card shadow-sm p-3">
+          <h5 class="fw-bold text-warning">Belum Selesai</h5>
+          <h3 id="rapatBelum" class="fw-bold">0</h3>
+        </div>
+      </div>
+    </div>
+
+    <!-- Diagram -->
+    <div class="row mt-4">
+      <!-- Diagram Garis -->
+      <div class="col-md-6">
+        <div class="card shadow-sm">
+          <div class="card-body">
+            <h5 class="text-center mb-3 fw-bold text-primary">📊 Perbandingan Rapat Selesai & Belum Selesai</h5>
+            <canvas id="statusChart" style="max-height:350px;"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- Diagram Pie -->
+      <div class="col-md-6">
+        <div class="card shadow-sm">
+          <div class="card-body">
+            <h5 class="text-center mb-3 fw-bold text-primary">🥧 Diagram Lingkaran Status Rapat</h5>
+            <canvas id="pieChart" style="max-height:350px;"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tabel Notulen -->
+    <div class="card shadow-sm mt-4">
+      <div class="card-body">
+        <h4 class="text-primary fw-bold mb-3">📘 Daftar Notulen Rapat</h4>
+        <div class="table-responsive">
+          <table class="table table-bordered align-middle" id="notulenTable">
+            <thead class="table-primary">
+              <tr>
+                <th>Judul Rapat</th>
+                <th>Tanggal</th>
+                <th>Notulis</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>Evaluasi Kinerja Tim</td><td>2025-09-30</td><td>Umiarti Ningsih</td><td>Selesai</td></tr>
+              <tr><td>Koordinasi Proyek B</td><td>2025-09-25</td><td>Robbi Akraman</td><td>Selesai</td></tr>
+              <tr><td>Review UI/UX Sistem</td><td>2025-09-22</td><td>Lolly Carolina</td><td>Belum Selesai</td></tr>
+              <tr><td>Kick-off Project Presensi</td><td>2025-10-02</td><td>Nafilah Thahirah</td><td>Belum Selesai</td></tr>
+              <tr><td>Finalisasi Proposal</td><td>2025-10-05</td><td>Lolly Carolina</td><td>Selesai</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <br>
+  <footer>
+    ©2025 Notulen Tracker. Semua hak cipta dilindungi
+  </footer>
+
+  <script>
+    Chart.register(ChartDataLabels);
+
+    function updateStatistik() {
+      const rows = document.querySelectorAll("#notulenTable tbody tr");
+      let total = rows.length;
+      let selesai = 0, belum = 0;
+      let selesaiPerTanggal = {};
+      let belumPerTanggal = {};
+
+      rows.forEach(r => {
+        const tanggal = r.cells[1].textContent.trim();
+        const status = r.cells[3].textContent.trim();
+
+        if (status === "Selesai") {
+          selesai++;
+          selesaiPerTanggal[tanggal] = (selesaiPerTanggal[tanggal] || 0) + 1;
+        } else if (status === "Belum Selesai") {
+          belum++;
+          belumPerTanggal[tanggal] = (belumPerTanggal[tanggal] || 0) + 1;
+        }
+      });
+
+      document.getElementById("totalRapat").textContent = total;
+      document.getElementById("rapatSelesai").textContent = selesai;
+      document.getElementById("rapatBelum").textContent = belum;
+
+      return { total, selesai, belum, selesaiPerTanggal, belumPerTanggal };
+    }
+
+    function tampilkanLineChart(data) {
+      const ctx = document.getElementById("statusChart").getContext("2d");
+      const tanggalList = Array.from(new Set([...Object.keys(data.selesaiPerTanggal), ...Object.keys(data.belumPerTanggal)])).sort();
+
+      const dataSelesai = tanggalList.map(t => data.selesaiPerTanggal[t] || 0);
+      const dataBelum = tanggalList.map(t => data.belumPerTanggal[t] || 0);
+
+      new Chart(ctx, {
+        type: "line",
+        data: {
+          labels: tanggalList,
+          datasets: [
+            {
+              label: "Selesai",
+              data: dataSelesai,
+              borderColor: "#2e7d32",
+              backgroundColor: "rgba(46,125,50,0.2)",
+              tension: 0.3,
+              fill: true,
+              pointBackgroundColor: "#1b5e20"
+            },
+            {
+              label: "Belum Selesai",
+              data: dataBelum,
+              borderColor: "#fbc02d",
+              backgroundColor: "rgba(251,192,45,0.2)",
+              tension: 0.3,
+              fill: true,
+              pointBackgroundColor: "#f57f17"
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } },
+          plugins: {
+            legend: { position: "bottom" },
+            datalabels: {
+              display: true,
+              color: "#000",
+              font: { weight: "bold" }
+            }
+          }
+        }
+      });
+    }
+
+    function tampilkanPieChart(data) {
+      const ctx = document.getElementById("pieChart").getContext("2d");
+      new Chart(ctx, {
+        type: "pie",
+        data: {
+          labels: ["Selesai", "Belum Selesai"],
+          datasets: [{
+            data: [data.selesai, data.belum],
+            backgroundColor: ["#2e7d32", "#fbc02d"],
+            borderWidth: 2
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            datalabels: {
+              formatter: (value, context) => {
+                const total = context.chart._metasets[0].total;
+                return ((value / total) * 100).toFixed(1) + "%";
+              },
+              color: "#fff",
+              font: { weight: "bold", size: 14 }
+            },
+            legend: { position: "bottom" }
+          }
+        }
+      });
+    }
+
+    const dataStat = updateStatistik();
+    tampilkanLineChart(dataStat);
+    tampilkanPieChart(dataStat);
+  </script>
+  <script>
+  // Fungsi logout melalui menu dropdown
+  document.getElementById("logoutLink").addEventListener("click", (e) => {
+    e.preventDefault();
+    const konfirmasi = confirm("Apakah Anda yakin ingin keluar dari Notulen Tracker?");
+    if (konfirmasi) {
+      window.location.href = "login.php";
+    }
+  });
+</script>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
