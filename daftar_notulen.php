@@ -396,7 +396,13 @@ $query = mysqli_query($conn, "SELECT * FROM rapat ORDER BY tanggal DESC");
           }
         });
           document.getElementById("btnEdit").addEventListener("click", () => {
-            // Mengisi ID Rapat ke input hidden
+            // 1. Dapatkan instance modal detail yang sedang terbuka
+            const detailModalInstance = bootstrap.Modal.getInstance(document.getElementById("detailModal"));
+            
+            // 2. Sembunyikan Modal Detail
+            detailModalInstance.hide(); 
+
+            // 3. Isi data ke Modal Edit
             document.getElementById("editId").value = rapatId; 
             document.getElementById("editJudul").value = data.judul;
             document.getElementById("editTanggal").value = data.tanggal;
@@ -406,7 +412,13 @@ $query = mysqli_query($conn, "SELECT * FROM rapat ORDER BY tanggal DESC");
             document.getElementById("editCatatan").value = data.catatan.join("\n"); 
             
             document.getElementById("editStatus").value = data.status;
-            new bootstrap.Modal(document.getElementById("editModal")).show();
+            
+            // 4. Tampilkan Modal Edit
+            // Tambahkan jeda sebentar (timeout) agar transisi penutupan modal detail selesai
+            // Ini mencegah masalah tumpang tindih backdrop atau scrolling body
+            setTimeout(() => {
+                new bootstrap.Modal(document.getElementById("editModal")).show();
+            }, 100); // Jeda 100ms sudah cukup
           });
         });
       });
