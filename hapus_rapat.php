@@ -7,7 +7,7 @@ if (!$conn) {
 $id = $_GET['id'];
 
 // Hapus detail rapat DULU (karena biasanya berelasi)
-mysqli_query($conn, "DELETE FROM rapat_detail WHERE rapat_id='$id'");
+mysqli_query($conn, "DELETE FROM rapat_detail WHERE id_rapat='$id'");
 
 // Hapus data utama
 mysqli_query($conn, "DELETE FROM rapat WHERE id='$id'");
