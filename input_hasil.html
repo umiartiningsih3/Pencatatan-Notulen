@@ -287,5 +287,55 @@
     }
   });
   </script>
+
+  <script>
+document.getElementById("formRapat").addEventListener("submit", function(e) {
+  e.preventDefault();
+
+  let error = [];
+
+  let judul = judulRapat.value.trim();
+  let tanggal = tanggalRapat.value;
+  let waktu = waktuRapat.value;
+  let notulis = notulis.value.trim();
+
+  if (!judul) error.push("Judul rapat wajib diisi");
+  if (!tanggal) error.push("Tanggal wajib diisi");
+  if (!waktu) error.push("Waktu wajib diisi");
+  if (!notulis) error.push("Notulis wajib diisi");
+
+  // VALIDASI TABEL HASIL RAPAT
+  const rows = document.querySelectorAll("#tabelHasil tbody tr");
+  let adaIsi = false;
+
+  rows.forEach(row => {
+    row.querySelectorAll("textarea").forEach(text => {
+      if (text.value.trim() !== "") adaIsi = true;
+    });
+  });
+
+  if (!adaIsi) {
+    error.push("Tabel hasil rapat tidak boleh kosong!");
+  }
+
+  // VALIDASI SEL TIDAK BOLEH SETENGAH KOSONG
+  rows.forEach((row, i) => {
+    let cells = row.querySelectorAll("textarea");
+    let isi = 0;
+    cells.forEach(c => { if (c.value.trim() !== "") isi++; });
+    if (isi > 0 && isi < cells.length) {
+      error.push("Baris " + (i+1) + " tidak boleh ada kolom kosong");
+    }
+  });
+
+  if (error.length > 0) {
+    alert("⚠️ ERROR:\n\n" + error.join("\n"));
+    return;
+  }
+
+  alert("✅ Data valid, siap disimpan!");
+  this.submit(); // lanjut ke PHP
+});
+</script>
 </body>
 </html>
