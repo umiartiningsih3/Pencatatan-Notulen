@@ -18,27 +18,23 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $judul   = $_POST['judul'] ?? '';
     $tanggal = $_POST['tanggal'] ?? '';
     $notulis = $_POST['notulis'] ?? '';
+    $catatan = $_POST['catatan'] ?? '';
     $status  = $_POST['status'] ?? '';
-
-    // Validasi dasar
-    if (empty($id) || empty($judul) || empty($tanggal) || empty($notulis) || empty($status)) {
-        echo json_encode(["status" => "error", "message" => "Semua kolom wajib diisi."]);
-        mysqli_close($conn);
-        exit;
-    }
 
     // 3. Sanitasi Data
     $id_safe      = mysqli_real_escape_string($conn, $id);
     $judul_safe   = mysqli_real_escape_string($conn, $judul);
     $tanggal_safe = mysqli_real_escape_string($conn, $tanggal);
     $notulis_safe = mysqli_real_escape_string($conn, $notulis);
+    $catatan_safe = mysqli_real_escape_string($conn, $catatan);
     $status_safe  = mysqli_real_escape_string($conn, $status);
 
     // 4. Query UPDATE
     $sql = "UPDATE rapat SET 
             judul = '$judul_safe', 
             tanggal = '$tanggal_safe', 
-            notulis = '$notulis_safe', 
+            notulis = '$notulis_safe',
+            catatan = '$catatan_safe',
             status = '$status_safe' 
             WHERE id = '$id_safe'";
 
