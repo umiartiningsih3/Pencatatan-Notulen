@@ -184,10 +184,10 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav ms-auto">
-        <li class="nav-item"><a class="nav-link" href="dashboard.html">Dashboard</a></li>
-        <li class="nav-item"><a class="nav-link" href="daftar_notulen.html">Daftar Notulen</a></li>
-        <li class="nav-item"><a class="nav-link" href="kontak.html">Kontak</a></li>
-        <li class="nav-item"><a class="nav-link" href="faq.html">FAQ</a></li>
+        <li class="nav-item"><a class="nav-link" href="dashboard.php">Dashboard</a></li>
+        <li class="nav-item"><a class="nav-link" href="daftar_notulen.php">Daftar Notulen</a></li>
+        <li class="nav-item"><a class="nav-link" href="kontak.php">Kontak</a></li>
+        <li class="nav-item"><a class="nav-link" href="FAQ.php">FAQ</a></li>
         <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle active" href="#" id="userDropdown" data-bs-toggle="dropdown">
           Notulis
@@ -198,7 +198,7 @@
             <small class="text-muted">notulis.notulis@gmail.com</small>
           </li>
           <li><hr class="dropdown-divider"></li>
-          <li><a class="dropdown-item" href="profile.html">Profil</a></li>
+          <li><a class="dropdown-item" href="profile.php">Profil</a></li>
           <li><hr class="dropdown-divider"></li>
           <li><a id="logoutLink" class="dropdown-item text-danger" href="#">Keluar</a></li>
         </ul>
@@ -233,7 +233,7 @@
   </div>
 
   <button id="btnEdit" class="btn btn-edit mt-4">Edit Profil</button>
-  <a href="dashboard.html" class="btn btn-secondary mt-4">Kembali</a>
+  <a href="dashboard.php" class="btn btn-secondary mt-4">Kembali</a>
 </div>
 
 <!-- Footer -->
@@ -291,7 +291,7 @@ btnEdit.addEventListener('click', () => {
     e.preventDefault();
     const konfirmasi = confirm("Apakah Anda yakin ingin keluar dari Notulen Tracker?");
     if (konfirmasi) {
-      window.location.href = "login.html";
+      window.location.href = "login.php";
     }
   });
 </script>

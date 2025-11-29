@@ -93,7 +93,7 @@
     </form>
 
     <p class="text-center mt-3 mb-0" style="font-size:13px;">
-      Sudah punya akun? <a href="login.html" class="text-decoration-none" style="color:#007bff;">Masuk</a>
+      Sudah punya akun? <a href="login.php" class="text-decoration-none" style="color:#007bff;">Masuk</a>
     </p>
   </div>
 

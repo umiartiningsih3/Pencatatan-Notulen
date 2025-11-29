@@ -100,12 +100,12 @@ h4 {
       <button type="submit" class="btn btn-primary w-100">Masuk</button>
     </form>
 
-    <a href="katasandi.html" class="text-decoration-none" style="font-size: 13px;">Lupa Kata Sandi?</a>
+    <a href="katasandi.php" class="text-decoration-none" style="font-size: 13px;">Lupa Kata Sandi?</a>
     <p class="text-center mt-3 mb-0" style="font-size:13px;">
       Belum punya akun? 
-      <a href="daftar.html" class="text-decoration-none" style="color:#007bff;">Daftar</a>
+      <a href="daftar.php" class="text-decoration-none" style="color:#007bff;">Daftar</a>
       <a href="#" class="text-decoration-none" style="color:#000000;">|</a>
-      <a href="welcome.html" class="text-decoration-none" style="color:#007bff;">Kembali</a>
+      <a href="welcome.php" class="text-decoration-none" style="color:#007bff;">Kembali</a>
     </p>
   </div>
   
