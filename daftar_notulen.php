@@ -7,7 +7,6 @@ if (!$conn) {
 $query = mysqli_query($conn, "SELECT * FROM rapat ORDER BY tanggal DESC");
 ?>
 
- <!DOCTYPE html>
 <!DOCTYPE html>
 <html lang="id">
 <head>
