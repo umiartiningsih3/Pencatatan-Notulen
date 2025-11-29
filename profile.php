@@ -45,11 +45,11 @@ if (mysqli_num_rows($result) > 0) {
             1 => 'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
             'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
         ];
-        $row['bergabung_sejak'] = $bulan_indonesia[date('n', $timestamp)] . ' ' . date('Y', $timestamp);
+        $row['bergabung_sejak'] = date('d', $timestamp) . ' ' . $bulan_indonesia[date('n', $timestamp)] . ' ' . date('Y', $timestamp);
     }
 
     $profile_data = $row;
-    
+
     // Pastikan foto_profile tidak kosong
     if (empty($profile_data['foto_profile'])) {
         $profile_data['foto_profile'] = 'user.png';
@@ -71,7 +71,6 @@ $dropdown_nama = htmlspecialchars($profile_data['nama_lengkap']);
     <link href="https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.5/croppie.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        /* [SISIPKAN SEMUA STYLE CSS DARI KODE ASLI ANDA DI SINI] */
         /* Body, Navbar, Konten, Footer, Croppie Styling */
         body {
             font-family: Poppins,system-ui,-apple-system,Segoe UI,Roboto;
@@ -120,6 +119,26 @@ $dropdown_nama = htmlspecialchars($profile_data['nama_lengkap']);
         .navbar .dropdown-toggle:focus {
             color: #fff !important;
             transform: scale(1.05);
+        }
+
+        /* Penyesuaian untuk Dropdown Menu (Untuk menampilkan foto) */
+        .dropdown-menu .user-info-header {
+            display: flex;
+            align-items: center;
+            padding: 10px 15px;
+        }
+
+        .dropdown-menu .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 10px;
+        }
+        
+        .dropdown-menu .user-text small {
+            display: block;
+            margin-top: -3px; /* Jarak antara nama dan email */
         }
 
         /* Konten */
@@ -248,9 +267,16 @@ $dropdown_nama = htmlspecialchars($profile_data['nama_lengkap']);
                     Notulis
                 </a>
                 <ul class="dropdown-menu dropdown-menu-end shadow-sm" aria-labelledby="userDropdown">
-                    <li class="px-3 py-2">
-                        <strong><?php echo $dropdown_nama; ?></strong><br>
-                        <small class="text-muted"><?php echo $dropdown_email; ?></small>
+                    <li class="user-info-header">
+                        <img
+                            src="<?php echo htmlspecialchars($profile_data['foto_profile']); ?>"
+                            alt="Avatar"
+                            class="user-avatar"
+                        >
+                        <div class="user-text">
+                            <strong><?php echo $dropdown_nama; ?></strong>
+                            <small class="text-muted"><?php echo $dropdown_email; ?></small>
+                        </div>
                     </li>
                     <li><hr class="dropdown-divider"></li>
                     <li><a class="dropdown-item" href="profile.php">Profil</a></li>
@@ -347,13 +373,13 @@ if (inputFile) {
     inputFile.addEventListener('change', function() {
         const file = this.files[0];
         if (!file) return;
-        
+
         // **VALIDASI UKURAN FILE**
         const maxSize = 2 * 1024 * 1024; // Maksimum 2 MB
         if (file.size > maxSize) {
             alert('❌ Ukuran file terlalu besar. Maksimum 2MB.');
             this.value = ''; // Reset input file
-            return; 
+            return;
         }
 
         const reader = new FileReader();
@@ -366,12 +392,12 @@ if (inputFile) {
 
             // Inisialisasi Croppie
             croppieInstance = new Croppie(cropArea, {
-                viewport: { width: 120, height: 120, type: 'circle' }, 
+                viewport: { width: 120, height: 120, type: 'circle' },
                 boundary: { width: '100%', height: 350 }, // Ruang yang cukup untuk crop
                 enableOrientation: true,
                 enableExif: true,
             });
-            
+
             // Bind image ke Croppie
             croppieInstance.bind({
                 url: e.target.result
@@ -393,12 +419,12 @@ if (cropButton) {
         // Mendapatkan hasil potongan (blob) dari Croppie
         // Output resolusi 400x400 untuk kualitas yang baik
         croppieInstance.result({
-            type: 'blob', 
+            type: 'blob',
             size: { width: 400, height: 400 },
-            format: 'jpeg', 
+            format: 'jpeg',
             quality: 0.9
         }).then(function(blob) {
-             
+
             cropModal.hide();
 
             // Kirim Blob yang sudah dipotong ke server
@@ -411,17 +437,16 @@ if (cropButton) {
 function uploadCroppedPicture(blob) {
     const formData = new FormData();
     // Gunakan nama 'profile_picture' untuk menangkap file di PHP
-    formData.append('profile_picture', blob, 'cropped_image.jpeg'); 
-    formData.append('user_id', userId); 
+    formData.append('profile_picture', blob, 'cropped_image.jpeg');
+    formData.append('user_id', userId);
 
     console.log('Mengirim file foto yang sudah dipotong...');
-    
+
     fetch('upload_profile_picture.php', { // AJAX ke file PHP terpisah
         method: 'POST',
-        body: formData 
+        body: formData
     })
     .then(response => {
-        // ... (Logika Error Handling Response JSON) ...
         const contentType = response.headers.get("content-type");
         if (contentType && contentType.indexOf("application/json") !== -1) {
              return response.json();
@@ -435,7 +460,7 @@ function uploadCroppedPicture(blob) {
     .then(data => {
         if (data.status === 'success') {
             alert('✅ Foto profil berhasil dipotong dan diunggah!');
-            window.location.reload(); 
+            window.location.reload();
         } else {
             alert('❌ Gagal mengunggah foto: ' + data.message);
         }
@@ -487,7 +512,7 @@ function saveProfile() {
         divisi: document.getElementById('divisi').value,
         peran: document.getElementById('peran').value
     };
-    
+
     btnEdit.disabled = true;
     btnEdit.textContent = 'Menyimpan...';
 
@@ -499,7 +524,6 @@ function saveProfile() {
         body: JSON.stringify(formData)
     })
     .then(response => {
-        // ... (Logika Error Handling Response JSON) ...
         const contentType = response.headers.get("content-type");
         if (contentType && contentType.indexOf("application/json") !== -1) {
              return response.json();
@@ -516,7 +540,7 @@ function saveProfile() {
         if (data.status === 'success') {
             alert('✅ Perubahan profil berhasil disimpan!');
             toggleEditMode(false);
-            window.location.reload(); 
+            window.location.reload();
         } else {
             alert('❌ Gagal menyimpan perubahan: ' + data.message);
             toggleEditMode(true);
@@ -526,7 +550,7 @@ function saveProfile() {
         console.error('Error:', error);
         btnEdit.disabled = false;
         btnEdit.textContent = 'Simpan Perubahan';
-        
+
         alert('❌ Terjadi kesalahan koneksi atau server saat menyimpan data teks: ' + error.message);
         toggleEditMode(true);
     });
