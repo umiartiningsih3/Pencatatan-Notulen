@@ -8,8 +8,9 @@ $query = mysqli_query($conn, "SELECT * FROM rapat ORDER BY tanggal DESC");
 ?>
 
  <!DOCTYPE html>
- <html lang="id">
- <head>
+<!DOCTYPE html>
+<html lang="id">
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Notulen Tracker</title>
@@ -136,8 +137,8 @@ $query = mysqli_query($conn, "SELECT * FROM rapat ORDER BY tanggal DESC");
       }
 
     </style>
- </head>
- <body>
+</head>
+<body>
 
     <nav class="navbar navbar-expand-lg navbar-dark px-4">
       <a class="navbar-brand" href="#">
@@ -284,9 +285,16 @@ $query = mysqli_query($conn, "SELECT * FROM rapat ORDER BY tanggal DESC");
             <form id="editForm">
               <input type="hidden" id="editId" name="id"> 
               
-              <div class="mb-3"><label class="form-label">Judul Rapat</label><input type="text" class="form-control" id="editJudul" name="judul"></div>
-              <div class="mb-3"><label class="form-label">Tanggal Rapat</label><input type="date" class="form-control" id="editTanggal" name="tanggal"></div>
-              <div class="mb-3"><label class="form-label">Notulis</label><input type="text" class="form-control" id="editNotulis" name="notulis"></div>
+              <div class="mb-3"><label class="form-label">Judul Rapat</label>
+              <input type="text" class="form-control" id="editJudul" name="judul"></div>
+              <div class="mb-3"><label class="form-label">Tanggal Rapat</label>
+              <input type="date" class="form-control" id="editTanggal" name="tanggal"></div>
+              <div class="mb-3"><label class="form-label">Notulis</label>
+              <input type="text" class="form-control" id="editNotulis" name="notulis"></div>
+              
+              <div class="mb-3"><label class="form-label">Catatan</label>
+              <textarea class="form-control" id="editCatatan" name="catatan" rows="3"></textarea></div>
+              
               <div class="mb-3"><label class="form-label">Status</label>
                 <select class="form-select" id="editStatus" name="status">
                   <option>Belum Selesai</option>
@@ -302,7 +310,7 @@ $query = mysqli_query($conn, "SELECT * FROM rapat ORDER BY tanggal DESC");
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-      // Filter data
+      // Filter data (tetap sama)
       const form = document.getElementById("filterForm");
       const resetBtn = document.getElementById("resetFilter");
       const table = document.getElementById("notulenTable").getElementsByTagName("tbody")[0];
@@ -334,9 +342,10 @@ $query = mysqli_query($conn, "SELECT * FROM rapat ORDER BY tanggal DESC");
       document.querySelectorAll(".btn-lihat").forEach(btn => {
         btn.addEventListener("click", e => {
           const row = e.target.closest("tr");
-          const rapatId = row.dataset.id; // Ambil ID Rapat
+          const rapatId = row.dataset.id;
           const data = JSON.parse(row.dataset.detail || '{}');
           if (!data.judul) return alert("Tidak ada detail untuk baris ini.");
+          
           const content = `
             <div id="rapatDetail">
               <h4 class="text-center text-primary fw-bold mb-3">HASIL RAPAT</h4>
@@ -384,7 +393,7 @@ $query = mysqli_query($conn, "SELECT * FROM rapat ORDER BY tanggal DESC");
               url: currentUrl
             }).catch(err => console.error("Gagal membagikan:", err));
             } else {
-             // Fallback jika API share tidak tersedia (opsional)
+             // Fallback
           }
         });
           document.getElementById("btnEdit").addEventListener("click", () => {
@@ -393,28 +402,30 @@ $query = mysqli_query($conn, "SELECT * FROM rapat ORDER BY tanggal DESC");
             document.getElementById("editJudul").value = data.judul;
             document.getElementById("editTanggal").value = data.tanggal;
             document.getElementById("editNotulis").value = data.notulis;
+            
+            // PENTING: Menggabungkan array catatan menjadi string dengan \n
+            document.getElementById("editCatatan").value = data.catatan.join("\n"); 
+            
             document.getElementById("editStatus").value = data.status;
             new bootstrap.Modal(document.getElementById("editModal")).show();
           });
         });
       });
 
-      // === LOGIKA SIMPAN PERUBAHAN KE DATABASE DENGAN AJAX ===
+      // LOGIKA SIMPAN PERUBAHAN KE DATABASE DENGAN AJAX
       document.getElementById("editForm").addEventListener("submit", e => {
         e.preventDefault();
         
         const form = e.target;
-        // Mengambil semua data dari form edit
         const formData = new FormData(form);
         const data = Object.fromEntries(formData.entries());
 
-        // Kirim data ke edit_rapat.php menggunakan Fetch API (AJAX)
+        // Kirim data ke edit_rapat.php
         fetch('edit_rapat.php', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
             },
-            // Mengubah objek data menjadi query string
             body: new URLSearchParams(data)
         })
         .then(response => response.json())
@@ -443,7 +454,7 @@ $query = mysqli_query($conn, "SELECT * FROM rapat ORDER BY tanggal DESC");
     </footer>
 
  <script>
-    // Fungsi logout melalui menu dropdown
+    // Fungsi logout
     document.getElementById("logoutLink").addEventListener("click", (e) => {
       e.preventDefault();
       const konfirmasi = confirm("Apakah Anda yakin ingin keluar dari Notulen Tracker?");
@@ -471,18 +482,16 @@ $query = mysqli_query($conn, "SELECT * FROM rapat ORDER BY tanggal DESC");
         total: selesai + belum
       };
 
-      // Simpan ke localStorage agar dashboard bisa ambil
+      // Simpan ke localStorage
       localStorage.setItem("notulenStats", JSON.stringify(data));
       console.log("✅ Data dikirim ke Dashboard:", data);
     }
 
     // Jalankan setiap kali halaman dibuka
     updateDashboardData();
-
-    // Jalankan juga tiap kali tabel difilter
     document.getElementById("filterForm").addEventListener("submit", updateDashboardData);
     document.getElementById("resetFilter").addEventListener("click", updateDashboardData);
  </script>
 
- </body>
- </html>
+</body>
+</html>
