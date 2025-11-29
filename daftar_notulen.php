@@ -7,9 +7,9 @@ if (!$conn) {
 $query = mysqli_query($conn, "SELECT * FROM rapat ORDER BY tanggal DESC");
 ?>
 
-  <!DOCTYPE html>
-  <html lang="id">
-  <head>
+ <!DOCTYPE html>
+ <html lang="id">
+ <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Notulen Tracker</title>
@@ -136,10 +136,9 @@ $query = mysqli_query($conn, "SELECT * FROM rapat ORDER BY tanggal DESC");
       }
 
     </style>
-  </head>
-  <body>
+ </head>
+ <body>
 
-    <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-dark px-4">
       <a class="navbar-brand" href="#">
           <img src="logono.jpeg" alt="Logo Notulen Tracker" width="50" class="me-2 rounded-circle">
@@ -171,7 +170,6 @@ $query = mysqli_query($conn, "SELECT * FROM rapat ORDER BY tanggal DESC");
       </div>
     </nav>
 
-    <!-- Konten -->
     <div class="full-container mt-4">
       <div class="card shadow-sm">
         <div class="card-body">
@@ -185,7 +183,6 @@ $query = mysqli_query($conn, "SELECT * FROM rapat ORDER BY tanggal DESC");
             </div>
           </div>
 
-          <!-- Panel Filter -->
           <div class="collapse mb-3" id="filterPanel">
             <div class="card card-body">
               <form id="filterForm" class="row g-2">
@@ -207,7 +204,6 @@ $query = mysqli_query($conn, "SELECT * FROM rapat ORDER BY tanggal DESC");
             </div>
           </div>
 
-          <!-- Tabel -->
           <div class="table-responsive">
             <table class="table table-bordered align-middle" id="notulenTable">
               <thead>
@@ -229,7 +225,7 @@ $query = mysqli_query($conn, "SELECT * FROM rapat ORDER BY tanggal DESC");
                   }
                   ?>
                   
-                  <tr data-detail='<?= json_encode([
+                  <tr data-id="<?= $r['id'] ?>" data-detail='<?= json_encode([
                     "judul"=>$r["judul"],
                     "tanggal"=>$r["tanggal"],
                     "waktu"=>$r["waktu"],
@@ -251,13 +247,13 @@ $query = mysqli_query($conn, "SELECT * FROM rapat ORDER BY tanggal DESC");
                     <td class="text-center">
                       <button class="btn btn-lihat btn-sm">Lihat</button>
                       <a href="hapus_rapat.php?id=<?= $r['id']; ?>" 
-                         onclick="return confirm('Yakin ingin menghapus notulen ini?')"
-                         class="btn btn-danger btn-sm ms-1">
-                         Hapus
+                          onclick="return confirm('Yakin ingin menghapus notulen ini?')"
+                          class="btn btn-danger btn-sm ms-1">
+                          Hapus
                         </a>
                       </td>
-                  </tr>
-                  <?php } ?>
+                    </tr>
+                    <?php } ?>
                 </tbody>
             </table>
           </div>
@@ -265,7 +261,6 @@ $query = mysqli_query($conn, "SELECT * FROM rapat ORDER BY tanggal DESC");
       </div>
     </div>
 
-    <!-- Modal Detail -->
     <div class="modal fade" id="detailModal" tabindex="-1">
       <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content shadow-lg">
@@ -278,7 +273,6 @@ $query = mysqli_query($conn, "SELECT * FROM rapat ORDER BY tanggal DESC");
       </div>
     </div>
 
-    <!-- Modal Edit -->
     <div class="modal fade" id="editModal" tabindex="-1">
       <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content">
@@ -288,11 +282,13 @@ $query = mysqli_query($conn, "SELECT * FROM rapat ORDER BY tanggal DESC");
           </div>
           <div class="modal-body">
             <form id="editForm">
-              <div class="mb-3"><label class="form-label">Judul Rapat</label><input type="text" class="form-control" id="editJudul"></div>
-              <div class="mb-3"><label class="form-label">Tanggal Rapat</label><input type="date" class="form-control" id="editTanggal"></div>
-              <div class="mb-3"><label class="form-label">Notulis</label><input type="text" class="form-control" id="editNotulis"></div>
+              <input type="hidden" id="editId" name="id"> 
+              
+              <div class="mb-3"><label class="form-label">Judul Rapat</label><input type="text" class="form-control" id="editJudul" name="judul"></div>
+              <div class="mb-3"><label class="form-label">Tanggal Rapat</label><input type="date" class="form-control" id="editTanggal" name="tanggal"></div>
+              <div class="mb-3"><label class="form-label">Notulis</label><input type="text" class="form-control" id="editNotulis" name="notulis"></div>
               <div class="mb-3"><label class="form-label">Status</label>
-                <select class="form-select" id="editStatus">
+                <select class="form-select" id="editStatus" name="status">
                   <option>Belum Selesai</option>
                   <option>Selesai</option>
                 </select>
@@ -304,7 +300,6 @@ $query = mysqli_query($conn, "SELECT * FROM rapat ORDER BY tanggal DESC");
       </div>
     </div>
 
-    <!-- Script -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
       // Filter data
@@ -338,7 +333,9 @@ $query = mysqli_query($conn, "SELECT * FROM rapat ORDER BY tanggal DESC");
       // Detail rapat
       document.querySelectorAll(".btn-lihat").forEach(btn => {
         btn.addEventListener("click", e => {
-          const data = JSON.parse(e.target.closest("tr").dataset.detail || '{}');
+          const row = e.target.closest("tr");
+          const rapatId = row.dataset.id; // Ambil ID Rapat
+          const data = JSON.parse(row.dataset.detail || '{}');
           if (!data.judul) return alert("Tidak ada detail untuk baris ini.");
           const content = `
             <div id="rapatDetail">
@@ -387,9 +384,12 @@ $query = mysqli_query($conn, "SELECT * FROM rapat ORDER BY tanggal DESC");
               url: currentUrl
             }).catch(err => console.error("Gagal membagikan:", err));
             } else {
-      }
-    });
+             // Fallback jika API share tidak tersedia (opsional)
+          }
+        });
           document.getElementById("btnEdit").addEventListener("click", () => {
+            // Mengisi ID Rapat ke input hidden
+            document.getElementById("editId").value = rapatId; 
             document.getElementById("editJudul").value = data.judul;
             document.getElementById("editTanggal").value = data.tanggal;
             document.getElementById("editNotulis").value = data.notulis;
@@ -399,11 +399,42 @@ $query = mysqli_query($conn, "SELECT * FROM rapat ORDER BY tanggal DESC");
         });
       });
 
+      // === LOGIKA SIMPAN PERUBAHAN KE DATABASE DENGAN AJAX ===
       document.getElementById("editForm").addEventListener("submit", e => {
         e.preventDefault();
-        alert("✅ Perubahan notulen berhasil disimpan!");
-        bootstrap.Modal.getInstance(document.getElementById("editModal")).hide();
+        
+        const form = e.target;
+        // Mengambil semua data dari form edit
+        const formData = new FormData(form);
+        const data = Object.fromEntries(formData.entries());
+
+        // Kirim data ke edit_rapat.php menggunakan Fetch API (AJAX)
+        fetch('edit_rapat.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            // Mengubah objek data menjadi query string
+            body: new URLSearchParams(data)
+        })
+        .then(response => response.json())
+        .then(result => {
+            if (result.status === "success") {
+                alert("✅ " + result.message);
+                
+                // Tutup modal dan muat ulang halaman untuk menampilkan perubahan
+                bootstrap.Modal.getInstance(document.getElementById("editModal")).hide();
+                window.location.reload(); 
+            } else {
+                alert("❌ Gagal: " + result.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert("❌ Terjadi kesalahan koneksi atau server.");
+        });
       });
+      // =======================================================
     </script>
     
     <br>
@@ -411,7 +442,7 @@ $query = mysqli_query($conn, "SELECT * FROM rapat ORDER BY tanggal DESC");
       ©2025 Notulen Tracker. Semua hak cipta dilindungi
     </footer>
 
-  <script>
+ <script>
     // Fungsi logout melalui menu dropdown
     document.getElementById("logoutLink").addEventListener("click", (e) => {
       e.preventDefault();
@@ -420,8 +451,8 @@ $query = mysqli_query($conn, "SELECT * FROM rapat ORDER BY tanggal DESC");
         window.location.href = "login.php";
       }
     });
-  </script>
-  <script>
+ </script>
+ <script>
     // === Kirim data tabel ke localStorage ===
     function updateDashboardData() {
       const rows = document.querySelectorAll("#notulenTable tbody tr");
@@ -451,7 +482,7 @@ $query = mysqli_query($conn, "SELECT * FROM rapat ORDER BY tanggal DESC");
     // Jalankan juga tiap kali tabel difilter
     document.getElementById("filterForm").addEventListener("submit", updateDashboardData);
     document.getElementById("resetFilter").addEventListener("click", updateDashboardData);
-  </script>
+ </script>
 
-  </body>
-  </html>
+ </body>
+ </html>
