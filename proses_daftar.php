@@ -1,36 +1,47 @@
 <?php
+// KONEKSI KE DATABASE
 $koneksi = new mysqli("localhost", "root", "", "notulen_db");
 
+// CEK KONEKSI
 if ($koneksi->connect_error) {
     die("Koneksi gagal: " . $koneksi->connect_error);
 }
 
-$nama = $_POST['nama'];
-$email = $_POST['email'];
-$peran = $_POST['peran'];
+// AMBIL DATA DARI FORM
+$nama     = $_POST['nama'];
+$email    = $_POST['email'];
+$peran    = $_POST['peran'];
 $password = $_POST['password'];
-$password2 = $_POST['password2'];
+$pass2    = $_POST['password2'];
 
-// Cek password sama
-if ($password !== $password2) {
-    die("Password tidak sama!");
+// CEK KONFIRMASI PASSWORD
+if ($password !== $pass2) {
+    echo "<script>alert('Password tidak sama!'); window.location='daftar.php';</script>";
+    exit();
 }
 
-// Cek apakah email sudah ada
+// CEK EMAIL SUDAH ADA ATAU BELUM
 $cek = $koneksi->query("SELECT * FROM pendaftaran WHERE email='$email'");
+
 if ($cek->num_rows > 0) {
-    die("Email sudah terdaftar!");
+    echo "<script>alert('Email sudah terdaftar!'); window.location='daftar.php';</script>";
+    exit();
 }
 
-// Enkripsi password
+// ENKRIPSI PASSWORD
 $hash = password_hash($password, PASSWORD_DEFAULT);
 
-// Insert data
+// INSERT DATA
 $sql = "INSERT INTO pendaftaran (nama, email, peran, password)
         VALUES ('$nama', '$email', '$peran', '$hash')";
 
 if ($koneksi->query($sql) === TRUE) {
-    echo "Pendaftaran berhasil!";
+    echo "
+        <script>
+            alert('Pendaftaran berhasil!');
+            window.location='login.php';   // 🔥 DI SINI REDIRECT
+        </script>
+    ";
 } else {
     echo "Error: " . $koneksi->error;
 }
