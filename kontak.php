@@ -1,3 +1,85 @@
+<?php
+// ==========================================================
+// 1. KONEKSI DATABASE DAN PENGAMBILAN DATA PROFIL PENGGUNA
+// ==========================================================
+
+// Detail koneksi database
+$db_host = "localhost";
+$db_user = "root";
+$db_pass = "";
+$db_name = "notulen_db";
+
+// 🚨 GANTI DENGAN $_SESSION['user_id'] ASLI SETELAH IMPLEMENTASI LOGIN
+$user_id = 1; 
+
+$conn = mysqli_connect($db_host, $db_user, $db_pass, $db_name);
+
+if (!$conn) {
+    die("Koneksi gagal: " . mysqli_connect_error());
+}
+
+// Ambil Data Profil untuk Navbar (Tabel: notulis)
+$query_profile = "SELECT nama_lengkap, email, foto_profile FROM notulis WHERE id = ?";
+$stmt = mysqli_prepare($conn, $query_profile);
+// Pastikan $user_id adalah integer
+mysqli_stmt_bind_param($stmt, "i", $user_id);
+mysqli_stmt_execute($stmt);
+$result_profile = mysqli_stmt_get_result($stmt);
+
+// Data default jika user_id tidak ditemukan atau kosong
+$profile_data = [
+    'nama_lengkap' => 'Notulis Tamu',
+    'email' => 'tamu@notulen.com',
+    'foto_profile' => 'user.png' // Pastikan ada gambar default di folder Anda
+];
+
+if ($row = mysqli_fetch_assoc($result_profile)) {
+    // Timpa data default dengan data dari database
+    $profile_data['nama_lengkap'] = $row['nama_lengkap'];
+    $profile_data['email'] = $row['email'];
+    // Gunakan foto_profile dari DB jika tidak kosong
+    if (!empty($row['foto_profile'])) {
+        $profile_data['foto_profile'] = $row['foto_profile'];
+    }
+}
+
+// Variabel untuk digunakan di HTML
+$dropdown_email = htmlspecialchars($profile_data['email']);
+$dropdown_nama = htmlspecialchars($profile_data['nama_lengkap']);
+
+
+// ==========================================================
+// 2. PROSES SUBMIT FORM KONTAK (KODE ASLI ANDA)
+// ==========================================================
+
+$pesan_terkirim = false;
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // Digunakan untuk simulasi AJAX di bagian JavaScript, bukan untuk PHP form submit biasa
+    // Karena form di bawah menggunakan e.preventDefault(), bagian ini tidak akan dieksekusi 
+    // kecuali Anda mengubah form submission-nya menjadi sync/AJAX PHP file terpisah.
+    
+    // Namun, jika Anda ingin menggunakan PHP, ini adalah kode yang benar:
+    $nama = mysqli_real_escape_string($conn, $_POST['nama']);
+    $email = mysqli_real_escape_string($conn, $_POST['email']);
+    $pesan = mysqli_real_escape_string($conn, $_POST['pesan']);
+
+    $sql = "INSERT INTO kontak (nama, email, pesan) VALUES ('$nama', '$email', '$pesan')";
+    if (mysqli_query($conn, $sql)) {
+        // Jika berhasil, header redirect untuk menghindari resubmission form
+        // header("Location: kontak.php?status=success");
+        // exit();
+        $pesan_terkirim = true;
+    } else {
+        // echo "Error: " . mysqli_error($conn); // sebaiknya tidak ditampilkan ke user
+        // header("Location: kontak.php?status=error");
+        // exit();
+    }
+}
+
+// Tutup statement
+mysqli_stmt_close($stmt);
+?>
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -16,7 +98,7 @@
       padding-top: 80px;
     }
 
-    /* Navbar */
+    /* Navbar Styles */
     .navbar {
       background-color: #003366;
       position: fixed;
@@ -55,6 +137,25 @@
       color: #fff !important;
       transform: scale(1.05);
     }
+    
+    /* Dropdown User Info Styles */
+    .dropdown-menu .user-info-header {
+      display: flex; 
+      align-items: center;
+      padding: 10px 15px;
+    }
+    .dropdown-menu .user-avatar {
+      width: 40px; 
+      height: 40px;
+      border-radius: 50%; 
+      object-fit: cover;
+      margin-right: 10px;
+    }
+    .dropdown-menu .user-text small {
+      display: block;
+      margin-top: -3px; 
+    }
+    /* End Dropdown User Info Styles */
 
     /* Konten */
     main {
@@ -93,7 +194,6 @@
 </head>
 <body>
 
-  <!-- Navbar -->
   <nav class="navbar navbar-expand-lg navbar-dark px-4">
     <a class="navbar-brand" href="#">
         <img src="logono.jpeg" alt="Logo Notulen Tracker" width="50" class="me-2 rounded-circle">
@@ -113,10 +213,17 @@
           Notulis
         </a>
         <ul class="dropdown-menu dropdown-menu-end shadow-sm" aria-labelledby="userDropdown">
-          <li class="px-3 py-2">
-            <strong>Notulis Notulis</strong><br>
-            <small class="text-muted">notulis.notulis@gmail.com</small>
-          </li>
+          <li class="user-info-header">
+            <img
+              src="<?php echo htmlspecialchars($profile_data['foto_profile']); ?>"
+              alt="Avatar"
+              class="user-avatar"
+            >
+            <div class="user-text">
+              <strong><?php echo $dropdown_nama; ?></strong>
+              <small class="text-muted"><?php echo $dropdown_email; ?></small>
+            </div>
+            </li>
           <li><hr class="dropdown-divider"></li>
           <li><a class="dropdown-item" href="profile.php">Profil</a></li>
           <li><hr class="dropdown-divider"></li>
@@ -127,27 +234,33 @@
     </div>
   </nav>
 
-  <!-- Konten Utama -->
   <main>
     <div class="container mt-5">
       <h2 class="text-center mb-4 text-primary fw-bold">Hubungi Kami</h2>
       <p class="text-center mb-5">Jika Anda memiliki pertanyaan, saran, atau kendala terkait aplikasi Notulen Tracker, silakan isi form di bawah ini.</p>
+      
+      <?php if ($pesan_terkirim): ?>
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+          ✅ Pesan Anda berhasil dikirim! Kami akan segera merespons.
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+      <?php endif; ?>
 
       <div class="card p-4">
-        <form id="formKontak">
+        <form id="formKontak" method="POST" action="">
           <div class="mb-3">
             <label for="nama" class="form-label">Nama Lengkap</label>
-            <input type="text" id="nama" class="form-control" placeholder="Masukkan nama Anda" required>
+            <input type="text" id="nama" class="form-control" name="nama" placeholder="Masukkan nama Anda" required>
           </div>
 
           <div class="mb-3">
             <label for="email" class="form-label">Email</label>
-            <input type="email" id="email" class="form-control" placeholder="Masukkan email Anda" required>
+            <input type="email" id="email" class="form-control" name="email" placeholder="Masukkan email Anda" required>
           </div>
 
           <div class="mb-3">
             <label for="pesan" class="form-label">Pesan</label>
-            <textarea id="pesan" rows="4" class="form-control" placeholder="Tulis pesan Anda di sini..." required></textarea>
+            <textarea id="pesan" rows="4" class="form-control" name="pesan" placeholder="Tulis pesan Anda di sini..." required></textarea>
           </div>
 
           <div class="text-center">
@@ -166,21 +279,25 @@
     </div>
   </main>
 
-  <!-- Footer -->
   <footer>
     ©2025 Notulen Tracker. Semua hak cipta dilindungi
   </footer>
 
-  <!-- Bootstrap JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
-  <!-- Fungsi -->
   <script>
-    // Kirim pesan
+    // Kirim pesan (Simulasi notifikasi JS, membiarkan PHP yang handle submit)
     document.getElementById("formKontak").addEventListener("submit", function(e) {
-      e.preventDefault();
+      // e.preventDefault(); 
+      // Karena PHP sudah diatur untuk memproses POST, 
+      // kita hilangkan preventDefault agar halaman reload dan menampilkan alert PHP
+
+      // Jika Anda ingin mempertahankan notifikasi JS tanpa reload:
+      /*
+      e.preventDefault(); 
       alert("Pesan Anda berhasil dikirim! Terima kasih telah menghubungi kami 😊");
       this.reset();
+      */
     });
 
   // Fungsi logout melalui menu dropdown
@@ -192,6 +309,10 @@
     }
   });
 </script>
-  </script>
+
+<?php
+// Tutup koneksi database
+mysqli_close($conn);
+?>
 </body>
 </html>
