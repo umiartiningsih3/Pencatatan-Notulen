@@ -1,3 +1,62 @@
+<?php
+// ==========================================================
+// 1. KONEKSI DATABASE DAN PENGAMBILAN DATA PROFIL PENGGUNA
+// ==========================================================
+
+// Detail koneksi database
+$db_host = "localhost";
+$db_user = "root";
+$db_pass = "";
+$db_name = "notulen_db";
+
+// 🚨 GANTI DENGAN $_SESSION['user_id'] ASLI SETELAH IMPLEMENTASI LOGIN
+$user_id = 1; 
+
+$conn = mysqli_connect($db_host, $db_user, $db_pass, $db_name);
+
+if (!$conn) {
+    // Jika koneksi gagal, hentikan eksekusi dan tampilkan pesan error
+    die("Koneksi gagal: " . mysqli_connect_error());
+}
+
+// Ambil Data Profil untuk Navbar (Tabel: notulis)
+// Asumsi nama tabel adalah 'notulis' dan memiliki kolom 'nama_lengkap', 'email', 'foto_profile', dan 'id'
+$query_profile = "SELECT nama_lengkap, email, foto_profile FROM notulis WHERE id = ?";
+$stmt = mysqli_prepare($conn, $query_profile);
+
+if ($stmt) {
+    mysqli_stmt_bind_param($stmt, "i", $user_id);
+    mysqli_stmt_execute($stmt);
+    $result_profile = mysqli_stmt_get_result($stmt);
+} else {
+    // Penanganan error jika prepare statement gagal
+    $result_profile = false;
+}
+
+// Data default jika user_id tidak ditemukan atau koneksi gagal
+$profile_data = [
+    'nama_lengkap' => 'Notulis Tamu',
+    'email' => 'tamu@notulen.com',
+    'foto_profile' => 'user.png' // Pastikan ada gambar default di folder Anda
+];
+
+if ($result_profile && $row = mysqli_fetch_assoc($result_profile)) {
+    $profile_data['nama_lengkap'] = $row['nama_lengkap'];
+    $profile_data['email'] = $row['email'];
+    if (!empty($row['foto_profile'])) {
+        $profile_data['foto_profile'] = $row['foto_profile'];
+    }
+}
+
+// Variabel untuk digunakan di HTML
+$dropdown_email = htmlspecialchars($profile_data['email']);
+$dropdown_nama = htmlspecialchars($profile_data['nama_lengkap']);
+
+if (isset($stmt)) {
+    mysqli_stmt_close($stmt);
+}
+?>
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -5,7 +64,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Input Arsip Rapat | Notulen Tracker</title>
 
-  <!-- Bootstrap & Font -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
 
@@ -58,6 +116,25 @@
       color: #fff !important;
       transform: scale(1.05);
     }
+    
+    /* Dropdown User Info Styles (BARU DITAMBAHKAN) */
+    .dropdown-menu .user-info-header {
+      display: flex; 
+      align-items: center;
+      padding: 10px 15px;
+    }
+    .dropdown-menu .user-avatar {
+      width: 40px; 
+      height: 40px;
+      border-radius: 50%; 
+      object-fit: cover;
+      margin-right: 10px;
+    }
+    .dropdown-menu .user-text small {
+      display: block;
+      margin-top: -3px; 
+    }
+    /* End Dropdown User Info Styles */
 
     /* Card */
     .card {
@@ -95,7 +172,6 @@
 
 <body>
 
-  <!-- Navbar -->
   <nav class="navbar navbar-expand-lg navbar-dark px-4">
     <a class="navbar-brand" href="#">
       <img src="logono.jpeg" alt="Logo Notulen Tracker" width="50" class="me-2 rounded-circle">
@@ -115,10 +191,17 @@
           Notulis
         </a>
         <ul class="dropdown-menu dropdown-menu-end shadow-sm" aria-labelledby="userDropdown">
-          <li class="px-3 py-2">
-            <strong>Notulis Notulis</strong><br>
-            <small class="text-muted">notulis.notulis@gmail.com</small>
-          </li>
+          <li class="user-info-header">
+            <img
+              src="<?php echo htmlspecialchars($profile_data['foto_profile']); ?>"
+              alt="Avatar"
+              class="user-avatar"
+            >
+            <div class="user-text">
+              <strong><?php echo $dropdown_nama; ?></strong>
+              <small class="text-muted"><?php echo $dropdown_email; ?></small>
+            </div>
+            </li>
           <li><hr class="dropdown-divider"></li>
           <li><a class="dropdown-item" href="profile.php">Profil</a></li>
           <li><hr class="dropdown-divider"></li>
@@ -129,19 +212,16 @@
     </div>
   </nav>
 
-  <!-- Form Input -->
   <div class="container mt-5 mb-5">
     <div class="card shadow p-4">
       <h4 class="text-center mb-4 text-primary fw-bold">Formulir Hasil Rapat</h4>
       <form id="formRapat" method="POST" action="input_hasil.php">
 
-        <!-- Judul Rapat -->
         <div class="mb-3">
           <label for="judulRapat" class="form-label">Judul Rapat</label>
           <input type="text" class="form-control" id="judulRapat" placeholder="Masukkan judul rapat" name="judul" required>
         </div>
 
-        <!-- Tanggal & Waktu -->
         <div class="row">
           <div class="col-md-6 mb-3">
             <label for="tanggalRapat" class="form-label">Tanggal Rapat</label>
@@ -153,7 +233,6 @@
           </div>
         </div>
 
-        <!-- Tempat & Penyelenggara -->
         <div class="row">
           <div class="col-md-6 mb-3">
             <label for="tempatRapat" class="form-label">Tempat Rapat</label>
@@ -165,19 +244,16 @@
           </div>
         </div>
 
-        <!-- Notulis -->
         <div class="mb-3">
           <label for="notulis" class="form-label">Notulis</label>
           <input type="text" class="form-control" id="notulis" placeholder="Nama notulis" name="notulis">
         </div>
 
-        <!-- Peserta -->
         <div class="mb-3">
           <label for="peserta" class="form-label">Peserta Rapat</label>
           <textarea class="form-control" id="peserta" rows="3" placeholder="Daftar peserta rapat" name="peserta"></textarea>
         </div>
 
-        <!-- Hasil Rapat -->
         <div class="mb-3">
           <label class="form-label">Hasil Rapat</label>
           <table class="table table-bordered align-middle" id="tabelHasil" name="hasil">
@@ -205,13 +281,11 @@
           <button type="button" class="btn btn-outline-primary btn-sm" id="tambahBaris">+ Tambah Baris</button>
         </div>
 
-        <!-- Catatan Tambahan -->
         <div class="mb-3">
           <label for="catatan" class="form-label">Catatan Tambahan</label>
           <textarea class="form-control" id="catatan" rows="3" placeholder="Tambahkan catatan tambahan di sini..." name="catatan"></textarea>
         </div>
 
-        <!-- Status -->
         <div class="mb-3">
           <label for="status" class="form-label">Status Rapat</label>
           <select class="form-select" id="status" name="status">
@@ -220,7 +294,6 @@
           </select>
         </div>
 
-        <!-- Tombol -->
         <div class="text-center">
           <button type="submit" class="btn btn-success px-4">Simpan</button>
           <button type="button" class="btn btn-secondary px-4" id="btnBatal">Batal</button>
@@ -229,12 +302,10 @@
     </div>
   </div>
 
-  <!-- Footer -->
   <footer>
     ©2025 Notulen Tracker. Semua hak cipta dilindungi
   </footer>
 
-  <!-- JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script>
     // Otomatis tinggi textarea sesuai isi
@@ -258,6 +329,10 @@
           <td><button type="button" class="btn btn-danger btn-sm" onclick="hapusBaris(this)">Hapus</button></td>
         </tr>`;
       tbody.insertAdjacentHTML("beforeend", newRow);
+      // Auto-size textarea setelah ditambahkan
+      tbody.lastElementChild.querySelectorAll('textarea').forEach(textarea => {
+          textarea.style.height = 'auto';
+      });
     });
 
     // Hapus baris tabel
@@ -275,8 +350,7 @@
     });
   </script>
 
-  <!-- Fungsi -->
-   <script>
+  <script>
   // Fungsi logout melalui menu dropdown
   document.getElementById("logoutLink").addEventListener("click", (e) => {
     e.preventDefault();
@@ -306,35 +380,45 @@ document.getElementById("formRapat").addEventListener("submit", function(e) {
   // VALIDASI TABEL HASIL RAPAT
   const rows = document.querySelectorAll("#tabelHasil tbody tr");
   let adaIsi = false;
+  let hasIncompleteRow = false;
 
-  rows.forEach(row => {
-    row.querySelectorAll("textarea").forEach(text => {
-      if (text.value.trim() !== "") adaIsi = true;
-    });
-  });
-
-  if (!adaIsi) {
-    error.push("Tabel hasil rapat tidak boleh kosong!");
-  }
-
-  // VALIDASI SEL TIDAK BOLEH SETENGAH KOSONG
   rows.forEach((row, i) => {
     let cells = row.querySelectorAll("textarea");
     let isi = 0;
-    cells.forEach(c => { if (c.value.trim() !== "") isi++; });
+    
+    cells.forEach(c => { 
+        if (c.value.trim() !== "") isi++; 
+    });
+
+    if (isi > 0) {
+        adaIsi = true;
+    }
+
+    // VALIDASI SEL TIDAK BOLEH SETENGAH KOSONG (kecuali jika semua kosong)
     if (isi > 0 && isi < cells.length) {
-      error.push("Baris " + (i+1) + " tidak boleh ada kolom kosong");
+      hasIncompleteRow = true;
+      error.push("Baris Hasil Rapat No. " + (i + 1) + " harus diisi lengkap (Topik, Pembahasan, Tindak Lanjut, PIC) atau dikosongkan.");
     }
   });
 
+  if (!adaIsi && rows.length > 0) {
+    error.push("Tabel hasil rapat tidak boleh kosong!");
+  }
+  
   if (error.length > 0) {
     alert("⚠️ ERROR:\n\n" + error.join("\n"));
     return;
   }
 
-  alert("✅ Data valid, siap disimpan!");
-  this.submit(); // lanjut ke PHP
+  // Jika semua validasi dilewati, submit form.
+  // alert("✅ Data valid, siap disimpan!"); // Hapus ini jika sudah live
+  this.submit(); // lanjut ke PHP (input_hasil.php)
 });
 </script>
+
+<?php
+// Tutup koneksi database
+mysqli_close($conn);
+?>
 </body>
 </html>
