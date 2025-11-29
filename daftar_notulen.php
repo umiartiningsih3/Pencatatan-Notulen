@@ -1,10 +1,58 @@
 <?php
-$conn = mysqli_connect("localhost", "root", "", "notulen_db");
+$db_host = "localhost";
+$db_user = "root";
+$db_pass = "";
+$db_name = "notulen_db";
+
+// 🚨 GANTI DENGAN $_SESSION['user_id'] ASLI
+$user_id = 1; 
+
+$conn = mysqli_connect($db_host, $db_user, $db_pass, $db_name);
+
 if (!$conn) {
+    // Jika koneksi gagal, hentikan eksekusi dan tampilkan pesan error
     die("Koneksi gagal: " . mysqli_connect_error());
 }
 
+// Ambil Data Profil
+$query_profile = "SELECT nama_lengkap, email, foto_profile FROM notulis WHERE id = ?";
+$stmt = mysqli_prepare($conn, $query_profile);
+mysqli_stmt_bind_param($stmt, "i", $user_id);
+mysqli_stmt_execute($stmt);
+$result_profile = mysqli_stmt_get_result($stmt);
+
+// Data default jika user_id tidak ditemukan
+$profile_data = [
+    'nama_lengkap' => 'Notulis Tamu',
+    'email' => 'tamu@notulen.com',
+    'foto_profile' => 'user.png' // Default image path
+];
+
+if ($row = mysqli_fetch_assoc($result_profile)) {
+    // Timpa data default dengan data dari database
+    $profile_data['nama_lengkap'] = $row['nama_lengkap'];
+    $profile_data['email'] = $row['email'];
+    if (!empty($row['foto_profile'])) {
+        $profile_data['foto_profile'] = $row['foto_profile'];
+    }
+}
+
+// Definisikan variabel untuk Dropdown
+$dropdown_email = htmlspecialchars($profile_data['email']);
+$dropdown_nama = htmlspecialchars($profile_data['nama_lengkap']);
+
+// ---------------------------------------------------------
+// 2. BLOK KODE PENGAMBILAN DATA RAPAT (KODE ASLI ANDA)
+// ---------------------------------------------------------
+
+// PERHATIAN: Variabel $conn dari blok 1 digunakan di sini. 
+// Koneksi TIDAK ditutup di blok 1 karena masih dibutuhkan.
+
 $query = mysqli_query($conn, "SELECT * FROM rapat ORDER BY tanggal DESC");
+
+// Variabel $conn sekarang akan ditutup di akhir loop atau di footer.
+// Dalam konteks ini, kita biarkan terbuka sampai akhir file.
+
 ?>
 
 <!DOCTYPE html>
@@ -17,6 +65,7 @@ $query = mysqli_query($conn, "SELECT * FROM rapat ORDER BY tanggal DESC");
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
+      /* Styles yang sudah ada tetap dipertahankan */
       html,body {
         height: 100%;
         margin: 0;
@@ -138,15 +187,31 @@ $query = mysqli_query($conn, "SELECT * FROM rapat ORDER BY tanggal DESC");
         font-size: 0.9rem;
         margin-top: auto;
       }
-
+      /* Penyesuaian untuk Dropdown Menu (Untuk menampilkan foto) */
+      .dropdown-menu .user-info-header {
+        display: flex; /* <-- PENTING: Membuat item sejajar (foto dan teks) */
+        align-items: center;
+        padding: 10px 15px;
+      }
+      .dropdown-menu .user-avatar {
+        width: 40px; /* Ukuran Avatar */
+        height: 40px;
+        border-radius: 50%; /* Membuat gambar menjadi lingkaran */
+        object-fit: cover;
+        margin-right: 10px;
+      }
+      .dropdown-menu .user-text small {
+        display: block;
+        margin-top: -3px; /* Jarak antara nama dan email */
+      }
     </style>
 </head>
 <body>
 
     <nav class="navbar navbar-expand-lg navbar-dark px-4">
       <a class="navbar-brand" href="#">
-          <img src="logono.jpeg" alt="Logo Notulen Tracker" width="50" class="me-2 rounded-circle">
-          Notulen Tracker
+        <img src="logono.jpeg" alt="Logo Notulen Tracker" width="50" class="me-2 rounded-circle">
+        Notulen Tracker
       </a>
       <div class="collapse navbar-collapse">
         <ul class="navbar-nav ms-auto">
@@ -160,9 +225,16 @@ $query = mysqli_query($conn, "SELECT * FROM rapat ORDER BY tanggal DESC");
             Notulis
           </a>
           <ul class="dropdown-menu dropdown-menu-end shadow-sm" aria-labelledby="userDropdown">
-            <li class="px-3 py-2">
-              <strong>Notulis Notulis</strong><br>
-              <small class="text-muted">notulis.notulis@gmail.com</small>
+            <li class="user-info-header">
+              <img
+              src="<?php echo htmlspecialchars($profile_data['foto_profile']); ?>"
+              alt="Avatar"
+              class="user-avatar"
+              >
+              <div class="user-text">
+                <strong><?php echo $dropdown_nama; ?></strong>
+                <small class="text-muted"><?php echo $dropdown_email; ?></small>
+              </div>
             </li>
             <li><hr class="dropdown-divider"></li>
             <li><a class="dropdown-item" href="profile.php">Profil</a></li>
@@ -396,9 +468,10 @@ $query = mysqli_query($conn, "SELECT * FROM rapat ORDER BY tanggal DESC");
               url: currentUrl
             }).catch(err => console.error("Gagal membagikan:", err));
             } else {
-             // Fallback
-          }
-        });
+              // Fallback
+              alert('Fungsi Share tidak didukung di browser ini.');
+            }
+          });
           document.getElementById("btnEdit").addEventListener("click", () => {
             // 1. Dapatkan instance modal detail yang sedang terbuka
             const detailModalInstance = bootstrap.Modal.getInstance(document.getElementById("detailModal"));
@@ -468,45 +541,51 @@ $query = mysqli_query($conn, "SELECT * FROM rapat ORDER BY tanggal DESC");
       ©2025 Notulen Tracker. Semua hak cipta dilindungi
     </footer>
 
- <script>
-    // Fungsi logout
-    document.getElementById("logoutLink").addEventListener("click", (e) => {
-      e.preventDefault();
-      const konfirmasi = confirm("Apakah Anda yakin ingin keluar dari Notulen Tracker?");
-      if (konfirmasi) {
-        window.location.href = "login.php";
-      }
-    });
- </script>
- <script>
-    // === Kirim data tabel ke localStorage ===
-    function updateDashboardData() {
-      const rows = document.querySelectorAll("#notulenTable tbody tr");
-      let selesai = 0;
-      let belum = 0;
-
-      rows.forEach(row => {
-        const statusText = row.cells[3].innerText.trim();
-        if (statusText === "Selesai") selesai++;
-        else if (statusText === "Belum Selesai") belum++;
+    <script>
+      // Fungsi logout
+      document.getElementById("logoutLink").addEventListener("click", (e) => {
+        e.preventDefault();
+        const konfirmasi = confirm("Apakah Anda yakin ingin keluar dari Notulen Tracker?");
+        if (konfirmasi) {
+          window.location.href = "login.php";
+        }
       });
+    </script>
+    <script>
+      // === Kirim data tabel ke localStorage ===
+      function updateDashboardData() {
+        const rows = document.querySelectorAll("#notulenTable tbody tr");
+        let selesai = 0;
+        let belum = 0;
 
-      const data = {
-        selesai,
-        belum,
-        total: selesai + belum
-      };
+        rows.forEach(row => {
+          const statusText = row.cells[3].innerText.trim();
+          if (statusText === "Selesai") selesai++;
+          else if (statusText === "Belum Selesai") belum++;
+        });
 
-      // Simpan ke localStorage
-      localStorage.setItem("notulenStats", JSON.stringify(data));
-      console.log("✅ Data dikirim ke Dashboard:", data);
+        const data = {
+          selesai,
+          belum,
+          total: selesai + belum
+        };
+
+        // Simpan ke localStorage
+        localStorage.setItem("notulenStats", JSON.stringify(data));
+        console.log("✅ Data dikirim ke Dashboard:", data);
+      }
+
+      // Jalankan setiap kali halaman dibuka
+      updateDashboardData();
+      document.getElementById("filterForm").addEventListener("submit", updateDashboardData);
+      document.getElementById("resetFilter").addEventListener("click", updateDashboardData);
+    </script>
+
+    <?php
+    // Tutup koneksi database setelah semua query selesai
+    if (isset($conn)) {
+        mysqli_close($conn);
     }
-
-    // Jalankan setiap kali halaman dibuka
-    updateDashboardData();
-    document.getElementById("filterForm").addEventListener("submit", updateDashboardData);
-    document.getElementById("resetFilter").addEventListener("click", updateDashboardData);
- </script>
-
+    ?>
 </body>
 </html>
