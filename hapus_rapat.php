@@ -6,14 +6,13 @@ if (!$conn) {
 
 $id = $_GET['id'];
 
-// Hapus detail rapat DULU (karena biasanya berelasi)
-mysqli_query($conn, "DELETE FROM rapat_detail WHERE id_rapat='$id'");
+// Hapus detail rapat berdasarkan id_rapat
+mysqli_query($conn, "DELETE FROM rapat_detail WHERE id_rapat = '$id'");
 
-// Hapus data utama
-mysqli_query($conn, "DELETE FROM rapat WHERE id='$id'");
+// Hapus data utama rapat
+mysqli_query($conn, "DELETE FROM rapat WHERE id = '$id'");
 
-// Redirect kembali ke halaman daftar
+// Kembali ke halaman daftar
 header("Location: daftar_notulen.php");
 exit();
 ?>
-

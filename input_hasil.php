@@ -47,7 +47,7 @@ for ($i = 0; $i < count($topik); $i++) {
 echo "
 <script>
 alert('✅ Data rapat berhasil disimpan!');
-window.location='daftar_notulen.html';
+window.location='daftar_notulen.php';
 </script>
 ";
 ?>
