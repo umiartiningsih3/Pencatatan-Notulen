@@ -13,12 +13,14 @@
 
   <style>
     body {
-      background: linear-gradient(135deg, #003366, #007bff);
-      font-family: 'Segoe UI', sans-serif;
-      min-height: 100vh;
-      padding-top: 80px;
-      padding-bottom: 80px;
-    }
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;     /* center horizontal */
+    align-items: center;         /* center vertical */
+    background: linear-gradient(135deg, #003366, #007bff);
+    padding-top: 20px;           /* jaga kalau form panjang */
+    padding-bottom: 20px;        /* supaya tetap bisa scroll */
+  }
     .form-container {
       background: #e3f2fd;
       border-radius: 15px;

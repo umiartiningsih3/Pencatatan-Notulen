@@ -5,14 +5,16 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Login</title>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
 <style>
 body {
     background: linear-gradient(135deg, #003366, #007bff);
     font-family: 'Segoe UI', sans-serif;
     min-height: 100vh;
     display: flex;
-    align-items: center;
     justify-content: center;
+    align-items: center;
+    padding: 20px 0;
 }
 .form-container {
     background: #e3f2fd;
@@ -38,7 +40,6 @@ body {
 .form-control {
     font-size: 14px;
     border: 1px solid #90caf9;
-    padding: 9px 10px;
     border-radius: 10px;
 }
 .btn-primary {
@@ -58,43 +59,67 @@ h4 {
     font-size: 30px;
     color: #007bff;
 }
-/* 🔹 Tambahan CSS untuk center bagian "Masuk sebagai" */
+
+/* Modern peran card */
 .role-section {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+.role-card {
+    border: 1px solid #90caf9;
+    border-radius: 10px;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: 0.3s;
+    user-select: none;
     text-align: center;
 }
-.role-section .form-check {
-    display: inline-block;
-    margin: 0 10px;
+.role-card.active {
+    background: #007bff;
+    color: white;
+    border-color: #007bff;
+}
+.role-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+/* Password toggle dengan input group */
+.input-group .btn {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
 }
 </style>
 </head>
 <body>
-  <div class="form-container">
+
+<div class="form-container">
     <img src="logono.jpeg" alt="logo">
     <h4 class="text-center mb-3">Notulen Tracker</h4>
 
-    <form id="loginform" onsubmit="return cekLogin()">
+    <form id="loginform">
       <div class="mb-3">
         <label class="form-label">Email</label>
         <input type="email" class="form-control" id="email" placeholder="Masukkan email" required>
       </div>
 
+      <!-- Password dengan input group Bootstrap -->
       <div class="mb-4">
         <label class="form-label">Kata Sandi</label>
-        <input type="password" class="form-control" id="password" placeholder="Masukkan kata sandi" required>
+        <div class="input-group">
+          <input type="password" class="form-control" id="password" placeholder="Masukkan kata sandi" required>
+          <button type="button" class="btn btn-outline-secondary d-flex align-items-center" onclick="togglePassword()">
+            <i class="bi bi-eye" id="passwordIcon"></i>
+          </button>
+        </div>
       </div>
 
-      <!-- 🔹 Bagian "Masuk sebagai" sudah dibuat center -->
-      <div class="mb-3 role-section">
-        <label class="form-label d-block mb-1 fw-semibold">Masuk sebagai:</label>
-        <div class="form-check form-check-inline">
-          <input class="form-check-input" type="checkbox" id="notulis" name="aktor" value="notulis">
-          <label class="form-check-label" for="notulis">Notulis</label>
-        </div>
-        <div class="form-check form-check-inline">
-          <input class="form-check-input" type="checkbox" id="peserta" name="aktor" value="peserta">
-          <label class="form-check-label" for="peserta">Peserta</label>
-        </div>
+      <!-- Modern peran card -->
+      <div class="role-section">
+        <div class="role-card" data-role="notulis">Notulis</div>
+        <div class="role-card" data-role="peserta">Peserta</div>
       </div>
 
       <button type="submit" class="btn btn-primary w-100">Masuk</button>
@@ -107,57 +132,53 @@ h4 {
       <a href="#" class="text-decoration-none" style="color:#000000;">|</a>
       <a href="welcome.php" class="text-decoration-none" style="color:#007bff;">Kembali</a>
     </p>
-  </div>
-  
+</div>
+
 <script>
-  function cekLogin() {
-    const email = document.getElementById('email').value;
-    const pass = document.getElementById('password').value;
-    const notulis = document.getElementById('notulis').checked;
-    const peserta = document.getElementById('peserta').checked;
-      
-    if (email.trim() === "" || pass.trim() === "") {
-      alert("Silakan isi semua kolom!");
-      return false;
+let selectedRole = null;
+
+// Toggle password show/hide
+function togglePassword() {
+    const passInput = document.getElementById('password');
+    const icon = document.getElementById('passwordIcon');
+    if(passInput.type === "password") {
+        passInput.type = "text";
+        icon.classList.remove('bi-eye');
+        icon.classList.add('bi-eye-slash');
+    } else {
+        passInput.type = "password";
+        icon.classList.remove('bi-eye-slash');
+        icon.classList.add('bi-eye');
     }
+}
 
-    if (!notulis && !peserta) {
-      alert("Silakan pilih peran login terlebih dahulu!");
-      return false;
-    }
+// Role selection
+document.querySelectorAll('.role-card').forEach(card => {
+    card.addEventListener('click', () => {
+        document.querySelectorAll('.role-card').forEach(c => c.classList.remove('active'));
+        card.classList.add('active');
+        selectedRole = card.getAttribute('data-role');
+    });
+});
 
-    if (notulis && peserta) {
-      alert("Hanya boleh memilih salah satu peran!");
-      return false;
-    }
-
-    let peran = notulis ? "Notulis" : "Peserta";
-    alert("Berhasil masuk sebagai " + peran);
-    return false;
-  }
-
-  const form = document.getElementById('loginform');
-  form.addEventListener('submit', function(event) {
-    event.preventDefault();
+// Login validation
+document.getElementById('loginform').addEventListener('submit', function(e){
+    e.preventDefault();
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
-    const notulis = document.getElementById('notulis').checked;
-    const peserta = document.getElementById('peserta').checked;
 
-    if (email === '' || password === '' ) {
-      alert('Email dan password harus diisi!');
-    } else if (!notulis && !peserta) {
-      alert('Pilih peran login terlebih dahulu!');
-    } else if (notulis && peserta) {
-      alert('Hanya boleh memilih satu peran!');
-    } else {
-      if (notulis) {
-        window.location.href = 'dashboard.php';
-      } else {
-        window.location.href = 'dashboard.php';
-      }
+    if(email === "" || password === "") {
+        alert("Silakan isi semua kolom!");
+        return;
     }
-  });
+    if(!selectedRole) {
+        alert("Silakan pilih peran terlebih dahulu!");
+        return;
+    }
+
+    alert(`Berhasil login sebagai ${selectedRole}`);
+    window.location.href = "dashboard.php";
+});
 </script>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
