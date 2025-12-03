@@ -39,7 +39,7 @@ if ($koneksi->query($sql) === TRUE) {
     echo "
         <script>
             alert('Pendaftaran berhasil!');
-            window.location='login.php';   // 🔥 DI SINI REDIRECT
+            window.location='login.php';   // 
         </script>
     ";
 } else {

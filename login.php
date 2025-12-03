@@ -99,27 +99,21 @@ h4 {
     <img src="logono.jpeg" alt="logo">
     <h4 class="text-center mb-3">Notulen Tracker</h4>
 
-    <form id="loginform">
+    <form id="loginform" action="proses_login.php" method="POST">
       <div class="mb-3">
         <label class="form-label">Email</label>
-        <input type="email" class="form-control" id="email" placeholder="Masukkan email" required>
+        <input type="email" class="form-control" name="email" id="email" placeholder="Masukkan email" required>
       </div>
 
       <!-- Password dengan input group Bootstrap -->
       <div class="mb-4">
         <label class="form-label">Kata Sandi</label>
         <div class="input-group">
-          <input type="password" class="form-control" id="password" placeholder="Masukkan kata sandi" required>
+          <input type="password" class="form-control" name="password" id="password" placeholder="Masukkan kata sandi" required>
           <button type="button" class="btn btn-outline-secondary d-flex align-items-center" onclick="togglePassword()">
             <i class="bi bi-eye" id="passwordIcon"></i>
           </button>
         </div>
-      </div>
-
-      <!-- Modern peran card -->
-      <div class="role-section">
-        <div class="role-card" data-role="notulis">Notulis</div>
-        <div class="role-card" data-role="peserta">Peserta</div>
       </div>
 
       <button type="submit" class="btn btn-primary w-100">Masuk</button>
@@ -135,9 +129,7 @@ h4 {
 </div>
 
 <script>
-let selectedRole = null;
-
-// Toggle password show/hide
+// Hanya untuk toggle password, aman
 function togglePassword() {
     const passInput = document.getElementById('password');
     const icon = document.getElementById('passwordIcon');
@@ -151,35 +143,8 @@ function togglePassword() {
         icon.classList.add('bi-eye');
     }
 }
-
-// Role selection
-document.querySelectorAll('.role-card').forEach(card => {
-    card.addEventListener('click', () => {
-        document.querySelectorAll('.role-card').forEach(c => c.classList.remove('active'));
-        card.classList.add('active');
-        selectedRole = card.getAttribute('data-role');
-    });
-});
-
-// Login validation
-document.getElementById('loginform').addEventListener('submit', function(e){
-    e.preventDefault();
-    const email = document.getElementById('email').value;
-    const password = document.getElementById('password').value;
-
-    if(email === "" || password === "") {
-        alert("Silakan isi semua kolom!");
-        return;
-    }
-    if(!selectedRole) {
-        alert("Silakan pilih peran terlebih dahulu!");
-        return;
-    }
-
-    alert(`Berhasil login sebagai ${selectedRole}`);
-    window.location.href = "dashboard.php";
-});
 </script>
+
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
