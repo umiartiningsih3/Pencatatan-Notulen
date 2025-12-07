@@ -1,3 +1,42 @@
+<?php
+include "koneksi.php";
+
+if (isset($_POST['reset'])) {
+
+    $email   = $_POST['email'];
+    $pass1   = $_POST['password'];
+    $pass2   = $_POST['confirm'];
+
+    // Validasi
+    if ($pass1 !== $pass2) {
+      echo "<script>alert('Password tidak sama!');</script>";
+    } elseif (strlen($pass1) != 8) {
+      echo "<script>alert('Password harus tepat 8 karakter!');</script>";
+    } else {
+    
+
+        // Cek apakah email ada di tabel daftar
+        $cek = mysqli_query($conn, "SELECT * FROM pendaftaran WHERE email='$email'");
+        $data = mysqli_fetch_assoc($cek);
+
+        if (!$data) {
+            echo "<script>alert('Email tidak terdaftar!');</script>";
+        } else {
+
+            // Hash password baru
+            $hash = password_hash($pass1, PASSWORD_DEFAULT);
+
+            // Update password
+            mysqli_query($conn, "UPDATE pendaftaran SET password='$hash' WHERE email='$email'");
+
+            echo "<script>
+                alert('Password berhasil direset!');
+                window.location='login.php';
+            </script>";
+        }
+    }
+}
+?>
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -62,34 +101,34 @@ h4 {
 <div class="form-container">
     <h4 class="text-center mb-3">Lupa Kata Sandi</h4>
 
-    <form id="forgotForm">
+    <form method="POST" action="">
       <div class="mb-3">
         <label class="form-label">Email</label>
-        <input type="email" class="form-control" id="email" placeholder="Masukkan email Anda" required>
+        <input type="email" class="form-control" name="email" id="email" placeholder="Masukkan email Anda" required>
       </div>
 
       <div class="mb-3">
         <label class="form-label">Kata Sandi Baru</label>
         <div class="input-group">
-          <input type="password" class="form-control" id="newPassword" placeholder="Kata sandi baru" required>
+          <input type="password" class="form-control" name="password" id="newPassword" placeholder="Kata sandi baru" required>
           <button type="button" class="btn btn-outline-secondary d-flex align-items-center" onclick="togglePassword('newPassword', 'newPasswordIcon')">
             <i class="bi bi-eye" id="newPasswordIcon"></i>
           </button>
         </div>
-        <small class="text-danger">Minimal 8 karakter</small>
+        <small class="text-danger">Password harus tepat 8 karakter</small>
       </div>
 
       <div class="mb-4">
         <label class="form-label">Ulangi Kata Sandi Baru</label>
         <div class="input-group">
-          <input type="password" class="form-control" id="confirmPassword" placeholder="Ulangi kata sandi" required>
+          <input type="password" class="form-control" name="confirm" id="confirmPassword" placeholder="Ulangi kata sandi" required>
           <button type="button" class="btn btn-outline-secondary d-flex align-items-center" onclick="togglePassword('confirmPassword', 'confirmPasswordIcon')">
             <i class="bi bi-eye" id="confirmPasswordIcon"></i>
           </button>
         </div>
       </div>
 
-      <button type="submit" class="btn btn-primary w-100">Reset Kata Sandi</button>
+      <button type="submit" name="reset" class="btn btn-primary w-100">Reset Kata Sandi</button>
     </form>
 
     <p class="text-center mt-3 mb-0" style="font-size:13px;">
@@ -111,31 +150,6 @@ function togglePassword(inputId, iconId) {
         icon.classList.add('bi-eye');
     }
 }
-
-document.getElementById('forgotForm').addEventListener('submit', function(e){
-    e.preventDefault();
-    const email = document.getElementById('email').value;
-    const newPass = document.getElementById('newPassword').value;
-    const confirmPass = document.getElementById('confirmPassword').value;
-
-    if(email === "" || newPass === "" || confirmPass === "") {
-        alert("Silakan isi semua kolom!");
-        return;
-    }
-
-    if(newPass.length < 8) {
-        alert("Kata sandi minimal 8 karakter!");
-        return;
-    }
-
-    if(newPass !== confirmPass) {
-        alert("Kata sandi baru dan konfirmasi tidak sama!");
-        return;
-    }
-
-    alert("Kata sandi berhasil diubah!");
-    // window.location.href = "login.php"; // uncomment jika pakai PHP
-});
 </script>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>

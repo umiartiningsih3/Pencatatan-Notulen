@@ -28,7 +28,7 @@ if (password_verify($password, $data['password'])) {
     if ($data['peran'] == "Notulis") {
         header("Location: dashboard.php");
     } else {
-        header("Location: peserta.php");
+        header("Location: dashboard.php");
     }
     exit;
 
