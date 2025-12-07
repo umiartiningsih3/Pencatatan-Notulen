@@ -9,11 +9,10 @@ if (isset($_POST['reset'])) {
 
     // Validasi
     if ($pass1 !== $pass2) {
-      echo "<script>alert('Password tidak sama!');</script>";
-    } elseif (strlen($pass1) != 8) {
-      echo "<script>alert('Password harus tepat 8 karakter!');</script>";
+        echo "<script>alert('Password tidak sama!');</script>";
+    } elseif (strlen($pass1) < 8) {
+        echo "<script>alert('Password minimal 8 karakter!');</script>";
     } else {
-    
 
         // Cek apakah email ada di tabel daftar
         $cek = mysqli_query($conn, "SELECT * FROM pendaftaran WHERE email='$email'");
@@ -116,6 +115,7 @@ h4 {
           </button>
         </div>
         <small class="text-danger">Password harus tepat 8 karakter</small>
+
       </div>
 
       <div class="mb-4">
