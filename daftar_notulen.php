@@ -1,10 +1,14 @@
 <?php
+// ---------------------------------------------------------
+// 1. KONEKSI DAN PENGAMBILAN DATA PROFIL
+// ---------------------------------------------------------
 $db_host = "localhost";
 $db_user = "root";
 $db_pass = "";
 $db_name = "notulen_db";
 
 // 🚨 GANTI DENGAN $_SESSION['user_id'] ASLI
+// Untuk pengujian, kita tetapkan user_id = 1
 $user_id = 1; 
 
 $conn = mysqli_connect($db_host, $db_user, $db_pass, $db_name);
@@ -42,16 +46,11 @@ $dropdown_email = htmlspecialchars($profile_data['email']);
 $dropdown_nama = htmlspecialchars($profile_data['nama_lengkap']);
 
 // ---------------------------------------------------------
-// 2. BLOK KODE PENGAMBILAN DATA RAPAT (KODE ASLI ANDA)
+// 2. BLOK KODE PENGAMBILAN DATA RAPAT
 // ---------------------------------------------------------
 
-// PERHATIAN: Variabel $conn dari blok 1 digunakan di sini. 
-// Koneksi TIDAK ditutup di blok 1 karena masih dibutuhkan.
-
 $query = mysqli_query($conn, "SELECT * FROM rapat ORDER BY tanggal DESC");
-
-// Variabel $conn sekarang akan ditutup di akhir loop atau di footer.
-// Dalam konteks ini, kita biarkan terbuka sampai akhir file.
+$total_notulen = mysqli_num_rows($query); // Dapatkan jumlah baris
 
 ?>
 
@@ -141,9 +140,9 @@ $query = mysqli_query($conn, "SELECT * FROM rapat ORDER BY tanggal DESC");
         background-color: #1565c0; 
         color: white;
       }
-      .btn-edit { 
-        background-color: #2e7d32; 
-        color: white; 
+      .btn-download-pdf {
+        background-color: #4CAF50; /* Warna Hijau untuk PDF */
+        color: white;
       }
       .btn-tambah-notulen { 
         background-color: #003366;
@@ -175,9 +174,15 @@ $query = mysqli_query($conn, "SELECT * FROM rapat ORDER BY tanggal DESC");
         font-weight: 600; 
         color: #003366;
       }
+      /* Mengatur tampilan tabel hasil di modal agar lebih rapih */
+      .table-hasil th {
+        background-color: #003366 !important;
+        color: white !important;
+      }
       .table-hasil th, .table-hasil td { 
         vertical-align: middle; 
         text-align: center; 
+        border: 1px solid #ddd;
       }
       footer {
         background-color: #003366;
@@ -187,22 +192,26 @@ $query = mysqli_query($conn, "SELECT * FROM rapat ORDER BY tanggal DESC");
         font-size: 0.9rem;
         margin-top: auto;
       }
-      /* Penyesuaian untuk Dropdown Menu (Untuk menampilkan foto) */
       .dropdown-menu .user-info-header {
-        display: flex; /* <-- PENTING: Membuat item sejajar (foto dan teks) */
+        display: flex; 
         align-items: center;
         padding: 10px 15px;
       }
       .dropdown-menu .user-avatar {
-        width: 40px; /* Ukuran Avatar */
+        width: 40px; 
         height: 40px;
-        border-radius: 50%; /* Membuat gambar menjadi lingkaran */
+        border-radius: 50%; 
         object-fit: cover;
         margin-right: 10px;
       }
       .dropdown-menu .user-text small {
         display: block;
-        margin-top: -3px; /* Jarak antara nama dan email */
+        margin-top: -3px; 
+      }
+      .table-actions {
+        display: flex;
+        gap: 5px;
+        justify-content: center;
       }
     </style>
 </head>
@@ -218,8 +227,7 @@ $query = mysqli_query($conn, "SELECT * FROM rapat ORDER BY tanggal DESC");
           <li class="nav-item"><a class="nav-link" href="dashboard.php">Dashboard</a></li>
           <li class="nav-item"><a class="nav-link active" href="daftar_notulen.php">Daftar Notulen</a></li>
           <li class="nav-item"><a class="nav-link" href="kontak.php">Kontak</a></li>
-          <li class="nav-item"><a class="nav-link" href="FAQ.php
-          ">FAQ</a></li>
+          <li class="nav-item"><a class="nav-link" href="FAQ.php">FAQ</a></li>
           <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" href="#" id="userDropdown" data-bs-toggle="dropdown">
             Notulis
@@ -292,16 +300,15 @@ $query = mysqli_query($conn, "SELECT * FROM rapat ORDER BY tanggal DESC");
                 </tr>
               </thead>
               <tbody>
-                
                 <?php while($r = mysqli_fetch_assoc($query)){ 
                   $detail = mysqli_query($conn,"SELECT * FROM rapat_detail WHERE id_rapat='".$r['id']."'");
                   $hasil = [];
                   while($d = mysqli_fetch_assoc($detail)){
                     $hasil[] = [$d['topik'],$d['pembahasan'],$d['tindak_lanjut'],$d['pic']];
                   }
-                  ?>
                   
-                  <tr data-id="<?= $r['id'] ?>" data-detail='<?= json_encode([
+                  // JSON data untuk data-detail
+                  $json_detail = json_encode([
                     "judul"=>$r["judul"],
                     "tanggal"=>$r["tanggal"],
                     "waktu"=>$r["waktu"],
@@ -312,7 +319,10 @@ $query = mysqli_query($conn, "SELECT * FROM rapat ORDER BY tanggal DESC");
                     "pembahasan"=>$hasil,
                     "catatan"=>explode("\n",$r["catatan"]),
                     "status"=>$r["status"]
-                    ]) ?>'>
+                  ]);
+                  ?>
+                  
+                  <tr data-id="<?= $r['id'] ?>" data-detail='<?= htmlspecialchars($json_detail, ENT_QUOTES, 'UTF-8') ?>'>
                     
                     <td><?= $r['judul']?></td>
                     <td><?= $r['tanggal']?></td>
@@ -321,15 +331,41 @@ $query = mysqli_query($conn, "SELECT * FROM rapat ORDER BY tanggal DESC");
                       <?= $r['status']=="Selesai" ? "<span class='status-selesai'>Selesai</span>" : "<span class='status-belum'>Belum Selesai</span>" ?>
                     </td>
                     <td class="text-center">
-                      <button class="btn btn-lihat btn-sm">Lihat</button>
-                      <a href="hapus_rapat.php?id=<?= $r['id']; ?>" 
-                          onclick="return confirm('Yakin ingin menghapus notulen ini?')"
-                          class="btn btn-danger btn-sm ms-1">
-                          Hapus
-                        </a>
-                      </td>
+                      <div class="table-actions">
+                        <button class="btn btn-lihat btn-sm">Lihat</button>
+                        <button class="btn btn-download-pdf btn-sm" 
+                                data-rapat-id="<?= $r['id'] ?>" 
+                                data-rapat-judul="<?= htmlspecialchars($r['judul']) ?>">
+                            PDF
+                        </button>
+                        <a href="hapus_rapat.php?id=<?= $r['id']; ?>" 
+                            onclick="return confirm('Yakin ingin menghapus notulen ini?')"
+                            class="btn btn-danger btn-sm">
+                            Hapus
+                          </a>
+                      </div>
+                    </td>
+                  </tr>
+                <?php } // --- PENUTUP WHILE LOOP --- ?>
+                
+                <tr id="noFilterResultRow" style="display:none;">
+                    <td colspan="5" class="text-center py-4 text-danger fw-bold fst-italic">
+                        ❌ Data tidak ditemukan. Coba ubah kriteria filter.
+                    </td>
+                </tr>
+                
+                <?php 
+                // Tampilkan pesan "Tidak ada data" untuk state awal
+                if ($total_notulen == 0) {
+                ?>
+                    <tr id="initialEmptyRow">
+                        <td colspan="5" class="text-center py-4 text-muted fst-italic">
+                            **Belum ada notulen rapat yang dibuat.** Silakan klik tombol "+ Tambah Notulen" untuk memulai.
+                        </td>
                     </tr>
-                    <?php } ?>
+                <?php 
+                } // --- PENUTUP IF CONDITION --- 
+                ?>
                 </tbody>
             </table>
           </div>
@@ -341,10 +377,12 @@ $query = mysqli_query($conn, "SELECT * FROM rapat ORDER BY tanggal DESC");
       <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content shadow-lg">
           <div class="modal-header">
-            <h5 class="modal-title fw-semibold">Detail Hasil Rapat</h5>
+            <h5 class="modal-title fw-semibold">Detail Notulen Rapat</h5>
             <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
           </div>
-          <div class="modal-body" id="detailContent"></div>
+          <div class="modal-body">
+            <div id="detailContent"></div> 
+          </div>
         </div>
       </div>
     </div>
@@ -385,121 +423,297 @@ $query = mysqli_query($conn, "SELECT * FROM rapat ORDER BY tanggal DESC");
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-      // Filter data (tetap sama)
+      // =======================================================
+      // FILTER DATA DENGAN PENANGANAN DATA TIDAK DITEMUKAN
+      // =======================================================
       const form = document.getElementById("filterForm");
       const resetBtn = document.getElementById("resetFilter");
       const table = document.getElementById("notulenTable").getElementsByTagName("tbody")[0];
+
       form.addEventListener("submit", e => {
         e.preventDefault();
         const judul = document.getElementById("filterJudul").value.toLowerCase();
         const tanggal = document.getElementById("filterTanggal").value;
         const notulis = document.getElementById("filterNotulis").value.toLowerCase();
         const status = document.getElementById("filterStatus").value;
+        
+        let visibleCount = 0; 
+        const initialEmptyRow = document.getElementById("initialEmptyRow");
+        const noDataRow = document.getElementById("noFilterResultRow");
+        
+        // Sembunyikan pesan kosong awal jika ada, saat filter dijalankan
+        if (initialEmptyRow) {
+            initialEmptyRow.style.display = "none";
+        }
+        
         for (let row of table.rows) {
+          // Lewati baris kontrol (pesan kosong/filter kosong)
+          if (row.id === 'noFilterResultRow' || row.id === 'initialEmptyRow') continue; 
+          // Pastikan hanya memproses baris data yang memiliki 5 kolom
+          if (row.cells.length < 5) continue; 
+          
           const judulText = row.cells[0].textContent.toLowerCase();
           const tanggalText = row.cells[1].textContent.trim();
           const notulisText = row.cells[2].textContent.toLowerCase();
           const statusText = row.cells[3].textContent.trim();
+          
           let visible = true;
+          
           if (judul && !judulText.includes(judul)) visible = false;
           if (tanggal && tanggalText !== tanggal) visible = false;
           if (notulis && !notulisText.includes(notulis)) visible = false;
-          if (status !== "Semua" && statusText !==status) visible = false;
+          if (status !== "Semua" && statusText !== status) visible = false;
+          
           row.style.display = visible ? "" : "none";
+          if (visible) {
+            visibleCount++; // Hitung baris data yang terlihat
+          }
+        }
+        
+        // Tampilkan/sembunyikan pesan "Data tidak ditemukan"
+        if (noDataRow) {
+            noDataRow.style.display = visibleCount === 0 ? "" : "none";
         }
       });
+      
       resetBtn.addEventListener("click", () => {
         form.reset();
-        for (let row of table.rows) row.style.display = "";
+        const initialEmptyRow = document.getElementById("initialEmptyRow");
+        const noDataRow = document.getElementById("noFilterResultRow");
+        
+        // Sembunyikan pesan filter kosong
+        if (noDataRow) {
+            noDataRow.style.display = "none";
+        }
+        
+        let hasDataRows = false;
+        
+        for (let row of table.rows) {
+            if (row.id === 'noFilterResultRow' || row.id === 'initialEmptyRow') continue;
+            
+            // Pastikan hanya menampilkan baris data
+            if (row.cells.length === 5) {
+                row.style.display = ""; // Tampilkan semua baris data
+                hasDataRows = true;
+            }
+        }
+        
+        // Tampilkan kembali pesan kosong awal jika tidak ada data sama sekali
+        if (!hasDataRows && initialEmptyRow) {
+            initialEmptyRow.style.display = "";
+        }
       });
+      // =======================================================
 
-      // Detail rapat
+
+      // =======================================================
+      // DETAIL RAPAT - LOGIKA DI MODAL (Tombol Edit/Share Pindah Ke Atas)
+      // =======================================================
       document.querySelectorAll(".btn-lihat").forEach(btn => {
         btn.addEventListener("click", e => {
           const row = e.target.closest("tr");
           const rapatId = row.dataset.id;
-          const data = JSON.parse(row.dataset.detail || '{}');
+          const data = JSON.parse(row.dataset.detail || '{}'); 
+          
           if (!data.judul) return alert("Tidak ada detail untuk baris ini.");
           
+          // Konten Modal HTML
           const content = `
-            <div id="rapatDetail">
-              <h4 class="text-center text-primary fw-bold mb-3">HASIL RAPAT</h4>
-              <p><span class="detail-label">Judul Rapat :</span> ${data.judul}</p>
-              <p><span class="detail-label">Tanggal Rapat :</span> ${data.tanggal}</p>
-              <p><span class="detail-label">Waktu Rapat :</span> ${data.waktu}</p>
-              <p><span class="detail-label">Tempat Rapat :</span> ${data.tempat}</p>
-              <p><span class="detail-label">Penyelenggara :</span> ${data.penyelenggara}</p>
-              <p><span class="detail-label">Notulis :</span> ${data.notulis}</p>
-              <p><span class="detail-label">Peserta Rapat :</span><br>${data.peserta.map(p=>"- "+p).join("<br>")}</p>
-              <hr>
-              <h6 class="text-primary fw-bold mt-3">Hasil Rapat :</h6>
-              <table class="table table-bordered table-hasil">
-                <thead><tr><th>No</th><th>Topik</th><th>Pembahasan</th><th>Tindak Lanjut</th><th>PIC</th></tr></thead>
-                <tbody>${data.pembahasan.map((p,i)=>`<tr><td>${i+1}</td><td>${p[0]}</td><td>${p[1]}</td><td>${p[2]}</td><td>${p[3]}</td></tr>`).join("")}</tbody>
+            <div style="font-family: Poppins, sans-serif; font-size: 11pt; padding: 10px;">
+              
+              <div class="text-end mb-3" id="modalTopActions">
+                <button class="btn btn-success btn-sm me-2" id="btnEdit"><i class="bi bi-pencil-square"></i> Edit</button>
+                <button class="btn btn-secondary btn-sm" id="btnShare"><i class="bi bi-share"></i> Bagikan</button>
+              </div>
+              <h3 style="text-align: center; color: #003366; font-weight: 700; border-bottom: 3px solid #003366; padding-bottom: 10px; margin-bottom: 20px;">
+                HASIL NOTULEN RAPAT
+              </h3>
+              
+              <table style="width: 100%; margin-bottom: 20px;">
+                  <tr><td style="width: 30%; font-weight: 600; color: #003366;">Judul Rapat</td><td style="width: 5%;">:</td><td>${data.judul}</td></tr>
+                  <tr><td style="font-weight: 600; color: #003366;">Tanggal/Waktu</td><td>:</td><td>${data.tanggal} / ${data.waktu}</td></tr>
+                  <tr><td style="font-weight: 600; color: #003366;">Tempat</td><td>:</td><td>${data.tempat}</td></tr>
+                  <tr><td style="font-weight: 600; color: #003366;">Penyelenggara</td><td>:</td><td>${data.penyelenggara}</td></tr>
+                  <tr><td style="font-weight: 600; color: #003366;">Notulis</td><td>:</td><td>${data.notulis}</td></tr>
               </table>
-              <h6 class="text-primary fw-bold">Catatan Tambahan:</h6>
-              <ul>${data.catatan.map(c=>`<li>${c}</li>`).join("")}</ul>
-              <p class="mt-3"><span class="detail-label">Status Rapat :</span> ${data.status}</p>
-            </div>
-            <div class="text-end mt-4">
-              <button class="btn btn-success me-2" id="btnEdit"><i class="bi bi-pencil-square"></i> Edit</button>
-              <button class="btn btn-secondary me-2" id="btnShare"><i class="bi bi-share"></i> Bagikan</button>
-              <button class="btn btn-dark" id="btnDownload"><i class="bi bi-file-earmark-pdf"></i> Simpan PDF</button>
+
+              <p style="font-weight: 600; color: #003366; margin-top: 15px;">Peserta Rapat:</p>
+              <ul style="padding-left: 20px;">
+                ${data.peserta.map(p=>`<li style="margin-bottom: 5px;">${p}</li>`).join("")}
+              </ul>
+              
+              <h4 style="color: #003366; margin-top: 30px; font-weight: 600; border-bottom: 1px dashed #ccc; padding-bottom: 5px;">Detail Pembahasan:</h4>
+              <table class="table table-bordered table-sm" style="width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 10pt;">
+                <thead>
+                  <tr style="background-color: #003366; color: white;">
+                    <th style="padding: 10px; text-align: center; width: 5%;">No</th>
+                    <th style="padding: 10px; width: 20%;">Topik</th>
+                    <th style="padding: 10px; width: 35%;">Pembahasan</th>
+                    <th style="padding: 10px; width: 25%;">Tindak Lanjut</th>
+                    <th style="padding: 10px; width: 15%;">PIC</th>
+                  </tr>
+                </thead>
+                <tbody>${data.pembahasan.map((p,i)=>`
+                  <tr>
+                    <td style="padding: 8px; text-align: center; background-color: ${i % 2 === 0 ? '#ffffff' : '#f4f4f4'}; border: 1px solid #ddd;">${i+1}</td>
+                    <td style="padding: 8px; background-color: ${i % 2 === 0 ? '#ffffff' : '#f4f4f4'}; border: 1px solid #ddd;">${p[0]}</td>
+                    <td style="padding: 8px; background-color: ${i % 2 === 0 ? '#ffffff' : '#f4f4f4'}; border: 1px solid #ddd;">${p[1]}</td>
+                    <td style="padding: 8px; background-color: ${i % 2 === 0 ? '#ffffff' : '#f4f4f4'}; border: 1px solid #ddd;">${p[2]}</td>
+                    <td style="padding: 8px; text-align: center; background-color: ${i % 2 === 0 ? '#ffffff' : '#f4f4f4'}; border: 1px solid #ddd;">${p[3]}</td>
+                  </tr>`).join("")}
+                </tbody>
+              </table>
+
+              <h4 style="color: #003366; margin-top: 30px; font-weight: 600; border-bottom: 1px dashed #ccc; padding-bottom: 5px;">Catatan Tambahan:</h4>
+              <ul style="list-style-type: disc; padding-left: 20px;">
+                ${data.catatan.map(c=>`<li style="margin-bottom: 5px;">${c}</li>`).join("")}
+              </ul>
+              
+              <p style="margin-top: 30px; font-weight: 600;">Status Rapat: 
+                <span style="background-color: ${data.status === 'Selesai' ? '#2e7d32' : '#fbc02d'}; color: ${data.status === 'Selesai' ? 'white' : 'black'}; padding: 4px 10px; border-radius: 5px; font-size: 0.9em; font-weight: normal;">
+                  ${data.status}
+                </span>
+              </p>
             </div>`;
+            
           document.getElementById("detailContent").innerHTML = content;
+
+          // SET DATATEL KE TOMBOL EDIT DAN SHARE
+          const modalContent = document.getElementById("detailModal");
+          const btnEdit = modalContent.querySelector("#btnEdit");
+          const btnShare = modalContent.querySelector("#btnShare");
+
+          if(btnEdit) {
+            btnEdit.dataset.rapatId = rapatId;
+            btnEdit.dataset.rapatData = row.dataset.detail;
+          }
+          if(btnShare) {
+            btnShare.dataset.rapatJudul = data.judul;
+          }
+
           new bootstrap.Modal(document.getElementById("detailModal")).show();
-
-          document.getElementById("btnDownload").addEventListener("click", () => {
-            html2pdf().from(document.getElementById("rapatDetail")).set({
-              margin: 0.5,
-              filename: `${data.judul.replace(/\s+/g,'_')}.pdf`,
-              image: { type: 'jpeg', quality: 0.98 },
-              html2canvas: { scale: 2 },
-              jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
-            }).save();
-          });
-
-          document.getElementById("btnShare").addEventListener("click", () => {
-            const currentUrl = window.location.href;
-              if (navigator.share) {
-              navigator.share({
-              title: "Notulen Rapat",
-              text: "Lihat notulen rapat lengkap di link berikut:",
-              url: currentUrl
-            }).catch(err => console.error("Gagal membagikan:", err));
-            } else {
-              // Fallback
-              alert('Fungsi Share tidak didukung di browser ini.');
-            }
-          });
-          document.getElementById("btnEdit").addEventListener("click", () => {
-            // 1. Dapatkan instance modal detail yang sedang terbuka
-            const detailModalInstance = bootstrap.Modal.getInstance(document.getElementById("detailModal"));
-            
-            // 2. Sembunyikan Modal Detail
-            detailModalInstance.hide(); 
-
-            // 3. Isi data ke Modal Edit
-            document.getElementById("editId").value = rapatId; 
-            document.getElementById("editJudul").value = data.judul;
-            document.getElementById("editTanggal").value = data.tanggal;
-            document.getElementById("editNotulis").value = data.notulis;
-            
-            // PENTING: Menggabungkan array catatan menjadi string dengan \n
-            document.getElementById("editCatatan").value = data.catatan.join("\n"); 
-            
-            document.getElementById("editStatus").value = data.status;
-            
-            // 4. Tampilkan Modal Edit
-            // Tambahkan jeda sebentar (timeout) agar transisi penutupan modal detail selesai
-            // Ini mencegah masalah tumpang tindih backdrop atau scrolling body
-            setTimeout(() => {
-                new bootstrap.Modal(document.getElementById("editModal")).show();
-            }, 100); // Jeda 100ms sudah cukup
-          });
         });
       });
+      // =======================================================
+      
+      // =======================================================
+      // DOWNLOAD PDF - LOGIKA FINAL (STATUS RAPAT DIHAPUS)
+      // =======================================================
+      document.querySelectorAll(".btn-download-pdf").forEach(btn => {
+        btn.addEventListener("click", async (e) => {
+          const rapatJudul = e.target.dataset.rapatJudul;
+          const row = e.target.closest("tr");
+          const data = JSON.parse(row.dataset.detail || '{}');
 
+          if (!data.judul) {
+            return alert("Gagal mengambil data notulen untuk dibuat PDF.");
+          }
+
+          // Generate konten HTML dengan styling yang disesuaikan
+          const pdfContentHtml = `
+            <div style="padding: 25px; font-family: Poppins, sans-serif; font-size: 11pt;">
+              <h3 style="text-align: center; color: #003366; font-weight: 700; border-bottom: 3px solid #003366; padding-bottom: 10px; margin-bottom: 20px;">
+                HASIL NOTULEN RAPAT
+              </h3>
+              
+              <table style="width: 100%; margin-bottom: 20px;">
+                  <tr><td style="width: 25%; font-weight: 600; color: #003366;">Judul Rapat</td><td style="width: 5%;">:</td><td>${data.judul}</td></tr>
+                  <tr><td style="font-weight: 600; color: #003366;">Tanggal/Waktu</td><td>:</td><td>${data.tanggal} / ${data.waktu}</td></tr>
+                  <tr><td style="font-weight: 600; color: #003366;">Tempat</td><td>:</td><td>${data.tempat}</td></tr>
+                  <tr><td style="font-weight: 600; color: #003366;">Penyelenggara</td><td>:</td><td>${data.penyelenggara}</td></tr>
+                  <tr><td style="font-weight: 600; color: #003366;">Notulis</td><td>:</td><td>${data.notulis}</td></tr>
+              </table>
+
+              <p style="font-weight: 600; color: #003366; margin-top: 15px;">Peserta Rapat:</p>
+              <ul style="margin-left: -20px; padding-left: 20px;">
+                ${data.peserta.map(p=>`<li style="margin-bottom: 5px;">${p}</li>`).join("")}
+              </ul>
+              
+              <h4 style="color: #003366; margin-top: 30px; font-weight: 600; border-bottom: 1px dashed #ccc; padding-bottom: 5px;">Detail Pembahasan:</h4>
+              <table style="width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 10pt;">
+                <thead>
+                  <tr style="background-color: #003366; color: white;">
+                    <th style="border: 1px solid #003366; padding: 10px; text-align: center; width: 5%;">No</th>
+                    <th style="border: 1px solid #003366; padding: 10px; width: 20%;">Topik</th>
+                    <th style="border: 1px solid #003366; padding: 10px; width: 35%;">Pembahasan</th>
+                    <th style="border: 1px solid #003366; padding: 10px; width: 25%;">Tindak Lanjut</th>
+                    <th style="border: 1px solid #003366; padding: 10px; width: 15%;">PIC</th>
+                  </tr>
+                </thead>
+                <tbody>${data.pembahasan.map((p,i)=>`
+                  <tr>
+                    <td style="border: 1px solid #ddd; padding: 8px; text-align: center; background-color: ${i % 2 === 0 ? '#ffffff' : '#f4f4f4'};">${i+1}</td>
+                    <td style="border: 1px solid #ddd; padding: 8px; background-color: ${i % 2 === 0 ? '#ffffff' : '#f4f4f4'};">${p[0]}</td>
+                    <td style="border: 1px solid #ddd; padding: 8px; background-color: ${i % 2 === 0 ? '#ffffff' : '#f4f4f4'};">${p[1]}</td>
+                    <td style="border: 1px solid #ddd; padding: 8px; background-color: ${i % 2 === 0 ? '#ffffff' : '#f4f4f4'};">${p[2]}</td>
+                    <td style="border: 1px solid #ddd; padding: 8px; text-align: center; background-color: ${i % 2 === 0 ? '#ffffff' : '#f4f4f4'};">${p[3]}</td>
+                  </tr>`).join("")}
+                </tbody>
+              </table>
+
+              <h4 style="color: #003366; margin-top: 30px; font-weight: 600; border-bottom: 1px dashed #ccc; padding-bottom: 5px;">Catatan Tambahan:</h4>
+              <ul style="list-style-type: disc; margin-left: -20px; padding-left: 20px;">
+                ${data.catatan.map(c=>`<li style="margin-bottom: 5px;">${c}</li>`).join("")}
+              </ul>
+              
+              <div style="text-align: right; margin-top: 50px; font-size: 0.8em; color: #888;">
+                  Dokumen ini dibuat otomatis oleh Notulen Tracker.
+              </div>
+            </div>
+          `;
+
+          const filename = `${rapatJudul.replace(/\s+/g,'_')}_${data.tanggal}.pdf`;
+
+          html2pdf().from(pdfContentHtml).set({
+            margin: 0.5,
+            filename: filename,
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { scale: 2 },
+            jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
+          }).save();
+        });
+      });
+      // =======================================================
+      
+      // LOGIKA EDIT DARI MODAL DETAIL 
+      document.getElementById("detailContent").addEventListener("click", (e) => {
+        if (e.target.id === 'btnEdit') {
+          const detailModalInstance = bootstrap.Modal.getInstance(document.getElementById("detailModal"));
+          const rapatId = e.target.dataset.rapatId;
+          const data = JSON.parse(e.target.dataset.rapatData || '{}');
+              
+          detailModalInstance.hide(); 
+
+          document.getElementById("editId").value = rapatId; 
+          document.getElementById("editJudul").value = data.judul;
+          document.getElementById("editTanggal").value = data.tanggal;
+          document.getElementById("editNotulis").value = data.notulis;
+          document.getElementById("editCatatan").value = data.catatan.join("\n"); 
+          document.getElementById("editStatus").value = data.status;
+              
+          setTimeout(() => {
+              new bootstrap.Modal(document.getElementById("editModal")).show();
+          }, 100); 
+        }
+      });
+      
+      // LOGIKA SHARE DARI MODAL DETAIL 
+      document.getElementById("detailContent").addEventListener("click", (e) => {
+        if (e.target.id === 'btnShare') {
+          const rapatJudul = e.target.dataset.rapatJudul;
+          const currentUrl = window.location.href;
+            if (navigator.share) {
+            navigator.share({
+            title: "Notulen Rapat: " + rapatJudul,
+            text: "Lihat notulen rapat lengkap di link berikut:",
+            url: currentUrl
+          }).catch(err => console.error("Gagal membagikan:", err));
+          } else {
+            alert('Fungsi Share tidak didukung di browser ini.');
+          }
+        }
+      });
+      
       // LOGIKA SIMPAN PERUBAHAN KE DATABASE DENGAN AJAX
       document.getElementById("editForm").addEventListener("submit", e => {
         e.preventDefault();
@@ -508,7 +722,7 @@ $query = mysqli_query($conn, "SELECT * FROM rapat ORDER BY tanggal DESC");
         const formData = new FormData(form);
         const data = Object.fromEntries(formData.entries());
 
-        // Kirim data ke edit_rapat.php
+        // Kirim data ke edit_rapat.php (Pastikan file ini ada dan berfungsi)
         fetch('edit_rapat.php', {
             method: 'POST',
             headers: {
@@ -521,7 +735,6 @@ $query = mysqli_query($conn, "SELECT * FROM rapat ORDER BY tanggal DESC");
             if (result.status === "success") {
                 alert("✅ " + result.message);
                 
-                // Tutup modal dan muat ulang halaman untuk menampilkan perubahan
                 bootstrap.Modal.getInstance(document.getElementById("editModal")).hide();
                 window.location.reload(); 
             } else {
@@ -542,7 +755,7 @@ $query = mysqli_query($conn, "SELECT * FROM rapat ORDER BY tanggal DESC");
     </footer>
 
     <script>
-      // Fungsi logout
+      // Fungsi logout (Tidak diubah)
       document.getElementById("logoutLink").addEventListener("click", (e) => {
         e.preventDefault();
         const konfirmasi = confirm("Apakah Anda yakin ingin keluar dari Notulen Tracker?");
@@ -550,18 +763,20 @@ $query = mysqli_query($conn, "SELECT * FROM rapat ORDER BY tanggal DESC");
           window.location.href = "login.php";
         }
       });
-    </script>
-    <script>
-      // === Kirim data tabel ke localStorage ===
+      
+      // === Kirim data tabel ke localStorage untuk dashboard === (Tidak diubah)
       function updateDashboardData() {
         const rows = document.querySelectorAll("#notulenTable tbody tr");
         let selesai = 0;
         let belum = 0;
 
         rows.forEach(row => {
-          const statusText = row.cells[3].innerText.trim();
-          if (statusText === "Selesai") selesai++;
-          else if (statusText === "Belum Selesai") belum++;
+          if (row.cells.length === 5) {
+              const statusCell = row.cells[3];
+              const statusText = statusCell.innerText.trim();
+              if (statusText === "Selesai") selesai++;
+              else if (statusText === "Belum Selesai") belum++;
+          }
         });
 
         const data = {
@@ -570,12 +785,9 @@ $query = mysqli_query($conn, "SELECT * FROM rapat ORDER BY tanggal DESC");
           total: selesai + belum
         };
 
-        // Simpan ke localStorage
         localStorage.setItem("notulenStats", JSON.stringify(data));
-        console.log("✅ Data dikirim ke Dashboard:", data);
       }
 
-      // Jalankan setiap kali halaman dibuka
       updateDashboardData();
       document.getElementById("filterForm").addEventListener("submit", updateDashboardData);
       document.getElementById("resetFilter").addEventListener("click", updateDashboardData);
