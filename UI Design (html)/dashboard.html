@@ -75,26 +75,23 @@
 
     <!-- Diagram -->
     <div class="row mt-4">
-      <!-- Diagram Garis -->
-      <div class="col-md-6">
-        <div class="card shadow-sm">
-          <div class="card-body">
-            <h5 class="text-center mb-3 fw-bold text-primary">📊 Perbandingan Rapat Selesai & Belum Selesai</h5>
-            <canvas id="statusChart" style="max-height:350px;"></canvas>
-          </div>
-        </div>
-      </div>
-
-      <!-- Diagram Pie -->
-      <div class="col-md-6">
-        <div class="card shadow-sm">
-          <div class="card-body">
-            <h5 class="text-center mb-3 fw-bold text-primary">🥧 Diagram Lingkaran Status Rapat</h5>
-            <canvas id="pieChart" style="max-height:350px;"></canvas>
-          </div>
-        </div>
+      
+<div class="row mt-4 justify-content-center">
+  <div class="col-md-8">
+    <div class="card shadow-lg border-0">
+      <div class="card-body text-center">
+        <h4 class="fw-bold text-primary mb-4">
+          📊 Status Penyelesaian Rapat
+        </h4>
+        <canvas id="pieChart" style="max-height:420px;"></canvas>
+        <p class="mt-3 text-muted">
+          Diagram ini menunjukkan proporsi rapat yang telah dan belum diselesaikan.
+        </p>
       </div>
     </div>
+  </div>
+</div>
+
 
     <!-- Tabel Notulen -->
     <div class="card shadow-sm mt-4">
@@ -158,84 +155,58 @@
       return { total, selesai, belum, selesaiPerTanggal, belumPerTanggal };
     }
 
-    function tampilkanLineChart(data) {
-      const ctx = document.getElementById("statusChart").getContext("2d");
-      const tanggalList = Array.from(new Set([...Object.keys(data.selesaiPerTanggal), ...Object.keys(data.belumPerTanggal)])).sort();
-
-      const dataSelesai = tanggalList.map(t => data.selesaiPerTanggal[t] || 0);
-      const dataBelum = tanggalList.map(t => data.belumPerTanggal[t] || 0);
-
-      new Chart(ctx, {
-        type: "line",
-        data: {
-          labels: tanggalList,
-          datasets: [
-            {
-              label: "Selesai",
-              data: dataSelesai,
-              borderColor: "#2e7d32",
-              backgroundColor: "rgba(46,125,50,0.2)",
-              tension: 0.3,
-              fill: true,
-              pointBackgroundColor: "#1b5e20"
-            },
-            {
-              label: "Belum Selesai",
-              data: dataBelum,
-              borderColor: "#fbc02d",
-              backgroundColor: "rgba(251,192,45,0.2)",
-              tension: 0.3,
-              fill: true,
-              pointBackgroundColor: "#f57f17"
-            }
-          ]
-        },
-        options: {
-          responsive: true,
-          scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } },
-          plugins: {
-            legend: { position: "bottom" },
-            datalabels: {
-              display: true,
-              color: "#000",
-              font: { weight: "bold" }
-            }
-          }
-        }
-      });
-    }
-
     function tampilkanPieChart(data) {
-      const ctx = document.getElementById("pieChart").getContext("2d");
-      new Chart(ctx, {
-        type: "pie",
-        data: {
-          labels: ["Selesai", "Belum Selesai"],
-          datasets: [{
-            data: [data.selesai, data.belum],
-            backgroundColor: ["#2e7d32", "#fbc02d"],
-            borderWidth: 2
-          }]
+  const ctx = document.getElementById("pieChart").getContext("2d");
+
+  new Chart(ctx, {
+    type: "pie",
+    data: {
+      labels: ["Selesai", "Belum Selesai"],
+      datasets: [{
+        data: [data.selesai, data.belum],
+        backgroundColor: ["#2e7d32", "#fbc02d"],
+        hoverBackgroundColor: ["#1b5e20", "#f9a825"],
+        borderWidth: 3,
+        offset: [20, 0] // highlight bagian "Selesai"
+      }]
+    },
+    options: {
+      responsive: true,
+      animation: {
+        animateScale: true,
+        animateRotate: true
+      },
+      plugins: {
+        legend: {
+          position: "bottom",
+          labels: {
+            font: { size: 14, weight: "bold" }
+          }
         },
-        options: {
-          responsive: true,
-          plugins: {
-            datalabels: {
-              formatter: (value, context) => {
-                const total = context.chart._metasets[0].total;
-                return ((value / total) * 100).toFixed(1) + "%";
-              },
-              color: "#fff",
-              font: { weight: "bold", size: 14 }
-            },
-            legend: { position: "bottom" }
+        tooltip: {
+          callbacks: {
+            label: function (context) {
+              const total = context.dataset.data.reduce((a, b) => a + b, 0);
+              const value = context.raw;
+              const persen = ((value / total) * 100).toFixed(1);
+              return `${context.label}: ${value} rapat (${persen}%)`;
+            }
+          }
+        },
+        datalabels: {
+          color: "#fff",
+          font: { weight: "bold", size: 16 },
+          formatter: (value, context) => {
+            const total = context.chart.data.datasets[0].data.reduce((a, b) => a + b, 0);
+            return ((value / total) * 100).toFixed(1) + "%";
           }
         }
-      });
+      }
     }
+  });
+}
 
     const dataStat = updateStatistik();
-    tampilkanLineChart(dataStat);
     tampilkanPieChart(dataStat);
   </script>
   <script>
