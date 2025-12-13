@@ -1,0 +1,62 @@
+    html,body {
+      height: 100%;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      background-color: #f5f7fa;
+      padding-top: 80px;
+    }
+    body { 
+      font-family: Poppins,system-ui,-apple-system,Segoe UI,Roboto;
+      background-color: #f5f7fa; 
+      margin: 0; 
+      padding: 0; 
+    }
+    .navbar { 
+      background-color: #003366;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 1030;
+    }
+    .navbar-brand { 
+      color: white; 
+      font-weight: 600; 
+    }
+    .navbar-nav .nav-link { 
+      color: #cfd8dc !important; 
+      margin-right: 15px; 
+    }
+    .navbar-nav .nav-link.active { 
+      color: #fff !important; 
+      font-weight: 600; 
+    }
+    .navbar .dropdown-toggle {
+      background-color: rgba(128, 128, 128, 0.3) !important;
+      color: white !important;
+      border-radius: 6px;
+      padding: 6px 14px;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+    .navbar .dropdown-toggle:hover,
+    .navbar .dropdown-toggle:focus {
+      color: #fff !important;
+      transform: scale(1.05);
+    }
+    #notulenTable thead th {
+      background-color: #003366;
+      color: white;
+      font-weight: bold;
+      text-align: center;
+    }
+    footer {
+      background-color: #003366;
+      color: white;
+      text-align: center;
+      padding: 15px 0;
+      font-size: 0.9rem;
+      width: 100vw;
+      margin-top: auto;
+    }
