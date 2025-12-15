@@ -6,7 +6,7 @@ if (!$conn) {
 }
 
 // ================= AMBIL DATA NOTULEN =================
-$query = mysqli_query($conn, "SELECT judul_rapat, tanggal, notulis, status FROM notulen");
+$query = mysqli_query($conn, "SELECT judul, tanggal, notulis, status FROM rapat");
 
 $total = 0;
 $selesai = 0;
@@ -48,13 +48,41 @@ while ($row = mysqli_fetch_assoc($query)) {
 </header>
 
 <nav class="navbar navbar-expand-lg navbar-dark px-4">
-  <a class="navbar-brand" href="#">
-    <img src="logono.jpeg" alt="Logo" width="50" class="me-2 rounded-circle">
-    Notulen Tracker
-  </a>
-</nav>
-
-<div class="container mt-4">
+      <a class="navbar-brand" href="#">
+        <img src="logono.jpeg" alt="Logo Notulen Tracker" width="50" class="me-2 rounded-circle">
+        Notulen Tracker
+      </a>
+      <div class="collapse navbar-collapse">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item"><a class="nav-link" href="dashboard.php">Dashboard</a></li>
+          <li class="nav-item"><a class="nav-link active" href="daftar_notulen.php">Daftar Notulen</a></li>
+          <li class="nav-item"><a class="nav-link" href="kontak.php">Kontak</a></li>
+          <li class="nav-item"><a class="nav-link" href="FAQ.php">FAQ</a></li>
+          <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="userDropdown" data-bs-toggle="dropdown">
+            Notulis
+          </a>
+          <ul class="dropdown-menu dropdown-menu-end shadow-sm" aria-labelledby="userDropdown">
+            <li class="user-info-header">
+              <img
+              src="<?php echo htmlspecialchars($profile_data['foto_profile']); ?>"
+              alt="Avatar"
+              class="user-avatar"
+              >
+              <div class="user-text">
+                <strong><?php echo $dropdown_nama; ?></strong>
+                <small class="text-muted"><?php echo $dropdown_email; ?></small>
+              </div>
+            </li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item" href="profile.php">Profil</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a id="logoutLink" class="dropdown-item text-danger" href="login.php">Keluar</a></li>
+          </ul>
+          </li>
+        </ul>
+      </div>
+    </nav>
 
   <!-- STATISTIK -->
   <div class="row g-3 text-center">
@@ -112,7 +140,7 @@ while ($row = mysqli_fetch_assoc($query)) {
           <tbody>
             <?php foreach ($dataTabel as $row): ?>
               <tr>
-                <td><?= htmlspecialchars($row['judul_rapat']) ?></td>
+                <td><?= htmlspecialchars($row['judul']) ?></td>
                 <td><?= htmlspecialchars($row['tanggal']) ?></td>
                 <td><?= htmlspecialchars($row['notulis']) ?></td>
                 <td><?= htmlspecialchars($row['status']) ?></td>
