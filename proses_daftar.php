@@ -10,7 +10,6 @@ if ($koneksi->connect_error) {
 // AMBIL DATA DARI FORM
 $nama     = $_POST['nama'];
 $email    = $_POST['email'];
-$peran    = $_POST['peran'];
 $password = $_POST['password'];
 $pass2    = $_POST['password2'];
 
@@ -32,14 +31,14 @@ if ($cek->num_rows > 0) {
 $hash = password_hash($password, PASSWORD_DEFAULT);
 
 // INSERT DATA
-$sql = "INSERT INTO pendaftaran (nama, email, peran, password)
-        VALUES ('$nama', '$email', '$peran', '$hash')";
+$sql = "INSERT INTO pendaftaran (nama, email, password)
+        VALUES ('$nama', '$email', '$hash')";
 
 if ($koneksi->query($sql) === TRUE) {
     echo "
         <script>
             alert('Pendaftaran berhasil!');
-            window.location='login.php';   // 
+            window.location='dashboard.php';   // 
         </script>
     ";
 } else {

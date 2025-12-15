@@ -23,13 +23,8 @@ if (password_verify($password, $data['password'])) {
     $_SESSION['id'] = $data['id'];
     $_SESSION['nama'] = $data['nama'];
     $_SESSION['email'] = $data['email'];
-    $_SESSION['peran'] = $data['peran'];
 
-    if ($data['peran'] == "Notulis") {
-        header("Location: dashboard.php");
-    } else {
-        header("Location: dashboard.php");
-    }
+    header("Location: dashboard.php");
     exit;
 
 } else {

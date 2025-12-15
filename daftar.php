@@ -78,15 +78,6 @@
         <input type="email" class="form-control" name="email" required>
       </div>
 
-      <div class="mb-3">
-        <label class="form-label">Daftar Sebagai</label>
-        <select class="form-control" name="peran" id="peran" required>
-          <option value="">-- Pilih Peran --</option>
-          <option value="notulis">Notulis</option>
-          <option value="peserta">Peserta</option>
-        </select>
-      </div>
-
       <!-- PASSWORD DENGAN IKON MODERN -->
       <div class="mb-3">
         <label class="form-label">Kata Sandi</label>
@@ -152,12 +143,6 @@
         alert('Kata sandi dan konfirmasi tidak sama!');
         return false;
       }
-
-      if (peran === "") {
-        alert('Silakan pilih peran terlebih dahulu!');
-        return false;
-      }
-
       return true;
     }
   </script>

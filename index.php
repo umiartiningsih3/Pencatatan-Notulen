@@ -2,104 +2,126 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Selamat Datang</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Notulen Tracker</title>
+
+  <!-- Google Font -->
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
 
   <style>
-    body {
-      height: 100vh;
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
       font-family: 'Poppins', sans-serif;
-      background: linear-gradient(135deg, #003366, #007bff);
-      color: white;
-      overflow-x: hidden;
     }
 
-    .hero {
-      height: 100vh;
+    body {
+      min-height: 100vh;
+      background: linear-gradient(135deg, #003973, #007adf);
       display: flex;
       align-items: center;
       justify-content: center;
-      text-align: center;
-      flex-direction: column;
-      padding: 0 20px;
+      color: #fff;
     }
 
-    .hero h1 {
-      font-size: 3.5rem;
+    .hero {
+      max-width: 1100px;
+      width: 90%;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 50px;
+      align-items: center;
+    }
+
+    .hero-img img {
+      width: 100%;
+      max-width: 480px;
+      display: block;
+      margin: auto;
+      filter: drop-shadow(0 20px 40px rgba(0,0,0,0.3));
+    }
+
+    .hero-content h1 {
+      font-size: 3rem;
       font-weight: 700;
-      animation: fadeDown 1.5s ease;
+      line-height: 1.2;
+      margin-bottom: 20px;
     }
 
-    .hero p {
-      font-size: 1.2rem;
-      margin-top: 15px;
+    .hero-content p {
+      font-size: 1.1rem;
       opacity: 0.9;
-      animation: fadeUp 2s ease;
+      margin-bottom: 35px;
     }
 
-    .btn-white {
-      background-color: white;
-      color: #007BFF;
-      border-radius: 30px;
-      padding: 12px 30px;
+    .btn {
+      display: inline-block;
+      padding: 14px 36px;
+      background: #fff;
+      color: #007adf;
       font-weight: 600;
-      margin-top: 30px;
-      transition: 0.3s;
+      border-radius: 50px;
       text-decoration: none;
+      transition: all 0.3s ease;
     }
 
-    .btn-white:hover {
-      background-color: #e6f9ff;
-      color: #003366;
-      transform: translateY(-2px);
+    .btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 30px rgba(0,0,0,0.3);
     }
 
-    /* Animasi */
-    @keyframes fadeDown {
-      from { opacity: 0; transform: translateY(-30px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(30px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    /* Footer */
     footer {
+      position: absolute;
+      bottom: 20px;
       text-align: center;
-      padding: 15px;
       font-size: 0.9rem;
       opacity: 0.8;
-      position: absolute;
-      bottom: 10px;
       width: 100%;
     }
 
-    /* Responsif */
-    @media (max-width: 768px) {
-      .hero h1 {
-        font-size: 2.2rem;
+    /* Responsive */
+    @media (max-width: 900px) {
+      .hero {
+        grid-template-columns: 1fr;
+        text-align: center;
       }
-      .hero p {
-        font-size: 1rem;
+
+      .hero-img {
+        order: -1;
+      }
+
+      .hero-content h1 {
+        font-size: 2.4rem;
       }
     }
   </style>
 </head>
+
 <body>
+
   <section class="hero">
-    <h1>Selamat Datang di <span class="fw-bold">Notulen Tracker</span></h1>
-    <p>Solusi digital terbaik untuk kebutuhan rapat Anda.</p>
-    <a href="login.php" class="btn-white">Masuk Sekarang</a>
+    <!-- GAMBAR KIRI -->
+    <div class="hero-img">
+      <!-- Ganti gambar sesuai kebutuhan -->
+      <img src="gambar.png" alt="Ilustrasi Rapat">
+    </div>
+
+    <!-- TEKS KANAN -->
+    <div class="hero-content">
+      <h1>Selamat Datang di<br>Notulen Tracker</h1>
+      <p>
+        Solusi digital modern untuk mencatat, mengelola, dan memantau
+        hasil rapat secara efisien dan profesional.
+      </p>
+      <a href="login.php" class="btn">Masuk Sekarang</a>
+    </div>
   </section>
 
   <footer>
     © 2025 Notulen Tracker. Semua hak cipta dilindungi.
   </footer>
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
+
