@@ -1,4 +1,5 @@
 <?php
+$activePage = basename($_SERVER['PHP_SELF']);
 // ==========================================================
 // 1. KONEKSI DATABASE DAN PENGAMBILAN DATA PROFIL PENGGUNA
 // ==========================================================
@@ -88,6 +89,8 @@ mysqli_stmt_close($stmt);
   <title>Kontak | Notulen Tracker</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+
   <style>
     body {
       font-family: Poppins,system-ui,-apple-system,Segoe UI,Roboto;
@@ -98,46 +101,101 @@ mysqli_stmt_close($stmt);
       padding-top: 80px;
     }
 
-    /* Navbar Styles */
-    .navbar {
-      background-color: #003366;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      z-index: 1030;
-    }
+    /* Navbar utama */
+.custom-navbar {
+  background-color: #003366;
+  height: 70px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+}
 
-    .navbar-brand {
-      color: white;
-      font-weight: 600;
-    }
+/* List navbar */
+.nav-effect {
+  gap: 10px; /* 🔹 jarak antar item */
+}
+/* Item navbar */
+.nav-effect .nav-link {
+  color: #dce3ea !important;
+  padding: 10px 18px; /* 🔹 jarak dalam */
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  position: relative;
+}
 
-    .navbar-nav .nav-link {
-      color: #cfd8dc !important;
-      margin-right: 15px;
-    }
+/* Hover */
+.navbar-nav .nav-link:hover {
+  background: rgba(255,255,255,0.08);
+  color: #ffffff !important;
+}
 
-    .navbar-nav .nav-link.active {
-      color: #fff !important;
-      font-weight: 600;
-    }
+/* Active page */
+.navbar-nav .nav-link.active {
+  background: rgba(255,255,255,0.15);
+  color: #ffffff !important;
+  font-weight: 600;
+}
 
-    .navbar .dropdown-toggle {
-      background-color: rgba(128, 128, 128, 0.3) !important;
-      color: white !important;
-      border-radius: 6px;
-      padding: 6px 14px;
-      font-weight: 500;
-      transition: all 0.3s ease;
-    }
+/* Icon */
+.nav-effect .nav-link i {
+  font-size: 1.1rem;
+  transition: transform 0.3s ease;
+}
 
-    .navbar .dropdown-toggle:hover,
-    .navbar .dropdown-toggle:focus {
-      color: #fff !important;
-      transform: scale(1.05);
-    }
-    
+/* Icon animasi */
+.nav-effect .nav-link:hover i {
+  transform: scale(1.15);
+}
+
+/* Active icon */
+.nav-effect .nav-link.active i {
+  color: #0d6efd;
+}
+
+
+/* ===== BRAND PRO ===== */
+.brand-pro {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+}
+
+.brand-pro img {
+  width: 42px;
+  height: 42px;
+  border-radius: 100px;
+  padding: 6px;
+  background: linear-gradient(135deg, #ffffff, #e3f2fd);
+  transition: all 0.35s ease;
+}
+
+.brand-info {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.1;
+}
+
+.brand-name {
+  font-size: 21px;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: 0.3px;
+}
+
+.brand-tagline {
+  font-size: 13px;
+  color: #90caf9;
+  letter-spacing: 1px;
+}
+
+/* Hover brand */
+.brand-pro:hover img {
+  transform: scale(1.08) rotate(-4deg);
+  box-shadow: 0 8px 25px rgba(144,202,249,0.45);
+}
     /* Dropdown User Info Styles */
     .dropdown-menu .user-info-header {
       display: flex; 
@@ -194,20 +252,46 @@ mysqli_stmt_close($stmt);
 </head>
 <body>
 
-  <nav class="navbar navbar-expand-lg navbar-dark px-4">
-    <a class="navbar-brand" href="#">
-        <img src="logono.jpeg" alt="Logo Notulen Tracker" width="50" class="me-2 rounded-circle">
-        Notulen Tracker
-    </a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarNav">
-      <ul class="navbar-nav ms-auto">
-        <li class="nav-item"><a class="nav-link" href="dashboard.php">Dashboard</a></li>
-        <li class="nav-item"><a class="nav-link" href="daftar_notulen.php">Daftar Notulen</a></li>
-        <li class="nav-item"><a class="nav-link active" href="kontak.php">Kontak</a></li>
-        <li class="nav-item"><a class="nav-link" href="FAQ.php">FAQ</a></li>
+  <nav class="navbar navbar-expand-lg navbar-dark fixed-top px-4 custom-navbar">
+  <a class="navbar-brand brand-pro" href="dashboard.php">
+  <img src="logono.jpeg" alt="Logo">
+  <div class="brand-info">
+    <span class="brand-name">Notulen</span>
+    <span class="brand-tagline">Tracker</span>
+  </div>
+</a>
+
+
+
+  <div class="collapse navbar-collapse">
+    <ul class="navbar-nav ms-auto nav-effect">
+      <li class="nav-item">
+        <a class="nav-link" href="dashboard.php">
+          <i class="bi bi-grid"></i>
+          <span>Dashboard</span>
+        </a>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link" href="daftar_notulen.php">
+          <i class="bi bi-file-text"></i>
+          <span>Daftar Notulen</span>
+        </a>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link active" href="kontak.php">
+          <i class="bi bi-envelope"></i>
+          <span>Kontak</span>
+        </a>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link" href="FAQ.php">
+          <i class="bi bi-question-circle"></i>
+          <span>FAQ</span>
+        </a>
+      </li>
         <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" href="#" id="userDropdown" data-bs-toggle="dropdown">
           Notulis

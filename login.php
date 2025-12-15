@@ -124,7 +124,7 @@ h4 {
       Belum punya akun? 
       <a href="daftar.php" class="text-decoration-none" style="color:#007bff;">Daftar</a>
       <a href="#" class="text-decoration-none" style="color:#000000;">|</a>
-      <a href="welcome.php" class="text-decoration-none" style="color:#007bff;">Kembali</a>
+      <a href="index.php" class="text-decoration-none" style="color:#007bff;">Kembali</a>
     </p>
 </div>
 
