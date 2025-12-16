@@ -11,6 +11,7 @@ $db_pass = "";
 $db_name = "notulen_db";
 
 // 🚨 GANTI DENGAN $_SESSION['user_id'] ASLI SETELAH IMPLEMENTASI LOGIN
+// Saat ini menggunakan ID statis 1
 $user_id = 1; 
 
 $conn = mysqli_connect($db_host, $db_user, $db_pass, $db_name);
@@ -31,13 +32,16 @@ $result_profile = mysqli_stmt_get_result($stmt);
 $profile_data = [
     'nama_lengkap' => 'Notulis Tamu',
     'email' => 'tamu@notulen.com',
-    'foto_profile' => 'user.png' // Pastikan ada gambar default di folder Anda
+    // Pastikan ada gambar default dengan nama ini (misal: user.png) di folder Anda
+    'foto_profile' => 'user.png' 
 ];
 
 if ($row = mysqli_fetch_assoc($result_profile)) {
     $profile_data['nama_lengkap'] = $row['nama_lengkap'];
     $profile_data['email'] = $row['email'];
-    if (!empty($row['foto_profile'])) {
+    
+    // Jika foto_profile dari DB kosong atau null, tetap gunakan default 'user.png'
+    if (!empty($row['foto_profile'])) { 
         $profile_data['foto_profile'] = $row['foto_profile'];
     }
 }
@@ -45,9 +49,9 @@ if ($row = mysqli_fetch_assoc($result_profile)) {
 // Variabel untuk digunakan di HTML
 $dropdown_email = htmlspecialchars($profile_data['email']);
 $dropdown_nama = htmlspecialchars($profile_data['nama_lengkap']);
+$dropdown_foto = htmlspecialchars($profile_data['foto_profile']);
 
 // Tutup statement
-// Cek jika $stmt sudah didefinisikan sebelum ditutup
 if (isset($stmt) && $stmt) { 
     mysqli_stmt_close($stmt);
 }
@@ -171,24 +175,63 @@ if (isset($stmt) && $stmt) {
   transform: scale(1.08) rotate(-4deg);
   box-shadow: 0 8px 25px rgba(144,202,249,0.45);
 }
-      /* Dropdown User Info Styles (BARU DITAMBAHKAN) */
+      /* Dropdown User Info Styles (DIOPTIMALKAN UNTUK MENYERUPAI GAMBAR) */
+      .dropdown-menu {
+          /* Untuk memastikan menu dropdown tidak terlalu lebar */
+          min-width: 250px !important;
+          border-radius: 8px; /* Lebih halus */
+          padding: 0;
+      }
       .dropdown-menu .user-info-header {
         display: flex; 
         align-items: center;
         padding: 10px 15px;
+        margin-bottom: 0;
       }
       .dropdown-menu .user-avatar {
         width: 40px; 
         height: 40px;
         border-radius: 50%; 
         object-fit: cover;
-        margin-right: 10px;
+        margin-right: 12px;
+        background-color: #f0f0f0; /* Background jika gambar gagal load */
+      }
+      .dropdown-menu .user-text {
+          display: flex;
+          flex-direction: column;
+          overflow: hidden; 
+      }
+      .dropdown-menu .user-text strong {
+          font-size: 15px;
+          font-weight: 600;
+          line-height: 1.2;
       }
       .dropdown-menu .user-text small {
         display: block;
-        margin-top: -3px; 
+        font-size: 13px;
+        color: #6c757d; 
+        line-height: 1.2;
       }
-      /* End Dropdown User Info Styles */
+      
+      /* Style untuk dropdown item dengan ikon */
+      .dropdown-menu .dropdown-item {
+        display: flex;
+        align-items: center;
+        padding: 8px 15px; 
+      }
+      
+      .dropdown-menu .dropdown-item i {
+        font-size: 1.1rem;
+        width: 20px; /* Lebar tetap untuk ikon */
+        text-align: center;
+        margin-right: 8px; /* Jarak antara ikon dan teks */
+      }
+      
+      /* Menghapus margin top bawaan small dari style lama */
+      .dropdown-menu .user-text small {
+        margin-top: 0; 
+      }
+      /* Akhir Dropdown User Info Styles */
 
       /* Konten */
       main {
@@ -235,69 +278,67 @@ if (isset($stmt) && $stmt) {
 <body>
 
     <nav class="navbar navbar-expand-lg navbar-dark fixed-top px-4 custom-navbar">
-  <a class="navbar-brand brand-pro" href="dashboard.php">
-  <img src="logono.jpeg" alt="Logo">
-  <div class="brand-info">
-    <span class="brand-name">Notulen</span>
-    <span class="brand-tagline">Tracker</span>
-  </div>
-</a>
-
-
-
-  <div class="collapse navbar-collapse">
-    <ul class="navbar-nav ms-auto nav-effect">
-      <li class="nav-item">
-        <a class="nav-link" href="dashboard.php">
-          <i class="bi bi-grid"></i>
-          <span>Dashboard</span>
+        <a class="navbar-brand brand-pro" href="dashboard.php">
+            <img src="logono.jpeg" alt="Logo">
+            <div class="brand-info">
+                <span class="brand-name">Notulen</span>
+                <span class="brand-tagline">Tracker</span>
+            </div>
         </a>
-      </li>
 
-      <li class="nav-item">
-        <a class="nav-link" href="daftar_notulen.php">
-          <i class="bi bi-file-text"></i>
-          <span>Daftar Notulen</span>
-        </a>
-      </li>
 
-      <li class="nav-item">
-        <a class="nav-link" href="kontak.php">
-          <i class="bi bi-envelope"></i>
-          <span>Kontak</span>
-        </a>
-      </li>
+        <div class="collapse navbar-collapse">
+            <ul class="navbar-nav ms-auto nav-effect">
+                <li class="nav-item">
+                    <a class="nav-link" href="dashboard.php">
+                        <i class="bi bi-grid"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
 
-      <li class="nav-item">
-        <a class="nav-link active" href="FAQ.php">
-          <i class="bi bi-question-circle"></i>
-          <span>FAQ</span>
-        </a>
-      </li>
-          <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" id="userDropdown" data-bs-toggle="dropdown">
-            Notulis
-          </a>
-          <ul class="dropdown-menu dropdown-menu-end shadow-sm" aria-labelledby="userDropdown">
-            <li class="user-info-header">
-              <img
-                src="<?php echo htmlspecialchars($profile_data['foto_profile']); ?>"
-                alt="Avatar"
-                class="user-avatar"
-              >
-              <div class="user-text">
-                <strong><?php echo $dropdown_nama; ?></strong>
-                <small class="text-muted"><?php echo $dropdown_email; ?></small>
-              </div>
-              </li>
-            <li><hr class="dropdown-divider"></li>
-            <li><a class="dropdown-item" href="profile.php">Profil</a></li>
-            <li><hr class="dropdown-divider"></li>
-            <li><a id="logoutLink" class="dropdown-item text-danger" href="login.php">Keluar</a></li>
-          </ul>
-          </li>
-        </ul>
-      </div>
+                <li class="nav-item">
+                    <a class="nav-link" href="daftar_notulen.php">
+                        <i class="bi bi-file-text"></i>
+                        <span>Daftar Notulen</span>
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="kontak.php">
+                        <i class="bi bi-envelope"></i>
+                        <span>Kontak</span>
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link active" href="FAQ.php">
+                        <i class="bi bi-question-circle"></i>
+                        <span>FAQ</span>
+                    </a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Notulis
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="userDropdown">
+                        <li class="user-info-header">
+                            <img
+                                src="<?php echo $dropdown_foto; ?>"
+                                alt="Avatar"
+                                class="user-avatar"
+                            >
+                            <div class="user-text">
+                                <strong class="text-truncate"><?php echo $dropdown_nama; ?></strong>
+                                <small class="text-muted text-truncate"><?php echo $dropdown_email; ?></small>
+                            </div>
+                        </li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="profile.php"><i class="bi bi-person"></i> Profil Saya</a></li>
+                        <li><a id="logoutLink" class="dropdown-item text-danger" href="login.php"><i class="bi bi-box-arrow-right"></i> Keluar</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
     </nav>
 
     <main>
@@ -381,11 +422,8 @@ if (isset($stmt) && $stmt) {
     <script>
     // Fungsi logout menggunakan konfirmasi sebelum diarahkan ke login.php
     document.getElementById("logoutLink").addEventListener("click", (e) => {
-        // Jika link sudah diarahkan ke login.php di HTML, kita perlu mencegah default
-        // agar konfirmasi bisa muncul.
-        if (e.target.href.includes("login.php")) {
-            e.preventDefault(); 
-        }
+        // Mencegah navigasi default
+        e.preventDefault(); 
 
         const konfirmasi = confirm("Apakah Anda yakin ingin keluar dari Notulen Tracker?");
         if (konfirmasi) {
