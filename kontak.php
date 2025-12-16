@@ -47,38 +47,46 @@ if ($row = mysqli_fetch_assoc($result_profile)) {
 // Variabel untuk digunakan di HTML
 $dropdown_email = htmlspecialchars($profile_data['email']);
 $dropdown_nama = htmlspecialchars($profile_data['nama_lengkap']);
+$dropdown_foto = htmlspecialchars($profile_data['foto_profile']); // VARIABEL FOTO DITAMBAH
 
 
 // ==========================================================
-// 2. PROSES SUBMIT FORM KONTAK (KODE ASLI ANDA)
+// 2. PROSES SUBMIT FORM KONTAK
 // ==========================================================
 
 $pesan_terkirim = false;
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Digunakan untuk simulasi AJAX di bagian JavaScript, bukan untuk PHP form submit biasa
-    // Karena form di bawah menggunakan e.preventDefault(), bagian ini tidak akan dieksekusi 
-    // kecuali Anda mengubah form submission-nya menjadi sync/AJAX PHP file terpisah.
-    
-    // Namun, jika Anda ingin menggunakan PHP, ini adalah kode yang benar:
+    // Sanitize input
     $nama = mysqli_real_escape_string($conn, $_POST['nama']);
     $email = mysqli_real_escape_string($conn, $_POST['email']);
     $pesan = mysqli_real_escape_string($conn, $_POST['pesan']);
 
-    $sql = "INSERT INTO kontak (nama, email, pesan) VALUES ('$nama', '$email', '$pesan')";
-    if (mysqli_query($conn, $sql)) {
-        // Jika berhasil, header redirect untuk menghindari resubmission form
-        // header("Location: kontak.php?status=success");
-        // exit();
-        $pesan_terkirim = true;
+    $sql_insert = "INSERT INTO kontak (nama, email, pesan) VALUES (?, ?, ?)";
+    $stmt_insert = mysqli_prepare($conn, $sql_insert);
+    mysqli_stmt_bind_param($stmt_insert, "sss", $nama, $email, $pesan);
+    
+    if (mysqli_stmt_execute($stmt_insert)) {
+        // Jika berhasil, gunakan header redirect untuk mencegah resubmission form
+        // dan menampilkan pesan sukses
+        header("Location: kontak.php?status=success");
+        exit();
     } else {
-        // echo "Error: " . mysqli_error($conn); // sebaiknya tidak ditampilkan ke user
+        // Jika gagal, bisa diarahkan ke halaman dengan status error
         // header("Location: kontak.php?status=error");
         // exit();
     }
+    mysqli_stmt_close($stmt_insert);
 }
 
-// Tutup statement
-mysqli_stmt_close($stmt);
+// Cek status dari URL setelah redirect
+if (isset($_GET['status']) && $_GET['status'] == 'success') {
+    $pesan_terkirim = true;
+}
+
+// Tutup statement profile (jika sudah dibuka)
+if (isset($stmt) && $stmt) { 
+    mysqli_stmt_close($stmt);
+}
 ?>
 
 <!DOCTYPE html>
@@ -196,24 +204,56 @@ mysqli_stmt_close($stmt);
   transform: scale(1.08) rotate(-4deg);
   box-shadow: 0 8px 25px rgba(144,202,249,0.45);
 }
-    /* Dropdown User Info Styles */
+    /* Dropdown User Info Styles (DIOPTIMALKAN) */
+    .dropdown-menu {
+        min-width: 250px !important;
+        border-radius: 8px;
+        padding: 0;
+    }
     .dropdown-menu .user-info-header {
       display: flex; 
       align-items: center;
       padding: 10px 15px;
+      margin-bottom: 0;
     }
     .dropdown-menu .user-avatar {
       width: 40px; 
       height: 40px;
       border-radius: 50%; 
       object-fit: cover;
-      margin-right: 10px;
+      margin-right: 12px;
+      background-color: #f0f0f0;
+    }
+    .dropdown-menu .user-text {
+        display: flex;
+        flex-direction: column;
+        overflow: hidden; 
+    }
+    .dropdown-menu .user-text strong {
+        font-size: 15px;
+        font-weight: 600;
+        line-height: 1.2;
     }
     .dropdown-menu .user-text small {
       display: block;
-      margin-top: -3px; 
+      font-size: 13px;
+      color: #6c757d; 
+      line-height: 1.2;
+      margin-top: 0; 
     }
-    /* End Dropdown User Info Styles */
+    /* Style untuk dropdown item dengan ikon */
+    .dropdown-menu .dropdown-item {
+      display: flex;
+      align-items: center;
+      padding: 8px 15px; 
+    }
+    
+    .dropdown-menu .dropdown-item i {
+      font-size: 1.1rem;
+      width: 20px; 
+      text-align: center;
+      margin-right: 8px; 
+    }
 
     /* Konten */
     main {
@@ -261,8 +301,6 @@ mysqli_stmt_close($stmt);
   </div>
 </a>
 
-
-
   <div class="collapse navbar-collapse">
     <ul class="navbar-nav ms-auto nav-effect">
       <li class="nav-item">
@@ -293,25 +331,24 @@ mysqli_stmt_close($stmt);
         </a>
       </li>
         <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" data-bs-toggle="dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
           Notulis
         </a>
-        <ul class="dropdown-menu dropdown-menu-end shadow-sm" aria-labelledby="userDropdown">
+        <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="userDropdown">
           <li class="user-info-header">
             <img
-              src="<?php echo htmlspecialchars($profile_data['foto_profile']); ?>"
+              src="<?php echo $dropdown_foto; ?>"
               alt="Avatar"
               class="user-avatar"
             >
             <div class="user-text">
-              <strong><?php echo $dropdown_nama; ?></strong>
-              <small class="text-muted"><?php echo $dropdown_email; ?></small>
+              <strong class="text-truncate"><?php echo $dropdown_nama; ?></strong>
+              <small class="text-muted text-truncate"><?php echo $dropdown_email; ?></small>
             </div>
-            </li>
+          </li>
           <li><hr class="dropdown-divider"></li>
-          <li><a class="dropdown-item" href="profile.php">Profil</a></li>
-          <li><hr class="dropdown-divider"></li>
-          <li><a id="logoutLink" class="dropdown-item text-danger" href="#">Keluar</a></li>
+          <li><a class="dropdown-item" href="profile.php"><i class="bi bi-person"></i> Profil Saya</a></li>
+          <li><a id="logoutLink" class="dropdown-item text-danger" href="login.php"><i class="bi bi-box-arrow-right"></i> Keluar</a></li>
         </ul>
         </li>
       </ul>
@@ -331,7 +368,7 @@ mysqli_stmt_close($stmt);
       <?php endif; ?>
 
       <div class="card p-4">
-        <form id="formKontak" method="POST" action="">
+        <form id="formKontak" method="POST" action="kontak.php">
           <div class="mb-3">
             <label for="nama" class="form-label">Nama Lengkap</label>
             <input type="text" id="nama" class="form-control" name="nama" placeholder="Masukkan nama Anda" required>
@@ -370,20 +407,6 @@ mysqli_stmt_close($stmt);
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
   <script>
-    // Kirim pesan (Simulasi notifikasi JS, membiarkan PHP yang handle submit)
-    document.getElementById("formKontak").addEventListener("submit", function(e) {
-      // e.preventDefault(); 
-      // Karena PHP sudah diatur untuk memproses POST, 
-      // kita hilangkan preventDefault agar halaman reload dan menampilkan alert PHP
-
-      // Jika Anda ingin mempertahankan notifikasi JS tanpa reload:
-      /*
-      e.preventDefault(); 
-      alert("Pesan Anda berhasil dikirim! Terima kasih telah menghubungi kami 😊");
-      this.reset();
-      */
-    });
-
   // Fungsi logout melalui menu dropdown
   document.getElementById("logoutLink").addEventListener("click", (e) => {
     e.preventDefault();
@@ -396,7 +419,9 @@ mysqli_stmt_close($stmt);
 
 <?php
 // Tutup koneksi database
-mysqli_close($conn);
+if (isset($conn)) {
+    mysqli_close($conn);
+}
 ?>
 </body>
 </html>
