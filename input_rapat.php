@@ -1,56 +1,47 @@
 <?php
-// ==========================================================
-// 1. KONEKSI DATABASE DAN PENGAMBILAN DATA PROFIL PENGGUNA
-// ==========================================================
+  // 1. Memulai Session untuk melacak user yang login
+  session_start();
 
-// Detail koneksi database
-$db_host = "localhost";
-$db_user = "root";
-$db_pass = "";
-$db_name = "notulen_db";
+  // 1. PROTEKSI HALAMAN
+  if (!isset($_SESSION['id'])) {
+    header("Location: login.php");
+    exit();
+  }
 
-// 🚨 GANTI DENGAN $_SESSION['user_id'] ASLI SETELAH IMPLEMENTASI LOGIN
-$user_id = 1; 
+  $user_id = $_SESSION['id']; 
+  $activePage = basename($_SERVER['PHP_SELF']);
 
-$conn = mysqli_connect($db_host, $db_user, $db_pass, $db_name);
+  // ================= KONEKSI DATABASE =================
+  $conn = mysqli_connect("localhost", "root", "", "notulen_db");
+  if (!$conn) {
+      die("Koneksi database gagal: " . mysqli_connect_error());
+  }
 
-if (!$conn) {
-    // Jika koneksi gagal, hentikan eksekusi dan tampilkan pesan error
-    die("Koneksi gagal: " . mysqli_connect_error());
-}
+  // 4. AMBIL DATA PENGGUNA (Query Tunggal untuk semua kebutuhan Navbar)
+  $query_profile = "SELECT nama_lengkap, email, foto_profile, role FROM pengguna WHERE id = ?";
+  $stmt = mysqli_prepare($conn, $query_profile);
+  mysqli_stmt_bind_param($stmt, "i", $user_id);
+  mysqli_stmt_execute($stmt);
+  $result = mysqli_stmt_get_result($stmt);
+  $profile_db = mysqli_fetch_assoc($result);
 
-// Ambil Data Profil untuk Navbar (Tabel: notulis)
-$query_profile = "SELECT nama_lengkap, email, foto_profile FROM notulis WHERE id = ?";
-$stmt = mysqli_prepare($conn, $query_profile);
+  // Jika data tidak ditemukan
+  if (!$profile_db) {
+    session_destroy();
+    header("Location: login.php");
+    exit();
+  }
 
-if ($stmt) {
-    mysqli_stmt_bind_param($stmt, "i", $user_id);
-    mysqli_stmt_execute($stmt);
-    $result_profile = mysqli_stmt_get_result($stmt);
-} else {
-    // Penanganan error jika prepare statement gagal
-    $result_profile = false;
-}
-
-// Data default jika user_id tidak ditemukan atau koneksi gagal
-$profile_data = [
-    'nama_lengkap' => 'Notulis Tamu',
-    'email' => 'tamu@notulen.com',
-    'foto_profile' => 'user.png' // Pastikan ada gambar default di folder Anda
-];
-
-if ($result_profile && $row = mysqli_fetch_assoc($result_profile)) {
-    $profile_data['nama_lengkap'] = $row['nama_lengkap'];
-    $profile_data['email'] = $row['email'];
-    if (!empty($row['foto_profile'])) {
-        $profile_data['foto_profile'] = $row['foto_profile'];
-    }
-}
-
-// Variabel untuk digunakan di HTML
-$dropdown_email = htmlspecialchars($profile_data['email']);
-$dropdown_nama = htmlspecialchars($profile_data['nama_lengkap']);
-$dropdown_foto = htmlspecialchars($profile_data['foto_profile']);
+  // Persiapan Variabel untuk digunakan di HTML
+  $role_display = !empty($profile_db['role']) ? $profile_db['role'] : 'Notulis';
+  $dropdown_nama = htmlspecialchars($profile_db['nama_lengkap']);
+  $dropdown_email = htmlspecialchars($profile_db['email']);
+  
+  // --- PERBAIKAN LOGIKA FOTO PROFILE ---
+  // Gunakan variabel tunggal $dropdown_foto agar konsisten
+  $dropdown_foto = (!empty($profile_db['foto_profile']) && file_exists($profile_db['foto_profile'])) 
+                   ? htmlspecialchars($profile_db['foto_profile']) 
+                   : 'user.png';
 
 if (isset($stmt)) {
     mysqli_stmt_close($stmt);
@@ -69,90 +60,74 @@ if (isset($stmt)) {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet"> 
 
     <style>
-        body {
-            background-color: #f5f7fa;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-            font-family: Poppins,system-ui,-apple-system,Segoe UI,Roboto;
-            margin: 0;
-            padding-top: 80px;
-        }
-
-        /* =================================================== */
-        /* START: NAVBAR STYLES (DISAMAKAN DENGAN FAQ.PHP) */
-        /* =================================================== */
-
-        /* Navbar utama */
-        .custom-navbar {
-            background-color: #003366;
-            height: 70px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.12);
-        }
-
-        /* List navbar */
-        .nav-effect {
-            gap: 10px; /* 🔹 jarak antar item */
-        }
-        /* Item navbar */
-        .nav-effect .nav-link {
-            color: #dce3ea !important;
-            padding: 10px 18px; /* 🔹 jarak dalam */
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            position: relative;
-        }
-
-        /* Hover */
-        .navbar-nav .nav-link:hover {
-            background: rgba(255,255,255,0.08);
-            color: #ffffff !important;
-        }
-
-        /* Active page */
-        .navbar-nav .nav-link.active {
-            background: rgba(255,255,255,0.15);
-            color: #ffffff !important;
-            font-weight: 600;
-        }
-
-        /* Icon */
-        .nav-effect .nav-link i {
-            font-size: 1.1rem;
-            transition: transform 0.3s ease;
-        }
-
-        /* Icon animasi */
-        .nav-effect .nav-link:hover i {
-            transform: scale(1.15);
-        }
-
-        /* Active icon */
-        .nav-effect .nav-link.active i {
-            color: #0d6efd;
-        }
-
-
-        /* ===== BRAND PRO ===== */
-        .brand-pro {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            text-decoration: none;
-        }
-
-        .brand-pro img {
-            width: 50px;
-            height: 50px;
-            border-radius: 100px;
-            padding: 0px;
-            background: linear-gradient(135deg, #ffffff, #e3f2fd);
-            transition: all 0.35s ease;
-        }
+        body { background-color: #f5f7fa; display: flex; flex-direction: column; min-height: 100vh; font-family: Poppins,system-ui,-apple-system,Segoe UI,Roboto; margin: 0; padding-top: 80px; }
+        .custom-navbar { background-color: #003366; height: 70px; box-shadow: 0 4px 12px rgba(0,0,0,0.12); }
+        .nav-effect { gap: 10px; }
+        .nav-effect .nav-link { color: #dce3ea !important; padding: 10px 18px; border-radius: 12px; display: flex; align-items: center; gap: 10px; font-weight: 500; transition: all 0.3s ease; position: relative; }
+        .navbar-nav .nav-link:hover { background: rgba(255,255,255,0.08); color: #ffffff !important; }
+        .navbar-nav .nav-link.active { background: rgba(255,255,255,0.15); color: #ffffff !important; font-weight: 600; }
+        .brand-pro { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+        .brand-pro img { width: 50px; height: 50px; border-radius: 100px; background: linear-gradient(135deg, #ffffff, #e3f2fd); transition: all 0.35s ease; }
+        .brand-name { font-size: 21px; font-weight: 700; color: #ffffff; }
+        .brand-tagline { font-size: 13px; color: #90caf9; }
+        /* Dropdown User Info Styles (DIOPTIMALKAN UNTUK MENYERUPAI GAMBAR) */
+      .dropdown-menu {
+          /* Untuk memastikan menu dropdown tidak terlalu lebar */
+          min-width: 250px !important;
+          border-radius: 8px; /* Lebih halus */
+          padding: 0;
+      }
+      .dropdown-menu .user-info-header {
+        display: flex; 
+        align-items: center;
+        padding: 10px 15px;
+        margin-bottom: 0;
+      }
+      .dropdown-menu .user-avatar {
+        width: 50px; 
+        height: 50px;
+        border-radius: 50%; 
+        object-fit: cover;
+        margin-right: 12px;
+        background-color: #f0f0f0;
+      }
+      .dropdown-menu .user-text {
+          display: flex;
+          flex-direction: column;
+          overflow: hidden; 
+      }
+      .dropdown-menu .user-text strong {
+          font-size: 15px;
+          font-weight: 600;
+          line-height: 1.2;
+      }
+      .dropdown-menu .user-text small {
+        display: block;
+        font-size: 13px;
+        color: #6c757d; 
+        line-height: 1.2;
+      }
+      
+      /* Style untuk dropdown item dengan ikon */
+      .dropdown-menu .dropdown-item {
+        display: flex;
+        align-items: center;
+        padding: 5px 15px; 
+      }
+      
+      .dropdown-menu .dropdown-item i {
+        font-size: 1.1rem;
+        width: 20px; /* Lebar tetap untuk ikon */
+        text-align: center;
+        margin-right: 8px; /* Jarak antara ikon dan teks */
+      }
+      
+      /* Menghapus margin top bawaan small dari style lama */
+      .dropdown-menu .user-text small {
+        margin-top: 0; 
+      }
+      /* Akhir Dropdown User Info Styles */
+        footer { background-color: #003366; color: white; text-align: center; padding: 15px 0; margin-top: auto; }
 
         .brand-info {
             display: flex;
@@ -166,74 +141,7 @@ if (isset($stmt)) {
             color: #ffffff;
             letter-spacing: 0.3px;
         }
-
-        .brand-tagline {
-            font-size: 13px;
-            color: #90caf9;
-            letter-spacing: 1px;
-        }
-
-        /* Hover brand */
-        .brand-pro:hover img {
-            transform: scale(1.08) rotate(-4deg);
-            box-shadow: 0 8px 25px rgba(144,202,249,0.45);
-        }
-        /* =================================================== */
-        /* END: NAVBAR STYLES (DISAMAKAN DENGAN FAQ.PHP) */
-        /* =================================================== */
-        
-        /* Dropdown User Info Styles (DIOPTIMALKAN) */
-        .dropdown-menu {
-            min-width: 250px !important;
-            border-radius: 8px;
-            padding: 0;
-        }
-        .dropdown-menu .user-info-header {
-            display: flex; 
-            align-items: center;
-            padding: 10px 15px;
-            margin-bottom: 0;
-        }
-        .dropdown-menu .user-avatar {
-            width: 40px; 
-            height: 40px;
-            border-radius: 50%; 
-            object-fit: cover;
-            margin-right: 12px;
-            background-color: #f0f0f0;
-        }
-        .dropdown-menu .user-text {
-            display: flex;
-            flex-direction: column;
-            overflow: hidden; 
-        }
-        .dropdown-menu .user-text strong {
-            font-size: 15px;
-            font-weight: 600;
-            line-height: 1.2;
-        }
-        .dropdown-menu .user-text small {
-            display: block;
-            font-size: 13px;
-            color: #6c757d; 
-            line-height: 1.2;
-            margin-top: 0; 
-        }
-        
-        /* Style untuk dropdown item dengan ikon */
-        .dropdown-menu .dropdown-item {
-            display: flex;
-            align-items: center;
-            padding: 8px 15px; 
-        }
-        
-        .dropdown-menu .dropdown-item i {
-            font-size: 1.1rem;
-            width: 20px; 
-            text-align: center;
-            margin-right: 8px; 
-        }
-        /* End Dropdown User Info Styles */
+        .brand-tagline { font-size: 13px; color: #90caf9; letter-spacing: 1px; }
 
         /* Card */
         .card {
@@ -313,24 +221,19 @@ if (isset($stmt)) {
                 </li>
                 
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        Notulis
-                    </a>
-                    <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="userDropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
+                        <i class="bi bi-person-circle me-1"></i> <?php echo ucwords(htmlspecialchars($role_display)); ?>
+                    </a>    
+                    <ul class="dropdown-menu dropdown-menu-end shadow">
                         <li class="user-info-header">
-                            <img
-                                src="<?php echo $dropdown_foto; ?>"
-                                alt="Avatar"
-                                class="user-avatar"
-                            >
+                            <img src="<?= $dropdown_foto; ?>" alt="Avatar" class="user-avatar">
                             <div class="user-text">
-                                <strong class="text-truncate"><?php echo $dropdown_nama; ?></strong>
-                                <small class="text-muted text-truncate"><?php echo $dropdown_email; ?></small>
+                                <strong class="text-truncate"><?= $dropdown_nama; ?></strong>
+                                <small class="text-muted text-truncate"><?= $dropdown_email; ?></small>
                             </div>
                         </li>
                         <li><hr class="dropdown-divider"></li>
                         <li><a class="dropdown-item" href="profile.php"><i class="bi bi-person"></i> Profil Saya</a></li>
-                        <li><hr class="dropdown-divider"></li>
                         <li><a id="logoutLink" class="dropdown-item text-danger" href="login.php"><i class="bi bi-box-arrow-right"></i> Keluar</a></li>
                     </ul>
                 </li>
