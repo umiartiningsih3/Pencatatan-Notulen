@@ -1,7 +1,6 @@
 <?php
 include "koneksi.php";
 
-// Ambil data utama rapat
 $judul        = $_POST['judul'];
 $tanggal      = $_POST['tanggal'];
 $waktu        = $_POST['waktu'];
@@ -12,7 +11,6 @@ $peserta      = $_POST['peserta'];
 $catatan      = $_POST['catatan'];
 $status       = $_POST['status'];
 
-// Simpan ke tabel rapat
 $query = "INSERT INTO rapat 
 (judul, tanggal, waktu, tempat, penyelenggara, notulis, peserta, catatan, status)
 VALUES 
@@ -20,16 +18,13 @@ VALUES
 
 mysqli_query($conn, $query);
 
-// Ambil ID rapat terakhir
 $id_rapat = mysqli_insert_id($conn);
 
-// Ambil array hasil rapat
 $topik         = $_POST['topik'];
 $pembahasan    = $_POST['pembahasan'];
 $tindak_lanjut = $_POST['tindak_lanjut'];
 $pic           = $_POST['pic'];
 
-// Simpan detail hasil rapat
 for ($i = 0; $i < count($topik); $i++) {
 
   if (!empty($topik[$i]) && !empty($pembahasan[$i])) {
@@ -43,7 +38,6 @@ for ($i = 0; $i < count($topik); $i++) {
   }
 }
 
-// Selesai
 echo "
 <script>
 alert('✅ Data rapat berhasil disimpan!');
