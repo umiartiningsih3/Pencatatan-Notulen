@@ -1,8 +1,6 @@
 <?php
-  // 1. Memulai Session untuk melacak user yang login
   session_start();
 
-  // 1. PROTEKSI HALAMAN
   if (!isset($_SESSION['id'])) {
     header("Location: login.php");
     exit();
@@ -11,13 +9,11 @@
   $user_id = $_SESSION['id']; 
   $activePage = basename($_SERVER['PHP_SELF']);
 
-  // ================= KONEKSI DATABASE =================
   $conn = mysqli_connect("localhost", "root", "", "notulen_db");
   if (!$conn) {
       die("Koneksi database gagal: " . mysqli_connect_error());
   }
 
-  // 4. AMBIL DATA PENGGUNA (Query Tunggal untuk semua kebutuhan Navbar)
   $query_profile = "SELECT nama_lengkap, email, foto_profile, role FROM pengguna WHERE id = ?";
   $stmt = mysqli_prepare($conn, $query_profile);
   mysqli_stmt_bind_param($stmt, "i", $user_id);
@@ -25,25 +21,20 @@
   $result = mysqli_stmt_get_result($stmt);
   $profile_db = mysqli_fetch_assoc($result);
 
-  // Jika data tidak ditemukan
   if (!$profile_db) {
     session_destroy();
     header("Location: login.php");
     exit();
   }
 
-  // Persiapan Variabel untuk digunakan di HTML
   $role_display = !empty($profile_db['role']) ? $profile_db['role'] : 'Notulis';
   $dropdown_nama = htmlspecialchars($profile_db['nama_lengkap']);
   $dropdown_email = htmlspecialchars($profile_db['email']);
   
-  // Logika Foto Profile: Jika di DB kosong, pakai default user.png
   $dropdown_foto = (!empty($profile_db['foto_profile']) && file_exists($profile_db['foto_profile'])) 
                    ? htmlspecialchars($profile_db['foto_profile']) 
                    : 'user.png';
 
-
-  // ================= AMBIL DATA NOTULEN UNTUK TABEL & STATISTIK =================
   $query = mysqli_query($conn, "SELECT judul, tanggal, notulis, status FROM rapat");
 
   $total_fallback = 0;
@@ -66,7 +57,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Dashboard Notulen Tracker</title>
+    <title>Dashboard</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
