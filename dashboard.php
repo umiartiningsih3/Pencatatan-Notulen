@@ -2,7 +2,13 @@
   // 1. Memulai Session untuk melacak user yang login
   session_start();
 
-  // Tentukan halaman aktif (digunakan untuk Navbar)
+  // 1. PROTEKSI HALAMAN
+  if (!isset($_SESSION['id'])) {
+    header("Location: login.php");
+    exit();
+  }
+
+  $user_id = $_SESSION['id']; 
   $activePage = basename($_SERVER['PHP_SELF']);
 
   // ================= KONEKSI DATABASE =================
@@ -11,38 +17,30 @@
       die("Koneksi database gagal: " . mysqli_connect_error());
   }
 
-  // 2. Ambil User ID dari Session (Jika tidak ada login, lempar ke login.php atau gunakan ID 1 sebagai default)
-  $user_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : 1; 
+  // 4. AMBIL DATA PENGGUNA (Query Tunggal untuk semua kebutuhan Navbar)
+  $query_profile = "SELECT nama_lengkap, email, foto_profile, role FROM pengguna WHERE id = ?";
+  $stmt = mysqli_prepare($conn, $query_profile);
+  mysqli_stmt_bind_param($stmt, "i", $user_id);
+  mysqli_stmt_execute($stmt);
+  $result = mysqli_stmt_get_result($stmt);
+  $profile_db = mysqli_fetch_assoc($result);
 
-  // Ambil Data Profil untuk Navbar (Tabel: notulis)
-$query_profile = "SELECT nama_lengkap, email, foto_profile FROM notulis WHERE id = ?";
-$stmt = mysqli_prepare($conn, $query_profile);
-mysqli_stmt_bind_param($stmt, "i", $user_id);
-mysqli_stmt_execute($stmt);
-$result_profile = mysqli_stmt_get_result($stmt);
+  // Jika data tidak ditemukan
+  if (!$profile_db) {
+    session_destroy();
+    header("Location: login.php");
+    exit();
+  }
 
-// Data default jika user_id tidak ditemukan atau kosong
-$profile_data = [
-    'nama_lengkap' => 'Notulis Tamu',
-    'email' => 'tamu@notulen.com',
-    // Pastikan ada gambar default dengan nama ini (misal: user.png) di folder Anda
-    'foto_profile' => 'user.png' 
-];
-
-if ($row = mysqli_fetch_assoc($result_profile)) {
-    $profile_data['nama_lengkap'] = $row['nama_lengkap'];
-    $profile_data['email'] = $row['email'];
-    
-    // Jika foto_profile dari DB kosong atau null, tetap gunakan default 'user.png'
-    if (!empty($row['foto_profile'])) { 
-        $profile_data['foto_profile'] = $row['foto_profile'];
-    }
-}
-
-// Variabel untuk digunakan di HTML
-$dropdown_email = htmlspecialchars($profile_data['email']);
-$dropdown_nama = htmlspecialchars($profile_data['nama_lengkap']);
-$dropdown_foto = htmlspecialchars($profile_data['foto_profile']);
+  // Persiapan Variabel untuk digunakan di HTML
+  $role_display = !empty($profile_db['role']) ? $profile_db['role'] : 'Notulis';
+  $dropdown_nama = htmlspecialchars($profile_db['nama_lengkap']);
+  $dropdown_email = htmlspecialchars($profile_db['email']);
+  
+  // Logika Foto Profile: Jika di DB kosong, pakai default user.png
+  $dropdown_foto = (!empty($profile_db['foto_profile']) && file_exists($profile_db['foto_profile'])) 
+                   ? htmlspecialchars($profile_db['foto_profile']) 
+                   : 'user.png';
 
 
   // ================= AMBIL DATA NOTULEN UNTUK TABEL & STATISTIK =================
@@ -91,69 +89,15 @@ $dropdown_foto = htmlspecialchars($profile_data['foto_profile']);
         .brand-name {font-size: 21px; font-weight: 700; color: #ffffff; letter-spacing: 0.3px; }
         .brand-tagline { font-size: 13px; color: #90caf9; letter-spacing: 1px; }
 
-        /* Dropdown User Info Styles (DIOPTIMALKAN UNTUK MENYERUPAI GAMBAR) */
-      .dropdown-menu {
-          /* Untuk memastikan menu dropdown tidak terlalu lebar */
-          min-width: 250px !important;
-          border-radius: 8px; /* Lebih halus */
-          padding: 0;
-      }
-      .dropdown-menu .user-info-header {
-        display: flex; 
-        align-items: center;
-        padding: 10px 15px;
-        margin-bottom: 0;
-      }
-      .dropdown-menu .user-avatar {
-        width: 50px; 
-        height: 50px;
-        border-radius: 50%; 
-        object-fit: cover;
-        margin-right: 12px;
-        background-color: #f0f0f0;
-      }
-      .dropdown-menu .user-text {
-          display: flex;
-          flex-direction: column;
-          overflow: hidden; 
-      }
-      .dropdown-menu .user-text strong {
-          font-size: 15px;
-          font-weight: 600;
-          line-height: 1.2;
-      }
-      .dropdown-menu .user-text small {
-        display: block;
-        font-size: 13px;
-        color: #6c757d; 
-        line-height: 1.2;
-      }
-      
-      /* Style untuk dropdown item dengan ikon */
-      .dropdown-menu .dropdown-item {
-        display: flex;
-        align-items: center;
-        padding: 5px 15px; 
-      }
-      
-      .dropdown-menu .dropdown-item i {
-        font-size: 1.1rem;
-        width: 20px; /* Lebar tetap untuk ikon */
-        text-align: center;
-        margin-right: 8px; /* Jarak antara ikon dan teks */
-      }
-      
-      /* Menghapus margin top bawaan small dari style lama */
-      .dropdown-menu .user-text small {
-        margin-top: 0; 
-      }
-      /* Akhir Dropdown User Info Styles */
-        .user-info-header { display: flex; align-items: center; padding: 10px 15px; }
-        .user-avatar { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; margin-right: 12px; background-color: #f0f0f0; }
-        .user-text { display: flex; flex-direction: column; overflow: hidden; }
-        .user-text strong { font-size: 15px; font-weight: 600; line-height: 1.2; }
-        .user-text small { font-size: 13px; color: #6c757d; }
-        
+        .dropdown-menu { min-width: 250px !important; border-radius: 8px; padding: 0; }
+        .dropdown-menu .user-info-header { display: flex; align-items: center; padding: 10px 15px; margin-bottom: 0; }
+        .dropdown-menu .user-avatar { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; margin-right: 12px; background-color: #f0f0f0; }
+        .dropdown-menu .user-text { display: flex; flex-direction: column; overflow: hidden; }
+        .dropdown-menu .user-text strong { font-size: 15px; font-weight: 600; line-height: 1.2; }
+        .dropdown-menu .user-text small { display: block; font-size: 13px; color: #6c757d; line-height: 1.2; }
+        .dropdown-menu .dropdown-item { display: flex; align-items: center; padding: 5px 15px; }
+        .dropdown-menu .dropdown-item i { font-size: 1.1rem; width: 20px; text-align: center; margin-right: 8px; }
+
         .dashboard-card { border: none; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); transition: transform 0.3s ease; }
         .dashboard-card:hover { transform: translateY(-5px); box-shadow: 0 8px 20px rgba(0,0,0,0.15); }
         .card-icon { font-size: 2.5rem; opacity: 0.6; }
@@ -185,8 +129,8 @@ $dropdown_foto = htmlspecialchars($profile_data['foto_profile']);
                 <li class="nav-item"><a class="nav-link" href="FAQ.php"><i class="bi bi-question-circle"></i> FAQ</a></li>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
-                        Notulis
-                    </a>
+                        <i class="bi bi-person-circle me-1"></i> <?php echo ucwords(htmlspecialchars($role_display)); ?>
+                    </a>    
                     <ul class="dropdown-menu dropdown-menu-end shadow">
                         <li class="user-info-header">
                             <img src="<?= $dropdown_foto; ?>" alt="Avatar" class="user-avatar">
