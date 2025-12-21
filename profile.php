@@ -1,5 +1,4 @@
 <?php
-// 1. Memulai Session dan Proteksi Halaman
 session_start();
 
 if (!isset($_SESSION['id'])) {
@@ -10,7 +9,6 @@ if (!isset($_SESSION['id'])) {
 $user_id = $_SESSION['id']; 
 $activePage = basename($_SERVER['PHP_SELF']);
 
-// 2. Koneksi Database
 $db_host = "localhost";
 $db_user = "root";
 $db_pass = "";
@@ -22,7 +20,6 @@ if (!$conn) {
     die("Koneksi database gagal: " . mysqli_connect_error());
 }
 
-// 3. Ambil Data Pengguna
 $query_profile = "SELECT * FROM pengguna WHERE id = ?";
 $stmt = mysqli_prepare($conn, $query_profile);
 mysqli_stmt_bind_param($stmt, "i", $user_id);
@@ -36,17 +33,13 @@ if (!$profile_data) {
     exit();
 }
 
-// 4. Persiapan Variabel Tampilan
 $role_display = !empty($profile_data['role']) ? $profile_data['role'] : 'Notulis';
 $dropdown_nama = htmlspecialchars($profile_data['nama_lengkap']);
 $dropdown_email = htmlspecialchars($profile_data['email']);
 
-// Logika Foto Profile
-$foto_path = (!empty($profile_data['foto_profile']) && file_exists($profile_data['foto_profile'])) 
-             ? htmlspecialchars($profile_data['foto_profile']) 
-             : 'user.png';
+$is_default_photo = empty($profile_data['foto_profile']) || !file_exists($profile_data['foto_profile']);
+$foto_path = (!$is_default_photo) ? htmlspecialchars($profile_data['foto_profile']) : 'user.png';
 
-// Formatting Tanggal Bergabung (Otomatis terisi saat login pertama kali di database)
 if (!empty($profile_data['bergabung_sejak']) && $profile_data['bergabung_sejak'] !== '0000-00-00') {
     $timestamp = strtotime($profile_data['bergabung_sejak']);
     $bulan_indonesia = [
@@ -55,7 +48,6 @@ if (!empty($profile_data['bergabung_sejak']) && $profile_data['bergabung_sejak']
     ];
     $formatted_date = date('d', $timestamp) . ' ' . $bulan_indonesia[date('n', $timestamp)] . ' ' . date('Y', $timestamp);
 } else {
-    // Jika di database belum tercatat (fallback)
     $formatted_date = "Baru Saja"; 
 }
 ?>
@@ -81,17 +73,13 @@ if (!empty($profile_data['bergabung_sejak']) && $profile_data['bergabung_sejak']
         .brand-name {font-size: 21px; font-weight: 700; color: #ffffff; letter-spacing: 0.3px; }
         .brand-tagline { font-size: 13px; color: #90caf9; letter-spacing: 1px; }
 
-        /* Dropdown Styles */
         .dropdown-menu { min-width: 250px !important; border-radius: 8px; padding: 0; }
         .dropdown-menu .user-info-header { display: flex; align-items: center; padding: 10px 15px; }
         .dropdown-menu .user-avatar { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; margin-right: 12px; background-color: #f0f0f0; }
         .dropdown-menu .user-text { display: flex; flex-direction: column; overflow: hidden; }
         .dropdown-menu .user-text strong { font-size: 15px; font-weight: 600; line-height: 1.2; }
         .dropdown-menu .user-text small { font-size: 13px; color: #6c757d; }
-        .dropdown-menu .dropdown-item { display: flex; align-items: center; padding: 8px 15px; }
-        .dropdown-menu .dropdown-item i { margin-right: 8px; }
-
-        /* Profile & Sidebar Card */
+        
         .profile-sidebar { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
         .profile-sidebar img.main-avatar { width: 120px; height: 120px; border-radius: 50%; object-fit: cover; border: 4px solid #0d6efd; transition: 0.3s; cursor: pointer; display: block; margin: 0 auto; }
         .profile-sidebar img.main-avatar:hover { opacity: 0.8; }
@@ -149,6 +137,15 @@ if (!empty($profile_data['bergabung_sejak']) && $profile_data['bergabung_sejak']
                     <div class="text-center">
                         <img id="fotoProfil" class="main-avatar" src="<?php echo $foto_path; ?>" alt="Foto Profil" title="Klik untuk ganti foto">
                         <input type="file" id="uploadFoto" accept="image/*" style="display: none;">
+                        
+                        <?php if (!$is_default_photo): ?>
+                        <div class="mt-2">
+                            <button type="button" id="btnHapusFoto" class="btn btn-sm btn-outline-danger border-0">
+                                <i class="bi bi-trash me-1"></i>Hapus Foto
+                            </button>
+                        </div>
+                        <?php endif; ?>
+
                         <h5 class="mt-3"><?php echo $dropdown_nama; ?></h5>
                         <p class="text-muted"><?php echo $dropdown_email; ?></p>
                         <span class="badge-peserta"><?php echo htmlspecialchars($profile_data['role']); ?></span>
@@ -167,7 +164,7 @@ if (!empty($profile_data['bergabung_sejak']) && $profile_data['bergabung_sejak']
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Email</label>
-                            <input type="email" class="form-control bg-light" value="<?php echo $dropdown_email; ?>" readonly title="Email tidak dapat diubah">
+                            <input type="email" class="form-control bg-light" value="<?php echo $dropdown_email; ?>" readonly>
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Program Studi</label>
@@ -208,7 +205,7 @@ if (!empty($profile_data['bergabung_sejak']) && $profile_data['bergabung_sejak']
         </div>
     </main>
 
-    <div class="modal fade" id="cropModal" tabindex="-1">
+    <div class="modal fade" id="cropModal" tabindex="-1" data-bs-backdrop="static">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
@@ -234,7 +231,6 @@ if (!empty($profile_data['bergabung_sejak']) && $profile_data['bergabung_sejak']
     <script>
     const userId = <?= json_encode($user_id); ?>;
 
-    // Update Nama
     document.getElementById('dataDiriForm').addEventListener('submit', function(e) {
         e.preventDefault();
         const btn = document.getElementById('btnSimpanData');
@@ -253,7 +249,6 @@ if (!empty($profile_data['bergabung_sejak']) && $profile_data['bergabung_sejak']
         .finally(() => btn.disabled = false);
     });
 
-    // Ganti Password
     document.getElementById('passwordForm').addEventListener('submit', function(e) {
         e.preventDefault();
         const passBaru = document.getElementById('passwordBaru').value;
@@ -277,7 +272,6 @@ if (!empty($profile_data['bergabung_sejak']) && $profile_data['bergabung_sejak']
         });
     });
 
-    // Crop & Upload Foto
     let croppieInst;
     const cropModal = new bootstrap.Modal(document.getElementById('cropModal'));
     const inputFoto = document.getElementById('uploadFoto');
@@ -285,12 +279,14 @@ if (!empty($profile_data['bergabung_sejak']) && $profile_data['bergabung_sejak']
     document.getElementById('fotoProfil').onclick = () => inputFoto.click();
 
     inputFoto.onchange = function() {
+        if (!this.files[0]) return;
         const reader = new FileReader();
         reader.onload = function(e) {
             if (croppieInst) croppieInst.destroy();
             croppieInst = new Croppie(document.getElementById('upload-crop-area'), {
                 viewport: { width: 180, height: 180, type: 'circle' },
-                boundary: { width: 300, height: 300 }
+                boundary: { width: 300, height: 300 },
+                showZoomer: true
             });
             croppieInst.bind({ url: e.target.result });
             cropModal.show();
@@ -299,7 +295,10 @@ if (!empty($profile_data['bergabung_sejak']) && $profile_data['bergabung_sejak']
     };
 
     document.getElementById('cropButton').onclick = function() {
-        croppieInst.result('blob').then(blob => {
+        this.disabled = true;
+        this.innerText = 'Memproses...';
+        
+        croppieInst.result({ type: 'blob', size: 'viewport', format: 'jpeg' }).then(blob => {
             const fd = new FormData();
             fd.append('profile_picture', blob, 'avatar.jpg');
             fd.append('user_id', userId);
@@ -309,9 +308,31 @@ if (!empty($profile_data['bergabung_sejak']) && $profile_data['bergabung_sejak']
             .then(data => {
                 alert(data.message);
                 if (data.status === 'success') location.reload();
+            })
+            .finally(() => {
+                this.disabled = false;
+                this.innerText = 'Simpan Foto';
             });
         });
     };
+
+    const btnHapusFoto = document.getElementById('btnHapusFoto');
+    if (btnHapusFoto) {
+        btnHapusFoto.onclick = function() {
+            if (confirm('Apakah Anda yakin ingin menghapus foto profil?')) {
+                const fd = new FormData();
+                fd.append('action', 'delete_photo');
+                fd.append('user_id', userId);
+
+                fetch('upload_profile_picture.php', { method: 'POST', body: fd })
+                .then(res => res.json())
+                .then(data => {
+                    alert(data.message);
+                    if (data.status === 'success') location.reload();
+                });
+            }
+        };
+    }
     </script>
 </body>
 </html>
