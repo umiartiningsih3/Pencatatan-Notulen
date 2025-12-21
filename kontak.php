@@ -172,10 +172,10 @@ if (isset($stmt) && $stmt) {
 }
 
 .brand-pro img {
-  width: 42px;
-  height: 42px;
+  width: 50px;
+  height: 50px;
   border-radius: 100px;
-  padding: 6px;
+  padding: 0px;
   background: linear-gradient(135deg, #ffffff, #e3f2fd);
   transition: all 0.35s ease;
 }
@@ -204,56 +204,63 @@ if (isset($stmt) && $stmt) {
   transform: scale(1.08) rotate(-4deg);
   box-shadow: 0 8px 25px rgba(144,202,249,0.45);
 }
-    /* Dropdown User Info Styles (DIOPTIMALKAN) */
-    .dropdown-menu {
-        min-width: 250px !important;
-        border-radius: 8px;
-        padding: 0;
-    }
-    .dropdown-menu .user-info-header {
-      display: flex; 
-      align-items: center;
-      padding: 10px 15px;
-      margin-bottom: 0;
-    }
-    .dropdown-menu .user-avatar {
-      width: 40px; 
-      height: 40px;
-      border-radius: 50%; 
-      object-fit: cover;
-      margin-right: 12px;
-      background-color: #f0f0f0;
-    }
-    .dropdown-menu .user-text {
-        display: flex;
-        flex-direction: column;
-        overflow: hidden; 
-    }
-    .dropdown-menu .user-text strong {
-        font-size: 15px;
-        font-weight: 600;
+/* Dropdown User Info Styles (DIOPTIMALKAN UNTUK MENYERUPAI GAMBAR) */
+      .dropdown-menu {
+          /* Untuk memastikan menu dropdown tidak terlalu lebar */
+          min-width: 250px !important;
+          border-radius: 8px; /* Lebih halus */
+          padding: 0;
+      }
+      .dropdown-menu .user-info-header {
+        display: flex; 
+        align-items: center;
+        padding: 10px 15px;
+        margin-bottom: 0;
+      }
+      .dropdown-menu .user-avatar {
+        width: 50px; 
+        height: 50px;
+        border-radius: 50%; 
+        object-fit: cover;
+        margin-right: 12px;
+        background-color: #f0f0f0;
+      }
+      .dropdown-menu .user-text {
+          display: flex;
+          flex-direction: column;
+          overflow: hidden; 
+      }
+      .dropdown-menu .user-text strong {
+          font-size: 15px;
+          font-weight: 600;
+          line-height: 1.2;
+      }
+      .dropdown-menu .user-text small {
+        display: block;
+        font-size: 13px;
+        color: #6c757d; 
         line-height: 1.2;
-    }
-    .dropdown-menu .user-text small {
-      display: block;
-      font-size: 13px;
-      color: #6c757d; 
-      line-height: 1.2;
-      margin-top: 0; 
-    }
-    /* Style untuk dropdown item dengan ikon */
-    .dropdown-menu .dropdown-item {
-      display: flex;
-      align-items: center;
-      padding: 8px 15px; 
-    }
-    
-    .dropdown-menu .dropdown-item i {
-      font-size: 1.1rem;
-      width: 20px; 
-      text-align: center;
-      margin-right: 8px; 
-    }
+      }
+      
+      /* Style untuk dropdown item dengan ikon */
+      .dropdown-menu .dropdown-item {
+        display: flex;
+        align-items: center;
+        padding: 5px 15px; 
+      }
+      
+      .dropdown-menu .dropdown-item i {
+        font-size: 1.1rem;
+        width: 20px; /* Lebar tetap untuk ikon */
+        text-align: center;
+        margin-right: 8px; /* Jarak antara ikon dan teks */
+      }
+      
+      /* Menghapus margin top bawaan small dari style lama */
+      .dropdown-menu .user-text small {
+        margin-top: 0; 
+      }
+      /* Akhir Dropdown User Info Styles */
 
     /* Konten */
     main {
