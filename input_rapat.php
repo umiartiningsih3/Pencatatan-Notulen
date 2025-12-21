@@ -1,8 +1,6 @@
 <?php
-  // 1. Memulai Session untuk melacak user yang login
   session_start();
 
-  // 1. PROTEKSI HALAMAN
   if (!isset($_SESSION['id'])) {
     header("Location: login.php");
     exit();
@@ -11,13 +9,11 @@
   $user_id = $_SESSION['id']; 
   $activePage = basename($_SERVER['PHP_SELF']);
 
-  // ================= KONEKSI DATABASE =================
   $conn = mysqli_connect("localhost", "root", "", "notulen_db");
   if (!$conn) {
       die("Koneksi database gagal: " . mysqli_connect_error());
   }
 
-  // 4. AMBIL DATA PENGGUNA (Query Tunggal untuk semua kebutuhan Navbar)
   $query_profile = "SELECT nama_lengkap, email, foto_profile, role FROM pengguna WHERE id = ?";
   $stmt = mysqli_prepare($conn, $query_profile);
   mysqli_stmt_bind_param($stmt, "i", $user_id);
@@ -25,20 +21,16 @@
   $result = mysqli_stmt_get_result($stmt);
   $profile_db = mysqli_fetch_assoc($result);
 
-  // Jika data tidak ditemukan
   if (!$profile_db) {
     session_destroy();
     header("Location: login.php");
     exit();
   }
 
-  // Persiapan Variabel untuk digunakan di HTML
   $role_display = !empty($profile_db['role']) ? $profile_db['role'] : 'Notulis';
   $dropdown_nama = htmlspecialchars($profile_db['nama_lengkap']);
   $dropdown_email = htmlspecialchars($profile_db['email']);
   
-  // --- PERBAIKAN LOGIKA FOTO PROFILE ---
-  // Gunakan variabel tunggal $dropdown_foto agar konsisten
   $dropdown_foto = (!empty($profile_db['foto_profile']) && file_exists($profile_db['foto_profile'])) 
                    ? htmlspecialchars($profile_db['foto_profile']) 
                    : 'user.png';
@@ -53,7 +45,7 @@ if (isset($stmt)) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Input Arsip Rapat | Notulen Tracker</title>
+    <title>Input Rapat</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
@@ -70,11 +62,9 @@ if (isset($stmt)) {
         .brand-pro img { width: 50px; height: 50px; border-radius: 100px; background: linear-gradient(135deg, #ffffff, #e3f2fd); transition: all 0.35s ease; }
         .brand-name { font-size: 21px; font-weight: 700; color: #ffffff; }
         .brand-tagline { font-size: 13px; color: #90caf9; }
-        /* Dropdown User Info Styles (DIOPTIMALKAN UNTUK MENYERUPAI GAMBAR) */
       .dropdown-menu {
-          /* Untuk memastikan menu dropdown tidak terlalu lebar */
           min-width: 250px !important;
-          border-radius: 8px; /* Lebih halus */
+          border-radius: 8px;
           padding: 0;
       }
       .dropdown-menu .user-info-header {
@@ -108,7 +98,6 @@ if (isset($stmt)) {
         line-height: 1.2;
       }
       
-      /* Style untuk dropdown item dengan ikon */
       .dropdown-menu .dropdown-item {
         display: flex;
         align-items: center;
@@ -117,16 +106,14 @@ if (isset($stmt)) {
       
       .dropdown-menu .dropdown-item i {
         font-size: 1.1rem;
-        width: 20px; /* Lebar tetap untuk ikon */
+        width: 20px; 
         text-align: center;
-        margin-right: 8px; /* Jarak antara ikon dan teks */
+        margin-right: 8px; 
       }
       
-      /* Menghapus margin top bawaan small dari style lama */
       .dropdown-menu .user-text small {
         margin-top: 0; 
       }
-      /* Akhir Dropdown User Info Styles */
         footer { background-color: #003366; color: white; text-align: center; padding: 15px 0; margin-top: auto; }
 
         .brand-info {
@@ -143,12 +130,10 @@ if (isset($stmt)) {
         }
         .brand-tagline { font-size: 13px; color: #90caf9; letter-spacing: 1px; }
 
-        /* Card */
         .card {
             border-radius: 12px;
         }
 
-        /* Table Textarea Styling */
         #tabelHasil textarea {
             width: 100%;
             border: none;
@@ -166,7 +151,6 @@ if (isset($stmt)) {
             word-break: break-word;
         }
 
-        /* Footer */
         footer {
             background-color: #003366;
             color: white;
@@ -337,7 +321,6 @@ if (isset($stmt)) {
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // Otomatis tinggi textarea sesuai isi
         document.addEventListener("input", function (e) {
             if (e.target.tagName.toLowerCase() === "textarea") {
                 e.target.style.height = "auto";
@@ -345,7 +328,6 @@ if (isset($stmt)) {
             }
         });
 
-        // Tambah baris tabel
         document.getElementById("tambahBaris").addEventListener("click", () => {
             const tbody = document.querySelector("#tabelHasil tbody");
             const rowCount = tbody.rows.length + 1;
@@ -359,20 +341,17 @@ if (isset($stmt)) {
                     <td><button type="button" class="btn btn-danger btn-sm" onclick="hapusBaris(this)">Hapus</button></td>
                 </tr>`;
             tbody.insertAdjacentHTML("beforeend", newRow);
-            // Auto-size textarea setelah ditambahkan
             tbody.lastElementChild.querySelectorAll('textarea').forEach(textarea => {
                 textarea.style.height = 'auto';
             });
         });
 
-        // Hapus baris tabel
         function hapusBaris(btn) {
             btn.closest("tr").remove();
             const rows = document.querySelectorAll("#tabelHasil tbody tr");
             rows.forEach((r, i) => r.cells[0].textContent = i + 1);
         }
 
-        // Batal
         document.getElementById("btnBatal").addEventListener("click", () => {
             if (confirm("Apakah Anda yakin ingin membatalkan?")) {
                 window.location.href = "daftar_notulen.php";
@@ -381,7 +360,6 @@ if (isset($stmt)) {
     </script>
 
     <script>
-    // Fungsi logout melalui menu dropdown
     document.getElementById("logoutLink").addEventListener("click", (e) => {
         e.preventDefault();
         const konfirmasi = confirm("Apakah Anda yakin ingin keluar dari Notulen Tracker?");
@@ -407,7 +385,6 @@ if (isset($stmt)) {
         if (!waktu) error.push("Waktu wajib diisi");
         if (!notulis) error.push("Notulis wajib diisi");
 
-        // VALIDASI TABEL HASIL RAPAT
         const rows = document.querySelectorAll("#tabelHasil tbody tr");
         let adaIsi = false;
         let hasIncompleteRow = false;
@@ -424,7 +401,6 @@ if (isset($stmt)) {
                 adaIsi = true;
             }
 
-            // VALIDASI SEL TIDAK BOLEH SETENGAH KOSONG (kecuali jika semua kosong)
             if (isi > 0 && isi < cells.length) { 
                 hasIncompleteRow = true;
                 error.push("Baris Hasil Rapat No. " + (i + 1) + " harus diisi lengkap (Topik, Pembahasan, Tindak Lanjut, PIC) atau dikosongkan.");
@@ -446,13 +422,11 @@ if (isset($stmt)) {
             return;
         }
 
-        // Jika semua validasi dilewati, submit form.
-        this.submit(); // lanjut ke PHP (input_hasil.php)
+        this.submit(); 
     });
     </script>
 
     <?php
-    // Tutup koneksi database
     if (isset($conn)) {
         mysqli_close($conn);
     }
