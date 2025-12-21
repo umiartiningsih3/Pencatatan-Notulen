@@ -1,82 +1,64 @@
 <?php
-  // 1. Memulai Session untuk melacak user yang login
-  session_start();
+session_start();
 
-  // 1. PROTEKSI HALAMAN
-  if (!isset($_SESSION['id'])) {
-    header("Location: login.php");
-    exit();
-  }
+if (!isset($_SESSION['id'])) {
+  header("Location: login.php");
+  exit();
+}
 
-  $user_id = $_SESSION['id']; 
-  $activePage = basename($_SERVER['PHP_SELF']);
+$user_id = $_SESSION['id']; 
+$activePage = basename($_SERVER['PHP_SELF']);
 
-  // ================= KONEKSI DATABASE =================
-  $conn = mysqli_connect("localhost", "root", "", "notulen_db");
-  if (!$conn) {
-      die("Koneksi database gagal: " . mysqli_connect_error());
-  }
+$conn = mysqli_connect("localhost", "root", "", "notulen_db");
+if (!$conn) {
+  die("Koneksi database gagal: " . mysqli_connect_error());
+}
 
-  // 4. AMBIL DATA PENGGUNA (Query Tunggal untuk semua kebutuhan Navbar)
-  $query_profile = "SELECT nama_lengkap, email, foto_profile, role FROM pengguna WHERE id = ?";
-  $stmt = mysqli_prepare($conn, $query_profile);
-  mysqli_stmt_bind_param($stmt, "i", $user_id);
-  mysqli_stmt_execute($stmt);
-  $result = mysqli_stmt_get_result($stmt);
-  $profile_db = mysqli_fetch_assoc($result);
+$query_profile = "SELECT nama_lengkap, email, foto_profile, role FROM pengguna WHERE id = ?";
+$stmt = mysqli_prepare($conn, $query_profile);
+mysqli_stmt_bind_param($stmt, "i", $user_id);
+mysqli_stmt_execute($stmt);
+$result = mysqli_stmt_get_result($stmt);
+$profile_db = mysqli_fetch_assoc($result);
 
-  // Jika data tidak ditemukan
-  if (!$profile_db) {
-    session_destroy();
-    header("Location: login.php");
-    exit();
-  }
+if (!$profile_db) {
+  session_destroy();
+  header("Location: login.php");
+  exit();
+}
 
-  // Persiapan Variabel untuk digunakan di HTML
-  $role_display = !empty($profile_db['role']) ? $profile_db['role'] : 'Notulis';
-  $dropdown_nama = htmlspecialchars($profile_db['nama_lengkap']);
-  $dropdown_email = htmlspecialchars($profile_db['email']);
+$role_display = !empty($profile_db['role']) ? $profile_db['role'] : 'Notulis';
+$dropdown_nama = htmlspecialchars($profile_db['nama_lengkap']);
+$dropdown_email = htmlspecialchars($profile_db['email']);
   
-  // Logika Foto Profile: Jika di DB kosong, pakai default user.png
-  $dropdown_foto = (!empty($profile_db['foto_profile']) && file_exists($profile_db['foto_profile'])) 
-                   ? htmlspecialchars($profile_db['foto_profile']) 
-                   : 'user.png';
-
-
-// ==========================================================
-// 2. PROSES SUBMIT FORM KONTAK
-// ==========================================================
+$dropdown_foto = (!empty($profile_db['foto_profile']) && file_exists($profile_db['foto_profile'])) 
+? htmlspecialchars($profile_db['foto_profile']) 
+: 'user.png';
 
 $pesan_terkirim = false;
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Sanitize input
-    $nama = mysqli_real_escape_string($conn, $_POST['nama']);
-    $email = mysqli_real_escape_string($conn, $_POST['email']);
-    $pesan = mysqli_real_escape_string($conn, $_POST['pesan']);
+  
+  $nama = mysqli_real_escape_string($conn, $_POST['nama']);
+  $email = mysqli_real_escape_string($conn, $_POST['email']);
+  $pesan = mysqli_real_escape_string($conn, $_POST['pesan']);
 
-    $sql_insert = "INSERT INTO kontak (nama, email, pesan) VALUES (?, ?, ?)";
-    $stmt_insert = mysqli_prepare($conn, $sql_insert);
-    mysqli_stmt_bind_param($stmt_insert, "sss", $nama, $email, $pesan);
+  $sql_insert = "INSERT INTO kontak (nama, email, pesan) VALUES (?, ?, ?)";
+  $stmt_insert = mysqli_prepare($conn, $sql_insert);
+  mysqli_stmt_bind_param($stmt_insert, "sss", $nama, $email, $pesan);
     
-    if (mysqli_stmt_execute($stmt_insert)) {
-        // Jika berhasil, gunakan header redirect untuk mencegah resubmission form
-        // dan menampilkan pesan sukses
-        header("Location: kontak.php?status=success");
-        exit();
-    } else {
-        // Jika gagal, bisa diarahkan ke halaman dengan status error
-        // header("Location: kontak.php?status=error");
-        // exit();
-    }
-    mysqli_stmt_close($stmt_insert);
+  if (mysqli_stmt_execute($stmt_insert)) {
+    header("Location: kontak.php?status=success");
+    exit();
+  } else {
+
+  }
+  mysqli_stmt_close($stmt_insert);
 }
 
-// Cek status dari URL setelah redirect
 if (isset($_GET['status']) && $_GET['status'] == 'success') {
     $pesan_terkirim = true;
 }
 
-// Tutup statement profile (jika sudah dibuka)
 if (isset($stmt) && $stmt) { 
     mysqli_stmt_close($stmt);
 }
@@ -102,21 +84,19 @@ if (isset($stmt) && $stmt) {
       padding-top: 80px;
     }
 
-    /* Navbar utama */
-.custom-navbar {
-  background-color: #003366;
-  height: 70px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+    .custom-navbar {
+      background-color: #003366;
+      height: 70px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+    }
+
+.nav-effect {
+  gap: 10px;
 }
 
-/* List navbar */
-.nav-effect {
-  gap: 10px; /* 🔹 jarak antar item */
-}
-/* Item navbar */
 .nav-effect .nav-link {
   color: #dce3ea !important;
-  padding: 10px 18px; /* 🔹 jarak dalam */
+  padding: 10px 18px; 
   border-radius: 12px;
   display: flex;
   align-items: center;
@@ -126,37 +106,30 @@ if (isset($stmt) && $stmt) {
   position: relative;
 }
 
-/* Hover */
 .navbar-nav .nav-link:hover {
   background: rgba(255,255,255,0.08);
   color: #ffffff !important;
 }
 
-/* Active page */
 .navbar-nav .nav-link.active {
   background: rgba(255,255,255,0.15);
   color: #ffffff !important;
   font-weight: 600;
 }
 
-/* Icon */
 .nav-effect .nav-link i {
   font-size: 1.1rem;
   transition: transform 0.3s ease;
 }
 
-/* Icon animasi */
 .nav-effect .nav-link:hover i {
   transform: scale(1.15);
 }
 
-/* Active icon */
 .nav-effect .nav-link.active i {
   color: #0d6efd;
 }
 
-
-/* ===== BRAND PRO ===== */
 .brand-pro {
   display: flex;
   align-items: center;
@@ -192,16 +165,13 @@ if (isset($stmt) && $stmt) {
   letter-spacing: 1px;
 }
 
-/* Hover brand */
 .brand-pro:hover img {
   transform: scale(1.08) rotate(-4deg);
   box-shadow: 0 8px 25px rgba(144,202,249,0.45);
 }
-/* Dropdown User Info Styles (DIOPTIMALKAN UNTUK MENYERUPAI GAMBAR) */
       .dropdown-menu {
-          /* Untuk memastikan menu dropdown tidak terlalu lebar */
           min-width: 250px !important;
-          border-radius: 8px; /* Lebih halus */
+          border-radius: 8px;
           padding: 0;
       }
       .dropdown-menu .user-info-header {
@@ -235,7 +205,6 @@ if (isset($stmt) && $stmt) {
         line-height: 1.2;
       }
       
-      /* Style untuk dropdown item dengan ikon */
       .dropdown-menu .dropdown-item {
         display: flex;
         align-items: center;
@@ -244,18 +213,15 @@ if (isset($stmt) && $stmt) {
       
       .dropdown-menu .dropdown-item i {
         font-size: 1.1rem;
-        width: 20px; /* Lebar tetap untuk ikon */
+        width: 20px;
         text-align: center;
-        margin-right: 8px; /* Jarak antara ikon dan teks */
+        margin-right: 8px;
       }
       
-      /* Menghapus margin top bawaan small dari style lama */
       .dropdown-menu .user-text small {
         margin-top: 0; 
       }
-      /* Akhir Dropdown User Info Styles */
 
-    /* Konten */
     main {
       flex: 1;
     }
@@ -279,7 +245,6 @@ if (isset($stmt) && $stmt) {
       background-color: #303f9f;
     }
 
-    /* Footer */
     footer {
       background-color: #003366;
       color: white;
@@ -407,7 +372,6 @@ if (isset($stmt) && $stmt) {
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
   <script>
-  // Fungsi logout melalui menu dropdown
   document.getElementById("logoutLink").addEventListener("click", (e) => {
     e.preventDefault();
     const konfirmasi = confirm("Apakah Anda yakin ingin keluar dari Notulen Tracker?");
@@ -418,7 +382,6 @@ if (isset($stmt) && $stmt) {
 </script>
 
 <?php
-// Tutup koneksi database
 if (isset($conn)) {
     mysqli_close($conn);
 }
