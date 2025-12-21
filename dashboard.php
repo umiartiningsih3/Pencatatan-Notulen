@@ -1,37 +1,42 @@
 <?php
-$activePage = basename($_SERVER['PHP_SELF']);
-// ================= KONEKSI DATABASE =================
-$conn = mysqli_connect("localhost", "root", "", "notulen_db");
-if (!$conn) {
-    die("Koneksi database gagal: " . mysqli_connect_error());
-}
+  // 1. Memulai Session untuk melacak user yang login
+  session_start();
 
-// 🚨 ASUMSI USER ID (GANTI DENGAN SESSION SETELAH LOGIN)
-$user_id = 1; 
+  // Tentukan halaman aktif (digunakan untuk Navbar)
+  $activePage = basename($_SERVER['PHP_SELF']);
 
-// ================= AMBIL DATA PROFIL UNTUK DROPDOWN =================
+  // ================= KONEKSI DATABASE =================
+  $conn = mysqli_connect("localhost", "root", "", "notulen_db");
+  if (!$conn) {
+      die("Koneksi database gagal: " . mysqli_connect_error());
+  }
+
+  // 2. Ambil User ID dari Session (Jika tidak ada login, lempar ke login.php atau gunakan ID 1 sebagai default)
+  $user_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : 1; 
+
+  // Ambil Data Profil untuk Navbar (Tabel: notulis)
 $query_profile = "SELECT nama_lengkap, email, foto_profile FROM notulis WHERE id = ?";
 $stmt = mysqli_prepare($conn, $query_profile);
+mysqli_stmt_bind_param($stmt, "i", $user_id);
+mysqli_stmt_execute($stmt);
+$result_profile = mysqli_stmt_get_result($stmt);
 
-// Data default jika user_id tidak ditemukan atau koneksi gagal
+// Data default jika user_id tidak ditemukan atau kosong
 $profile_data = [
     'nama_lengkap' => 'Notulis Tamu',
     'email' => 'tamu@notulen.com',
+    // Pastikan ada gambar default dengan nama ini (misal: user.png) di folder Anda
     'foto_profile' => 'user.png' 
 ];
 
-if ($stmt) {
-    mysqli_stmt_bind_param($stmt, "i", $user_id);
-    mysqli_stmt_execute($stmt);
-    $result_profile = mysqli_stmt_get_result($stmt);
-    if ($row = mysqli_fetch_assoc($result_profile)) {
-        $profile_data['nama_lengkap'] = $row['nama_lengkap'];
-        $profile_data['email'] = $row['email'];
-        if (!empty($row['foto_profile'])) {
-            $profile_data['foto_profile'] = $row['foto_profile'];
-        }
+if ($row = mysqli_fetch_assoc($result_profile)) {
+    $profile_data['nama_lengkap'] = $row['nama_lengkap'];
+    $profile_data['email'] = $row['email'];
+    
+    // Jika foto_profile dari DB kosong atau null, tetap gunakan default 'user.png'
+    if (!empty($row['foto_profile'])) { 
+        $profile_data['foto_profile'] = $row['foto_profile'];
     }
-    mysqli_stmt_close($stmt);
 }
 
 // Variabel untuk digunakan di HTML
@@ -40,27 +45,24 @@ $dropdown_nama = htmlspecialchars($profile_data['nama_lengkap']);
 $dropdown_foto = htmlspecialchars($profile_data['foto_profile']);
 
 
-// ================= AMBIL DATA NOTULEN (STATISTIK) =================
-$query = mysqli_query($conn, "SELECT judul, tanggal, notulis, status FROM rapat");
+  // ================= AMBIL DATA NOTULEN UNTUK TABEL & STATISTIK =================
+  $query = mysqli_query($conn, "SELECT judul, tanggal, notulis, status FROM rapat");
 
-$total = 0;
-$selesai = 0;
-$belum = 0;
-$dataTabel = [];
+  $total_fallback = 0;
+  $selesai_fallback = 0;
+  $belum_fallback = 0;
+  $dataTabel = [];
 
-while ($row = mysqli_fetch_assoc($query)) {
-    $total++;
-
-    if ($row['status'] === 'Selesai') {
-        $selesai++;
-    } elseif ($row['status'] === 'Belum Selesai') {
-        $belum++;
-    }
-
-    $dataTabel[] = $row;
-}
+  while ($row = mysqli_fetch_assoc($query)) {
+      $total_fallback++;
+      if ($row['status'] === 'Selesai') {
+          $selesai_fallback++;
+      } elseif ($row['status'] === 'Belum Selesai') {
+          $belum_fallback++;
+      }
+      $dataTabel[] = $row;
+  }
 ?>
-
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -74,206 +76,38 @@ while ($row = mysqli_fetch_assoc($query)) {
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0"></script>
     <style>
-        html, body {
-            height: 100%;
-            margin: 0;
-            display: flex;
-            flex-direction: column;
-        }
-        body {
-            font-family: 'Poppins', sans-serif;
-            background-color: #f5f7fa;
-            padding-top: 80px;
-        }
-        /* =================================================== */
-        /* START: NAVBAR & BRAND PRO STYLES */
-        /* =================================================== */
+        html, body { height: 100%; margin: 0; display: flex; flex-direction: column; }
+        body { font-family: 'Poppins', sans-serif; background-color: #f5f7fa; padding-top: 80px; }
+        
+        .custom-navbar { background-color: #003366; height: 70px; box-shadow: 0 4px 12px rgba(0,0,0,0.12); }
+        .nav-effect { gap: 10px; }
+        .nav-effect .nav-link { color: #dce3ea !important; padding: 10px 18px; border-radius: 12px; display: flex; align-items: center; gap: 10px; font-weight: 500; transition: all 0.3s ease; }
+        .navbar-nav .nav-link:hover { background: rgba(255,255,255,0.08); color: #ffffff !important; }
+        .navbar-nav .nav-link.active { background: rgba(255,255,255,0.15); color: #ffffff !important; font-weight: 600; }
+        
+        .brand-pro { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+        .brand-info { display: flex; flex-direction: column; line-height: 1.1;}
+        .brand-pro img { width: 50px; height: 50px; border-radius: 100px; background: linear-gradient(135deg, #ffffff, #e3f2fd); transition: all 0.35s ease; }
+        .brand-name {font-size: 21px; font-weight: 700; color: #ffffff; letter-spacing: 0.3px; }
+        .brand-tagline { font-size: 13px; color: #90caf9; letter-spacing: 1px; }
 
-        /* Navbar utama */
-        .custom-navbar {
-            background-color: #003366;
-            height: 70px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.12);
-        }
-
-        /* List navbar */
-        .nav-effect {
-            gap: 10px; /* 🔹 jarak antar item */
-        }
-        /* Item navbar */
-        .nav-effect .nav-link {
-            color: #dce3ea !important;
-            padding: 10px 18px; /* 🔹 jarak dalam */
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            position: relative;
-        }
-
-        /* Hover */
-        .navbar-nav .nav-link:hover {
-            background: rgba(255,255,255,0.08);
-            color: #ffffff !important;
-        }
-
-        /* Active page */
-        .navbar-nav .nav-link.active {
-            background: rgba(255,255,255,0.15);
-            color: #ffffff !important;
-            font-weight: 600;
-        }
-
-        /* Icon */
-        .nav-effect .nav-link i {
-            font-size: 1.1rem;
-            transition: transform 0.3s ease;
-        }
-
-        /* Icon animasi */
-        .nav-effect .nav-link:hover i {
-            transform: scale(1.15);
-        }
-
-        /* Active icon */
-        .nav-effect .nav-link.active i {
-            color: #0d6efd;
-        }
-
-
-        /* ===== BRAND PRO ===== */
-        .brand-pro {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            text-decoration: none;
-        }
-
-        .brand-pro img {
-            width: 42px;
-            height: 42px;
-            border-radius: 100px;
-            padding: 6px;
-            background: linear-gradient(135deg, #ffffff, #e3f2fd);
-            transition: all 0.35s ease;
-        }
-
-        .brand-info {
-            display: flex;
-            flex-direction: column;
-            line-height: 1.1;
-        }
-
-        .brand-name {
-            font-size: 21px;
-            font-weight: 700;
-            color: #ffffff;
-            letter-spacing: 0.3px;
-        }
-
-        .brand-tagline {
-            font-size: 13px;
-            color: #90caf9;
-            letter-spacing: 1px;
-        }
-
-        /* Hover brand */
-        .brand-pro:hover img {
-            transform: scale(1.08) rotate(-4deg);
-            box-shadow: 0 8px 25px rgba(144,202,249,0.45);
-        }
-        /* =================================================== */
-        /* END: NAVBAR & BRAND PRO STYLES */
-        /* =================================================== */
-
-
-        /* =================================================== */
-        /* START: DROPDOWN STYLES (DIPERLUKAN UNTUK PROFIL) */
-        /* =================================================== */
-        .dropdown-menu {
-            min-width: 250px !important;
-            border-radius: 8px;
-            padding: 0;
-        }
-        .dropdown-menu .user-info-header {
-            display: flex; 
-            align-items: center;
-            padding: 10px 15px;
-            margin-bottom: 0;
-        }
-        .dropdown-menu .user-avatar {
-            width: 40px; 
-            height: 40px;
-            border-radius: 50%; 
-            object-fit: cover;
-            margin-right: 12px;
-            background-color: #f0f0f0;
-        }
-        .dropdown-menu .user-text {
-            display: flex;
-            flex-direction: column;
-            overflow: hidden; 
-        }
-        .dropdown-menu .user-text strong {
-            font-size: 15px;
-            font-weight: 600;
-            line-height: 1.2;
-        }
-        .dropdown-menu .user-text small {
-            display: block;
-            font-size: 13px;
-            color: #6c757d; 
-            line-height: 1.2;
-            margin-top: 0; 
-        }
-        .dropdown-menu .dropdown-item {
-            display: flex;
-            align-items: center;
-            padding: 8px 15px; 
-        }
-        .dropdown-menu .dropdown-item i {
-            font-size: 1.1rem;
-            width: 20px; 
-            text-align: center;
-            margin-right: 8px; 
-        }
-        /* =================================================== */
-        /* END: DROPDOWN STYLES */
-        /* =================================================== */
-
-
-        /* Gaya Khusus Dashboard */
-        .container-main {
-            padding: 20px 15px;
-            flex: 1; /* Kontainer utama mengambil ruang yang tersisa */
-        }
-        #notulenTable thead th {
-            background-color: #003366;
-            color: white;
-            font-weight: bold;
-            text-align: center;
-        }
-        footer {
-            background-color: #003366;
-            color: white;
-            text-align: center;
-            padding: 15px 0;
-            font-size: 0.9rem;
-            margin-top: auto;
-        }
+        .dropdown-menu { min-width: 250px !important; border-radius: 8px; padding: 0; }
+        .user-info-header { display: flex; align-items: center; padding: 10px 15px; }
+        .user-avatar { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; margin-right: 12px; background-color: #f0f0f0; }
+        .user-text { display: flex; flex-direction: column; overflow: hidden; }
+        .user-text strong { font-size: 15px; font-weight: 600; line-height: 1.2; }
+        .user-text small { font-size: 13px; color: #6c757d; }
+        
+        .dashboard-card { border: none; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); transition: transform 0.3s ease; }
+        .dashboard-card:hover { transform: translateY(-5px); box-shadow: 0 8px 20px rgba(0,0,0,0.15); }
+        .card-icon { font-size: 2.5rem; opacity: 0.6; }
+        .card-value { font-size: 2.5rem; font-weight: 700; }
+        
+        footer { background-color: #003366; color: white; text-align: center; padding: 15px 0; margin-top: auto; }
     </style>
 </head>
 
 <body>
-
-<div class="container container-main">
-    <header class="text-center mt-4 mb-5">
-        <h1 class="fw-bold text-primary">Selamat Datang di Notulen Tracker!</h1>
-        <p class="lead">Solusi digital terbaik untuk kebutuhan rapat Anda.</p>
-    </header>
-
     <nav class="navbar navbar-expand-lg navbar-dark fixed-top px-4 custom-navbar">
         <a class="navbar-brand brand-pro" href="dashboard.php">
             <img src="logono.jpeg" alt="Logo">
@@ -283,59 +117,30 @@ while ($row = mysqli_fetch_assoc($query)) {
             </div>
         </a>
 
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
             <span class="navbar-toggler-icon"></span>
         </button>
 
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ms-auto nav-effect">
-                <li class="nav-item">
-                    <a class="nav-link active" href="dashboard.php">
-                        <i class="bi bi-grid"></i>
-                        <span>Dashboard</span>
-                    </a>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link" href="daftar_notulen.php">
-                        <i class="bi bi-file-text"></i>
-                        <span>Daftar Notulen</span>
-                    </a>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link" href="kontak.php">
-                        <i class="bi bi-envelope"></i>
-                        <span>Kontak</span>
-                    </a>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link" href="FAQ.php">
-                        <i class="bi bi-question-circle"></i>
-                        <span>FAQ</span>
-                    </a>
-                </li>
-                
+                <li class="nav-item"><a class="nav-link active" href="dashboard.php"><i class="bi bi-grid"></i> Dashboard</a></li>
+                <li class="nav-item"><a class="nav-link" href="daftar_notulen.php"><i class="bi bi-file-text"></i> Daftar Notulen</a></li>
+                <li class="nav-item"><a class="nav-link" href="kontak.php"><i class="bi bi-envelope"></i> Kontak</a></li>
+                <li class="nav-item"><a class="nav-link" href="FAQ.php"><i class="bi bi-question-circle"></i> FAQ</a></li>
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
                         Notulis
                     </a>
-                    <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="userDropdown">
+                    <ul class="dropdown-menu dropdown-menu-end shadow">
                         <li class="user-info-header">
-                            <img
-                                src="<?php echo $dropdown_foto; ?>"
-                                alt="Avatar"
-                                class="user-avatar"
-                            >
+                            <img src="<?= $dropdown_foto; ?>" alt="Avatar" class="user-avatar">
                             <div class="user-text">
-                                <strong class="text-truncate"><?php echo $dropdown_nama; ?></strong>
-                                <small class="text-muted text-truncate"><?php echo $dropdown_email; ?></small>
+                                <strong class="text-truncate"><?= $dropdown_nama; ?></strong>
+                                <small class="text-muted text-truncate"><?= $dropdown_email; ?></small>
                             </div>
                         </li>
                         <li><hr class="dropdown-divider"></li>
                         <li><a class="dropdown-item" href="profile.php"><i class="bi bi-person"></i> Profil Saya</a></li>
-                        <li><hr class="dropdown-divider"></li>
                         <li><a id="logoutLink" class="dropdown-item text-danger" href="login.php"><i class="bi bi-box-arrow-right"></i> Keluar</a></li>
                     </ul>
                 </li>
@@ -343,162 +148,153 @@ while ($row = mysqli_fetch_assoc($query)) {
         </div>
     </nav>
 
-    <div class="row g-3 text-center">
-        <div class="col-md-4">
-            <div class="card shadow-sm p-3 border-0">
-                <h5 class="fw-bold text-primary">Total Rapat</h5>
-                <h3 class="fw-bold"><?= $total ?></h3>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card shadow-sm p-3 border-0">
-                <h5 class="fw-bold text-success">Selesai</h5>
-                <h3 class="fw-bold"><?= $selesai ?></h3>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card shadow-sm p-3 border-0">
-                <h5 class="fw-bold text-warning">Belum Selesai</h5>
-                <h3 class="fw-bold"><?= $belum ?></h3>
-            </div>
-        </div>
-    </div>
+    <div class="container mt-4 mb-5">
+        <header class="text-center mt-4 mb-5">
+            <h1 class="fw-bold text-primary">Selamat Datang di Notulen Tracker, <?= $dropdown_nama; ?>!</h1>
+            <p class="lead">Solusi digital terbaik untuk kebutuhan rapat Anda.</p>
+        </header>
 
-    <div class="row mt-4 justify-content-center">
-        <div class="col-md-8">
-            <div class="card shadow-lg border-0">
-                <div class="card-body text-center">
-                    <h4 class="fw-bold text-primary mb-4">
-                        📊 Status Penyelesaian Rapat
-                    </h4>
-                    <canvas id="pieChart" style="max-height:420px;"></canvas>
-                    <p class="mt-3 text-muted">
-                        Diagram ini menunjukkan proporsi rapat yang telah dan belum diselesaikan.
-                    </p>
+        <div class="row g-4 mb-5">
+            <div class="col-md-4">
+                <div class="card dashboard-card p-3">
+                    <div class="card-body d-flex align-items-center justify-content-between">
+                        <div>
+                            <h6 class="text-uppercase text-muted fw-bold">Total Rapat</h6>
+                            <p id="totalNotulen" class="card-value text-primary">0</p> 
+                        </div>
+                        <i class="bi bi-list-columns card-icon text-primary"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card dashboard-card p-3">
+                    <div class="card-body d-flex align-items-center justify-content-between">
+                        <div>
+                            <h6 class="text-uppercase text-muted fw-bold">Rapat Selesai</h6>
+                            <p id="selesaiNotulen" class="card-value text-success">0</p> 
+                        </div>
+                        <i class="bi bi-check-circle card-icon text-success"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card dashboard-card p-3">
+                    <div class="card-body d-flex align-items-center justify-content-between">
+                        <div>
+                            <h6 class="text-uppercase text-muted fw-bold">Belum Selesai</h6>
+                            <p id="belumNotulen" class="card-value text-danger">0</p> 
+                        </div>
+                        <i class="bi bi-x-circle card-icon text-danger"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card shadow-lg border-0 dashboard-card p-4">
+                    <div class="card-body text-center">
+                        <h4 class="fw-bold text-primary mb-4">📊 Status Penyelesaian Rapat</h4>
+                        <canvas id="pieChart" style="max-height:400px;"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card shadow-sm mt-5">
+            <div class="card-body">
+                <h4 class="text-primary fw-bold mb-3">📘 Daftar Notulen Rapat Terbaru</h4>
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead class="table-primary">
+                            <tr>
+                                <th>Judul Rapat</th>
+                                <th>Tanggal</th>
+                                <th>Notulis</th>
+                                <th class="text-center">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php if (empty($dataTabel)): ?>
+                                <tr><td colspan="4" class="text-center text-muted">Belum ada data.</td></tr>
+                            <?php else: ?>
+                                <?php foreach ($dataTabel as $row): ?>
+                                    <tr>
+                                        <td><?= htmlspecialchars($row['judul']) ?></td>
+                                        <td><?= htmlspecialchars($row['tanggal']) ?></td>
+                                        <td><?= htmlspecialchars($row['notulis']) ?></td>
+                                        <td class="text-center">
+                                            <span class="badge rounded-pill <?= $row['status'] === 'Selesai' ? 'bg-success' : 'bg-warning text-dark' ?>">
+                                                <?= htmlspecialchars($row['status']) ?>
+                                            </span>
+                                        </td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            <?php endif; ?>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="card shadow-sm mt-4">
-        <div class="card-body">
-            <h4 class="text-primary fw-bold mb-3">📘 Daftar Notulen Rapat</h4>
-            <div class="table-responsive">
-                <table class="table table-bordered align-middle" id="notulenTable">
-                    <thead class="table-primary">
-                        <tr>
-                            <th>Judul Rapat</th>
-                            <th>Tanggal</th>
-                            <th>Notulis</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php if (empty($dataTabel)): ?>
-                            <tr>
-                                <td colspan="4" class="text-center text-muted">Belum ada data notulen rapat yang tersedia.</td>
-                            </tr>
-                        <?php else: ?>
-                            <?php foreach ($dataTabel as $row): ?>
-                                <tr>
-                                    <td><?= htmlspecialchars($row['judul']) ?></td>
-                                    <td><?= htmlspecialchars($row['tanggal']) ?></td>
-                                    <td><?= htmlspecialchars($row['notulis']) ?></td>
-                                    <td>
-                                        <span class="badge rounded-pill 
-                                            <?php 
-                                                if ($row['status'] === 'Selesai') echo 'bg-success'; 
-                                                else echo 'bg-warning text-dark';
-                                            ?>">
-                                            <?= htmlspecialchars($row['status']) ?>
-                                        </span>
-                                    </td>
-                                </tr>
-                            <?php endforeach; ?>
-                        <?php endif; ?>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
+    <footer>©2025 Notulen Tracker. Semua hak cipta dilindungi</footer>
 
-</div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        const fallbackData = {
+            total: <?= $total_fallback ?>,
+            selesai: <?= $selesai_fallback ?>,
+            belum: <?= $belum_fallback ?>
+        };
 
-<footer class="text-center mt-4">
-    ©2025 Notulen Tracker. Semua hak cipta dilindungi
-</footer>
+        function loadDashboardStats() {
+            let stats = fallbackData;
+            const storedStats = localStorage.getItem('notulenStats');
+            if (storedStats) { stats = JSON.parse(storedStats); } 
 
-<script>
-// ================= SCRIPT CHART JS =================
-Chart.register(ChartDataLabels);
+            document.getElementById('totalNotulen').textContent = stats.total;
+            document.getElementById('selesaiNotulen').textContent = stats.selesai;
+            document.getElementById('belumNotulen').textContent = stats.belum;
 
-new Chart(document.getElementById("pieChart"), {
-    type: "pie",
-    data: {
-        labels: ["Selesai", "Belum Selesai"],
-        datasets: [{
-            data: [<?= $selesai ?>, <?= $belum ?>],
-            backgroundColor: ["#2e7d32", "#fbc02d"],
-            hoverBackgroundColor: ["#1b5e20", "#f9a825"],
-            borderWidth: 3,
-            offset: [20, 0]
-        }]
-    },
-    options: {
-        responsive: true,
-        plugins: {
-            legend: {
-                position: "bottom",
-                labels: { font: { size: 14, weight: "bold" } }
-            },
-            datalabels: {
-                color: "#fff",
-                font: { weight: "bold", size: 16 },
-                formatter: (value, ctx) => {
-                    const total = ctx.chart.data.datasets[0].data.reduce((a, b) => a + b, 0);
-                    return total === 0 ? "0%" : ((value / total) * 100).toFixed(1) + "%";
-                }
-            },
-            tooltip: {
-                callbacks: {
-                    label: function(context) {
-                        const total = context.dataset.data.reduce((a, b) => a + b, 0);
-                        const value = context.parsed;
-                        const percentage = total === 0 ? "0%" : ((value / total) * 100).toFixed(1) + "%";
-                        return context.label + ': ' + value + ' (' + percentage + ')';
+            renderChart(stats.selesai, stats.belum);
+        }
+
+        function renderChart(selesai, belum) {
+            Chart.register(ChartDataLabels);
+            Chart.getChart("pieChart")?.destroy(); 
+            new Chart(document.getElementById("pieChart"), {
+                type: "pie",
+                data: {
+                    labels: ["Selesai", "Belum Selesai"],
+                    datasets: [{
+                        data: [selesai, belum],
+                        backgroundColor: ["#2e7d32", "#fbc02d"],
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    plugins: {
+                        legend: { position: "bottom" },
+                        datalabels: {
+                            color: "#fff",
+                            formatter: (value, ctx) => {
+                                let sum = ctx.chart.data.datasets[0].data.reduce((a, b) => a + b, 0);
+                                return sum === 0 ? "0%" : ((value / sum) * 100).toFixed(1) + "%";
+                            }
+                        }
                     }
                 }
-            }
+            });
         }
-    }
-});
-</script>
 
-<script>
-// ================= SCRIPT LOGOUT =================
-document.addEventListener('DOMContentLoaded', function() {
-    const logoutLink = document.getElementById("logoutLink");
-    if (logoutLink) {
-        logoutLink.addEventListener("click", (e) => {
+        document.getElementById("logoutLink")?.addEventListener("click", function(e) {
             e.preventDefault();
-            const konfirmasi = confirm("Apakah Anda yakin ingin keluar dari Notulen Tracker?");
-            if (konfirmasi) {
-                // Di sini Anda bisa menambahkan AJAX call ke script logout PHP
-                window.location.href = "login.php"; 
-            }
+            if (confirm("Apakah Anda yakin ingin keluar?")) { window.location.href = "login.php"; }
         });
-    }
-});
-</script>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
-<?php 
-// Tutup koneksi database
-if (isset($conn)) {
-    mysqli_close($conn);
-}
-?>
-
+        document.addEventListener('DOMContentLoaded', loadDashboardStats);
+    </script>
 </body>
 </html>
+<?php mysqli_close($conn); ?>
