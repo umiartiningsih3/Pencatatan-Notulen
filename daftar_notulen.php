@@ -38,13 +38,20 @@ if ($row = mysqli_fetch_assoc($result_profile)) {
     $profile_data['nama_lengkap'] = $row['nama_lengkap'];
     $profile_data['email'] = $row['email'];
     if (!empty($row['foto_profile'])) {
-        $profile_data['foto_profile'] = $row['foto_profile'];
+        // Logika path foto (jika ada)
+        if (strpos($row['foto_profile'], 'user.png') === false) {
+             $profile_data['foto_profile'] = 'uploads/' . $row['foto_profile'];
+        } else {
+             $profile_data['foto_profile'] = $row['foto_profile'];
+        }
     }
 }
 
 // Definisikan variabel untuk Dropdown
 $dropdown_email = htmlspecialchars($profile_data['email']);
 $dropdown_nama = htmlspecialchars($profile_data['nama_lengkap']);
+$dropdown_foto = htmlspecialchars($profile_data['foto_profile']);
+
 
 // ---------------------------------------------------------
 // 2. BLOK KODE PENGAMBILAN DATA RAPAT
@@ -82,100 +89,156 @@ $total_notulen = mysqli_num_rows($query); // Dapatkan jumlah baris
         padding: 0; 
       }
       /* Navbar utama */
-.custom-navbar {
-  background-color: #003366;
-  height: 70px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.12);
-}
+      .custom-navbar {
+        background-color: #003366;
+        height: 70px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+      }
 
-/* List navbar */
-.nav-effect {
-  gap: 10px; /* 🔹 jarak antar item */
-}
-/* Item navbar */
-.nav-effect .nav-link {
-  color: #dce3ea !important;
-  padding: 10px 18px; /* 🔹 jarak dalam */
-  border-radius: 12px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-weight: 500;
-  transition: all 0.3s ease;
-  position: relative;
-}
+      /* List navbar */
+      .nav-effect {
+        gap: 10px; /* 🔹 jarak antar item */
+      }
+      /* Item navbar */
+      .nav-effect .nav-link {
+        color: #dce3ea !important;
+        padding: 10px 18px; /* 🔹 jarak dalam */
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        position: relative;
+      }
 
-/* Hover */
-.navbar-nav .nav-link:hover {
-  background: rgba(255,255,255,0.08);
-  color: #ffffff !important;
-}
+      /* Hover */
+      .navbar-nav .nav-link:hover {
+        background: rgba(255,255,255,0.08);
+        color: #ffffff !important;
+      }
 
-/* Active page */
-.navbar-nav .nav-link.active {
-  background: rgba(255,255,255,0.15);
-  color: #ffffff !important;
-  font-weight: 600;
-}
+      /* Active page */
+      .navbar-nav .nav-link.active {
+        background: rgba(255,255,255,0.15);
+        color: #ffffff !important;
+        font-weight: 600;
+      }
 
-/* Icon */
-.nav-effect .nav-link i {
-  font-size: 1.1rem;
-  transition: transform 0.3s ease;
-}
+      /* Icon */
+      .nav-effect .nav-link i {
+        font-size: 1.1rem;
+        transition: transform 0.3s ease;
+      }
 
-/* Icon animasi */
-.nav-effect .nav-link:hover i {
-  transform: scale(1.15);
-}
+      /* Icon animasi */
+      .nav-effect .nav-link:hover i {
+        transform: scale(1.15);
+      }
 
-/* Active icon */
-.nav-effect .nav-link.active i {
-  color: #0d6efd;
-}
+      /* Active icon */
+      .nav-effect .nav-link.active i {
+        color: #0d6efd;
+      }
 
 
-/* ===== BRAND PRO ===== */
-.brand-pro {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  text-decoration: none;
-}
+      /* ===== BRAND PRO ===== */
+      .brand-pro {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        text-decoration: none;
+      }
 
-.brand-pro img {
-  width: 42px;
-  height: 42px;
-  border-radius: 100px;
-  padding: 6px;
-  background: linear-gradient(135deg, #ffffff, #e3f2fd);
-  transition: all 0.35s ease;
-}
+      .brand-pro img {
+        width: 50px;
+        height: 50px;
+        border-radius: 100px;
+        padding: 0px;
+        background: linear-gradient(135deg, #ffffff, #e3f2fd);
+        transition: all 0.35s ease;
+      }
 
-.brand-info {
-  display: flex;
-  flex-direction: column;
-  line-height: 1.1;
-}
+      .brand-info {
+        display: flex;
+        flex-direction: column;
+        line-height: 1.1;
+      }
 
-.brand-name {
-  font-size: 21px;
-  font-weight: 700;
-  color: #ffffff;
-  letter-spacing: 0.3px;
-}
+      .brand-name {
+        font-size: 21px;
+        font-weight: 700;
+        color: #ffffff;
+        letter-spacing: 0.3px;
+      }
 
-.brand-tagline {
-  font-size: 13px;
-  color: #90caf9;
-  letter-spacing: 1px;
-}
+      .brand-tagline {
+        font-size: 13px;
+        color: #90caf9;
+        letter-spacing: 1px;
+      }
 
-/* Hover brand */
-.brand-pro:hover img {
-  transform: scale(1.08) rotate(-4deg);
-  box-shadow: 0 8px 25px rgba(144,202,249,0.45);
-}
+      /* Hover brand */
+      .brand-pro:hover img {
+        transform: scale(1.08) rotate(-4deg);
+        box-shadow: 0 8px 25px rgba(144,202,249,0.45);
+      }
+      /* =================================================== */
+      /* START: DROPDOWN STYLES BARU (Sesuai Gambar) */
+      /* =================================================== */
+      .dropdown-menu {
+        min-width: 250px !important;
+        border-radius: 8px;
+        padding: 0;
+      }
+      .dropdown-menu .user-info-header {
+        display: flex; 
+        align-items: center;
+        padding: 10px 15px;
+        margin-bottom: 0;
+        border-bottom: 1px solid #e9ecef; /* Garis pemisah info header */
+      }
+      .dropdown-menu .user-avatar {
+        width: 40px; 
+        height: 40px;
+        border-radius: 50%; 
+        object-fit: cover;
+        margin-right: 12px;
+        background-color: #f0f0f0;
+      }
+      .dropdown-menu .user-text {
+        display: flex;
+        flex-direction: column;
+        overflow: hidden; 
+      }
+      .dropdown-menu .user-text strong {
+        font-size: 15px;
+        font-weight: 600;
+        line-height: 1.2;
+      }
+      .dropdown-menu .user-text small {
+        display: block;
+        font-size: 13px;
+        color: #6c757d; 
+        line-height: 1.2;
+        margin-top: 0; 
+      }
+      .dropdown-menu .dropdown-item {
+        display: flex;
+        align-items: center;
+        padding: 10px 15px; 
+      }
+      .dropdown-menu .dropdown-item i {
+        font-size: 1.1rem;
+        width: 20px; 
+        text-align: center;
+        margin-right: 8px; 
+      }
+      /* =================================================== */
+      /* END: DROPDOWN STYLES BARU */
+      /* =================================================== */
+
+      /* Styles yang sudah ada tetap dipertahankan */
       .card { 
         border-radius: 10px; 
       }
@@ -255,22 +318,7 @@ $total_notulen = mysqli_num_rows($query); // Dapatkan jumlah baris
         font-size: 0.9rem;
         margin-top: auto;
       }
-      .dropdown-menu .user-info-header {
-        display: flex; 
-        align-items: center;
-        padding: 10px 15px;
-      }
-      .dropdown-menu .user-avatar {
-        width: 40px; 
-        height: 40px;
-        border-radius: 50%; 
-        object-fit: cover;
-        margin-right: 10px;
-      }
-      .dropdown-menu .user-text small {
-        display: block;
-        margin-top: -3px; 
-      }
+      
       .table-actions {
         display: flex;
         gap: 5px;
@@ -282,12 +330,12 @@ $total_notulen = mysqli_num_rows($query); // Dapatkan jumlah baris
 
   <nav class="navbar navbar-expand-lg navbar-dark fixed-top px-4 custom-navbar">
     <a class="navbar-brand brand-pro" href="dashboard.php">
-  <img src="logono.jpeg" alt="Logo">
-  <div class="brand-info">
-    <span class="brand-name">Notulen</span>
-    <span class="brand-tagline">Tracker</span>
-  </div>
-</a>
+      <img src="logono.jpeg" alt="Logo">
+      <div class="brand-info">
+        <span class="brand-name">Notulen</span>
+        <span class="brand-tagline">Tracker</span>
+      </div>
+    </a>
 
 
 
@@ -327,7 +375,7 @@ $total_notulen = mysqli_num_rows($query); // Dapatkan jumlah baris
           <ul class="dropdown-menu dropdown-menu-end shadow-sm" aria-labelledby="userDropdown">
             <li class="user-info-header">
               <img
-              src="<?php echo htmlspecialchars($profile_data['foto_profile']); ?>"
+              src="<?php echo $dropdown_foto; ?>"
               alt="Avatar"
               class="user-avatar"
               >
@@ -336,10 +384,12 @@ $total_notulen = mysqli_num_rows($query); // Dapatkan jumlah baris
                 <small class="text-muted"><?php echo $dropdown_email; ?></small>
               </div>
             </li>
-            <li><hr class="dropdown-divider"></li>
-            <li><a class="dropdown-item" href="profile.php">Profil</a></li>
-            <li><hr class="dropdown-divider"></li>
-            <li><a id="logoutLink" class="dropdown-item text-danger" href="#">Keluar</a></li>
+            <li>
+                <a class="dropdown-item" href="profile.php"><i class="bi bi-person"></i> Profil Saya</a>
+            </li>
+            <li>
+                <a id="logoutLink" class="dropdown-item text-danger" href="#"><i class="bi bi-box-arrow-right"></i> Keluar</a>
+            </li>
           </ul>
           </li>
         </ul>
