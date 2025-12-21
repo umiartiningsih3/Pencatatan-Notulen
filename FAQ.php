@@ -189,12 +189,12 @@ if (isset($stmt) && $stmt) {
         margin-bottom: 0;
       }
       .dropdown-menu .user-avatar {
-        width: 40px; 
-        height: 40px;
+        width: 50px; 
+        height: 50px;
         border-radius: 50%; 
         object-fit: cover;
         margin-right: 12px;
-        background-color: #f0f0f0; /* Background jika gambar gagal load */
+        background-color: #f0f0f0;
       }
       .dropdown-menu .user-text {
           display: flex;
@@ -217,7 +217,7 @@ if (isset($stmt) && $stmt) {
       .dropdown-menu .dropdown-item {
         display: flex;
         align-items: center;
-        padding: 8px 15px; 
+        padding: 5px 15px; 
       }
       
       .dropdown-menu .dropdown-item i {
