@@ -143,10 +143,10 @@ if (isset($stmt) && $stmt) {
 }
 
 .brand-pro img {
-  width: 42px;
-  height: 42px;
+  width: 50px;
+  height: 50px;
   border-radius: 100px;
-  padding: 6px;
+  padding: 0px;
   background: linear-gradient(135deg, #ffffff, #e3f2fd);
   transition: all 0.35s ease;
 }
