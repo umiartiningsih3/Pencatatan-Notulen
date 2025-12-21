@@ -91,7 +91,63 @@ $dropdown_foto = htmlspecialchars($profile_data['foto_profile']);
         .brand-name {font-size: 21px; font-weight: 700; color: #ffffff; letter-spacing: 0.3px; }
         .brand-tagline { font-size: 13px; color: #90caf9; letter-spacing: 1px; }
 
-        .dropdown-menu { min-width: 250px !important; border-radius: 8px; padding: 0; }
+        /* Dropdown User Info Styles (DIOPTIMALKAN UNTUK MENYERUPAI GAMBAR) */
+      .dropdown-menu {
+          /* Untuk memastikan menu dropdown tidak terlalu lebar */
+          min-width: 250px !important;
+          border-radius: 8px; /* Lebih halus */
+          padding: 0;
+      }
+      .dropdown-menu .user-info-header {
+        display: flex; 
+        align-items: center;
+        padding: 10px 15px;
+        margin-bottom: 0;
+      }
+      .dropdown-menu .user-avatar {
+        width: 50px; 
+        height: 50px;
+        border-radius: 50%; 
+        object-fit: cover;
+        margin-right: 12px;
+        background-color: #f0f0f0;
+      }
+      .dropdown-menu .user-text {
+          display: flex;
+          flex-direction: column;
+          overflow: hidden; 
+      }
+      .dropdown-menu .user-text strong {
+          font-size: 15px;
+          font-weight: 600;
+          line-height: 1.2;
+      }
+      .dropdown-menu .user-text small {
+        display: block;
+        font-size: 13px;
+        color: #6c757d; 
+        line-height: 1.2;
+      }
+      
+      /* Style untuk dropdown item dengan ikon */
+      .dropdown-menu .dropdown-item {
+        display: flex;
+        align-items: center;
+        padding: 5px 15px; 
+      }
+      
+      .dropdown-menu .dropdown-item i {
+        font-size: 1.1rem;
+        width: 20px; /* Lebar tetap untuk ikon */
+        text-align: center;
+        margin-right: 8px; /* Jarak antara ikon dan teks */
+      }
+      
+      /* Menghapus margin top bawaan small dari style lama */
+      .dropdown-menu .user-text small {
+        margin-top: 0; 
+      }
+      /* Akhir Dropdown User Info Styles */
         .user-info-header { display: flex; align-items: center; padding: 10px 15px; }
         .user-avatar { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; margin-right: 12px; background-color: #f0f0f0; }
         .user-text { display: flex; flex-direction: column; overflow: hidden; }
