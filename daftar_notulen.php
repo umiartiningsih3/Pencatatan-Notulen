@@ -1,8 +1,6 @@
 <?php
-  // 1. Memulai Session untuk melacak user yang login
   session_start();
 
-  // 1. PROTEKSI HALAMAN
   if (!isset($_SESSION['id'])) {
     header("Location: login.php");
     exit();
@@ -11,13 +9,11 @@
   $user_id = $_SESSION['id']; 
   $activePage = basename($_SERVER['PHP_SELF']);
 
-  // ================= KONEKSI DATABASE =================
   $conn = mysqli_connect("localhost", "root", "", "notulen_db");
   if (!$conn) {
       die("Koneksi database gagal: " . mysqli_connect_error());
   }
 
-  // 4. AMBIL DATA PENGGUNA (Query Tunggal untuk semua kebutuhan Navbar)
   $query_profile = "SELECT nama_lengkap, email, foto_profile, role FROM pengguna WHERE id = ?";
   $stmt = mysqli_prepare($conn, $query_profile);
   mysqli_stmt_bind_param($stmt, "i", $user_id);
@@ -25,30 +21,23 @@
   $result = mysqli_stmt_get_result($stmt);
   $profile_db = mysqli_fetch_assoc($result);
 
-  // Jika data tidak ditemukan
   if (!$profile_db) {
     session_destroy();
     header("Location: login.php");
     exit();
   }
 
-  // Persiapan Variabel untuk digunakan di HTML
-  $role_display = !empty($profile_db['role']) ? $profile_db['role'] : 'Notulis';
+  $role_display = !empty($profile_db['role']) ? $profile_db['role'] : 'Peserta';
+  $role_check = strtolower($role_display);
   $dropdown_nama = htmlspecialchars($profile_db['nama_lengkap']);
   $dropdown_email = htmlspecialchars($profile_db['email']);
   
-  // Logika Foto Profile: Jika di DB kosong, pakai default user.png
   $dropdown_foto = (!empty($profile_db['foto_profile']) && file_exists($profile_db['foto_profile'])) 
                    ? htmlspecialchars($profile_db['foto_profile']) 
                    : 'user.png';
 
-
-// ---------------------------------------------------------
-// 2. BLOK KODE PENGAMBILAN DATA RAPAT
-// ---------------------------------------------------------
-
 $query = mysqli_query($conn, "SELECT * FROM rapat ORDER BY tanggal DESC");
-$total_notulen = mysqli_num_rows($query); // Dapatkan jumlah baris
+$total_notulen = mysqli_num_rows($query);
 
 ?>
 
@@ -63,7 +52,6 @@ $total_notulen = mysqli_num_rows($query); // Dapatkan jumlah baris
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
-      /* Styles yang sudah ada tetap dipertahankan */
       html,body {
         height: 100%;
         margin: 0;
@@ -78,21 +66,19 @@ $total_notulen = mysqli_num_rows($query); // Dapatkan jumlah baris
         margin: 0; 
         padding: 0; 
       }
-      /* Navbar utama */
       .custom-navbar {
         background-color: #003366;
         height: 70px;
         box-shadow: 0 4px 12px rgba(0,0,0,0.12);
       }
 
-      /* List navbar */
       .nav-effect {
-        gap: 10px; /* 🔹 jarak antar item */
+        gap: 10px;
       }
-      /* Item navbar */
+
       .nav-effect .nav-link {
         color: #dce3ea !important;
-        padding: 10px 18px; /* 🔹 jarak dalam */
+        padding: 10px 18px; 
         border-radius: 12px;
         display: flex;
         align-items: center;
@@ -102,37 +88,31 @@ $total_notulen = mysqli_num_rows($query); // Dapatkan jumlah baris
         position: relative;
       }
 
-      /* Hover */
       .navbar-nav .nav-link:hover {
         background: rgba(255,255,255,0.08);
         color: #ffffff !important;
       }
 
-      /* Active page */
       .navbar-nav .nav-link.active {
         background: rgba(255,255,255,0.15);
         color: #ffffff !important;
         font-weight: 600;
       }
 
-      /* Icon */
       .nav-effect .nav-link i {
         font-size: 1.1rem;
         transition: transform 0.3s ease;
       }
 
-      /* Icon animasi */
       .nav-effect .nav-link:hover i {
         transform: scale(1.15);
       }
 
-      /* Active icon */
       .nav-effect .nav-link.active i {
         color: #0d6efd;
       }
 
 
-      /* ===== BRAND PRO ===== */
       .brand-pro {
         display: flex;
         align-items: center;
@@ -168,17 +148,14 @@ $total_notulen = mysqli_num_rows($query); // Dapatkan jumlah baris
         letter-spacing: 1px;
       }
 
-      /* Hover brand */
       .brand-pro:hover img {
         transform: scale(1.08) rotate(-4deg);
         box-shadow: 0 8px 25px rgba(144,202,249,0.45);
       }
 
-      /* Dropdown User Info Styles (DIOPTIMALKAN UNTUK MENYERUPAI GAMBAR) */
       .dropdown-menu {
-          /* Untuk memastikan menu dropdown tidak terlalu lebar */
           min-width: 250px !important;
-          border-radius: 8px; /* Lebih halus */
+          border-radius: 8px;
           padding: 0;
       }
       .dropdown-menu .user-info-header {
@@ -212,7 +189,6 @@ $total_notulen = mysqli_num_rows($query); // Dapatkan jumlah baris
         line-height: 1.2;
       }
       
-      /* Style untuk dropdown item dengan ikon */
       .dropdown-menu .dropdown-item {
         display: flex;
         align-items: center;
@@ -221,19 +197,15 @@ $total_notulen = mysqli_num_rows($query); // Dapatkan jumlah baris
       
       .dropdown-menu .dropdown-item i {
         font-size: 1.1rem;
-        width: 20px; /* Lebar tetap untuk ikon */
+        width: 20px;
         text-align: center;
-        margin-right: 8px; /* Jarak antara ikon dan teks */
+        margin-right: 8px;
       }
       
-      /* Menghapus margin top bawaan small dari style lama */
       .dropdown-menu .user-text small {
         margin-top: 0; 
       }
-      /* Akhir Dropdown User Info Styles */
       
-
-      /* Styles yang sudah ada tetap dipertahankan */
       .card { 
         border-radius: 10px; 
       }
@@ -262,7 +234,7 @@ $total_notulen = mysqli_num_rows($query); // Dapatkan jumlah baris
         color: white;
       }
       .btn-download-pdf {
-        background-color: #4CAF50; /* Warna Hijau untuk PDF */
+        background-color: #c44822ff;
         color: white;
       }
       .btn-tambah-notulen { 
@@ -295,7 +267,6 @@ $total_notulen = mysqli_num_rows($query); // Dapatkan jumlah baris
         font-weight: 600; 
         color: #003366;
       }
-      /* Mengatur tampilan tabel hasil di modal agar lebih rapih */
       .table-hasil th {
         background-color: #003366 !important;
         color: white !important;
@@ -395,7 +366,9 @@ $total_notulen = mysqli_num_rows($query); // Dapatkan jumlah baris
               <button class="btn btn-outline-primary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#filterPanel">
                 <i class="bi bi-funnel"></i> Filter
               </button>
-              <a href="input_rapat.php"><button class="btn-tambah-notulen">+ Tambah Notulen</button></a>
+              <?php if ($role_check === 'notulis'): ?>
+                <a href="input_rapat.php"><button class="btn-tambah-notulen">+ Tambah Notulen</button></a>
+                <?php endif; ?>
             </div>
           </div>
 
@@ -468,17 +441,15 @@ $total_notulen = mysqli_num_rows($query); // Dapatkan jumlah baris
                         <button class="btn btn-download-pdf btn-sm" 
                                 data-rapat-id="<?= $r['id'] ?>" 
                                 data-rapat-judul="<?= htmlspecialchars($r['judul']) ?>">
-                            PDF
+                            Unduh PDF
                         </button>
-                        <a href="hapus_rapat.php?id=<?= $r['id']; ?>" 
-                            onclick="return confirm('Yakin ingin menghapus notulen ini?')"
-                            class="btn btn-danger btn-sm">
-                            Hapus
-                          </a>
+                        <?php if ($role_check === 'notulis'): ?>
+                          <a href="hapus_rapat.php?id=<?= $r['id']; ?>" onclick="return confirm('Hapus?')" class="btn btn-danger btn-sm">Hapus</a>
+                          <?php endif; ?> 
                       </div>
                     </td>
                   </tr>
-                <?php } // --- PENUTUP WHILE LOOP --- ?>
+                <?php } ?>
                 
                 <tr id="noFilterResultRow" style="display:none;">
                     <td colspan="5" class="text-center py-4 text-danger fw-bold fst-italic">
@@ -487,7 +458,6 @@ $total_notulen = mysqli_num_rows($query); // Dapatkan jumlah baris
                 </tr>
                 
                 <?php 
-                // Tampilkan pesan "Tidak ada data" untuk state awal
                 if ($total_notulen == 0) {
                 ?>
                     <tr id="initialEmptyRow">
@@ -496,7 +466,7 @@ $total_notulen = mysqli_num_rows($query); // Dapatkan jumlah baris
                         </td>
                     </tr>
                 <?php 
-                } // --- PENUTUP IF CONDITION --- 
+                }
                 ?>
                 </tbody>
             </table>
@@ -555,9 +525,7 @@ $total_notulen = mysqli_num_rows($query); // Dapatkan jumlah baris
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-      // =======================================================
-      // FILTER DATA DENGAN PENANGANAN DATA TIDAK DITEMUKAN
-      // =======================================================
+      const userRole = <?= json_encode(strtolower($role_display)); ?>;
       const form = document.getElementById("filterForm");
       const resetBtn = document.getElementById("resetFilter");
       const table = document.getElementById("notulenTable").getElementsByTagName("tbody")[0];
@@ -573,15 +541,12 @@ $total_notulen = mysqli_num_rows($query); // Dapatkan jumlah baris
         const initialEmptyRow = document.getElementById("initialEmptyRow");
         const noDataRow = document.getElementById("noFilterResultRow");
         
-        // Sembunyikan pesan kosong awal jika ada, saat filter dijalankan
         if (initialEmptyRow) {
             initialEmptyRow.style.display = "none";
         }
         
         for (let row of table.rows) {
-          // Lewati baris kontrol (pesan kosong/filter kosong)
           if (row.id === 'noFilterResultRow' || row.id === 'initialEmptyRow') continue; 
-          // Pastikan hanya memproses baris data yang memiliki 5 kolom
           if (row.cells.length < 5) continue; 
           
           const judulText = row.cells[0].textContent.toLowerCase();
@@ -598,11 +563,10 @@ $total_notulen = mysqli_num_rows($query); // Dapatkan jumlah baris
           
           row.style.display = visible ? "" : "none";
           if (visible) {
-            visibleCount++; // Hitung baris data yang terlihat
+            visibleCount++;
           }
         }
         
-        // Tampilkan/sembunyikan pesan "Data tidak ditemukan"
         if (noDataRow) {
             noDataRow.style.display = visibleCount === 0 ? "" : "none";
         }
@@ -613,7 +577,6 @@ $total_notulen = mysqli_num_rows($query); // Dapatkan jumlah baris
         const initialEmptyRow = document.getElementById("initialEmptyRow");
         const noDataRow = document.getElementById("noFilterResultRow");
         
-        // Sembunyikan pesan filter kosong
         if (noDataRow) {
             noDataRow.style.display = "none";
         }
@@ -623,114 +586,108 @@ $total_notulen = mysqli_num_rows($query); // Dapatkan jumlah baris
         for (let row of table.rows) {
             if (row.id === 'noFilterResultRow' || row.id === 'initialEmptyRow') continue;
             
-            // Pastikan hanya menampilkan baris data
             if (row.cells.length === 5) {
-                row.style.display = ""; // Tampilkan semua baris data
+                row.style.display = ""; 
                 hasDataRows = true;
             }
         }
         
-        // Tampilkan kembali pesan kosong awal jika tidak ada data sama sekali
         if (!hasDataRows && initialEmptyRow) {
             initialEmptyRow.style.display = "";
         }
       });
-      // =======================================================
 
+document.querySelectorAll(".btn-lihat").forEach(btn => {
+  btn.addEventListener("click", e => {
+    const row = e.target.closest("tr");
+    const rapatId = row.dataset.id;
+    const data = JSON.parse(row.dataset.detail || '{}'); 
+    
+    if (!data.judul) return alert("Tidak ada detail untuk baris ini.");
+    
+    let actionButtons = "";
+    if (userRole === "notulis") {
+        actionButtons = `
+          <div class="text-end mb-3" id="modalTopActions">
+            <button class="btn btn-success btn-sm me-2" id="btnEdit"><i class="bi bi-pencil-square"></i> Edit</button>
+            <button class="btn btn-secondary btn-sm" id="btnShare"><i class="bi bi-share"></i> Bagikan</button>
+          </div>`;
+    }
 
-      // =======================================================
-      // DETAIL RAPAT - LOGIKA DI MODAL (Tombol Edit/Share Pindah Ke Atas)
-      // =======================================================
-      document.querySelectorAll(".btn-lihat").forEach(btn => {
-        btn.addEventListener("click", e => {
-          const row = e.target.closest("tr");
-          const rapatId = row.dataset.id;
-          const data = JSON.parse(row.dataset.detail || '{}'); 
-          
-          if (!data.judul) return alert("Tidak ada detail untuk baris ini.");
-          
-          // Konten Modal HTML
-          const content = `
-            <div style="font-family: Poppins, sans-serif; font-size: 11pt; padding: 10px;">
-              
-              <div class="text-end mb-3" id="modalTopActions">
-                <button class="btn btn-success btn-sm me-2" id="btnEdit"><i class="bi bi-pencil-square"></i> Edit</button>
-                <button class="btn btn-secondary btn-sm" id="btnShare"><i class="bi bi-share"></i> Bagikan</button>
-              </div>
-              <h3 style="text-align: center; color: #003366; font-weight: 700; border-bottom: 3px solid #003366; padding-bottom: 10px; margin-bottom: 20px;">
-                HASIL NOTULEN RAPAT
-              </h3>
-              
-              <table style="width: 100%; margin-bottom: 20px;">
-                  <tr><td style="width: 30%; font-weight: 600; color: #003366;">Judul Rapat</td><td style="width: 5%;">:</td><td>${data.judul}</td></tr>
-                  <tr><td style="font-weight: 600; color: #003366;">Tanggal/Waktu</td><td>:</td><td>${data.tanggal} / ${data.waktu}</td></tr>
-                  <tr><td style="font-weight: 600; color: #003366;">Tempat</td><td>:</td><td>${data.tempat}</td></tr>
-                  <tr><td style="font-weight: 600; color: #003366;">Penyelenggara</td><td>:</td><td>${data.penyelenggara}</td></tr>
-                  <tr><td style="font-weight: 600; color: #003366;">Notulis</td><td>:</td><td>${data.notulis}</td></tr>
-              </table>
+    const content = `
+      <div id="printableArea" style="font-family: Poppins, sans-serif; font-size: 11pt; padding: 10px;">
+        
+        ${actionButtons}
 
-              <p style="font-weight: 600; color: #003366; margin-top: 15px;">Peserta Rapat:</p>
-              <ul style="padding-left: 20px;">
-                ${data.peserta.map(p=>`<li style="margin-bottom: 5px;">${p}</li>`).join("")}
-              </ul>
-              
-              <h4 style="color: #003366; margin-top: 30px; font-weight: 600; border-bottom: 1px dashed #ccc; padding-bottom: 5px;">Detail Pembahasan:</h4>
-              <table class="table table-bordered table-sm" style="width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 10pt;">
-                <thead>
-                  <tr style="background-color: #003366; color: white;">
-                    <th style="padding: 10px; text-align: center; width: 5%;">No</th>
-                    <th style="padding: 10px; width: 20%;">Topik</th>
-                    <th style="padding: 10px; width: 35%;">Pembahasan</th>
-                    <th style="padding: 10px; width: 25%;">Tindak Lanjut</th>
-                    <th style="padding: 10px; width: 15%;">PIC</th>
-                  </tr>
-                </thead>
-                <tbody>${data.pembahasan.map((p,i)=>`
-                  <tr>
-                    <td style="padding: 8px; text-align: center; background-color: ${i % 2 === 0 ? '#ffffff' : '#f4f4f4'}; border: 1px solid #ddd;">${i+1}</td>
-                    <td style="padding: 8px; background-color: ${i % 2 === 0 ? '#ffffff' : '#f4f4f4'}; border: 1px solid #ddd;">${p[0]}</td>
-                    <td style="padding: 8px; background-color: ${i % 2 === 0 ? '#ffffff' : '#f4f4f4'}; border: 1px solid #ddd;">${p[1]}</td>
-                    <td style="padding: 8px; background-color: ${i % 2 === 0 ? '#ffffff' : '#f4f4f4'}; border: 1px solid #ddd;">${p[2]}</td>
-                    <td style="padding: 8px; text-align: center; background-color: ${i % 2 === 0 ? '#ffffff' : '#f4f4f4'}; border: 1px solid #ddd;">${p[3]}</td>
-                  </tr>`).join("")}
-                </tbody>
-              </table>
+        <h3 style="text-align: center; color: #003366; font-weight: 700; border-bottom: 3px solid #003366; padding-bottom: 10px; margin-bottom: 20px;">
+          HASIL NOTULEN RAPAT
+        </h3>
+        
+        <table style="width: 100%; margin-bottom: 20px;">
+            <tr><td style="width: 30%; font-weight: 600; color: #003366;">Judul Rapat</td><td style="width: 5%;">:</td><td>${data.judul}</td></tr>
+            <tr><td style="font-weight: 600; color: #003366;">Tanggal/Waktu</td><td>:</td><td>${data.tanggal} / ${data.waktu}</td></tr>
+            <tr><td style="font-weight: 600; color: #003366;">Tempat</td><td>:</td><td>${data.tempat}</td></tr>
+            <tr><td style="font-weight: 600; color: #003366;">Penyelenggara</td><td>:</td><td>${data.penyelenggara}</td></tr>
+            <tr><td style="font-weight: 600; color: #003366;">Notulis</td><td>:</td><td>${data.notulis}</td></tr>
+        </table>
 
-              <h4 style="color: #003366; margin-top: 30px; font-weight: 600; border-bottom: 1px dashed #ccc; padding-bottom: 5px;">Catatan Tambahan:</h4>
-              <ul style="list-style-type: disc; padding-left: 20px;">
-                ${data.catatan.map(c=>`<li style="margin-bottom: 5px;">${c}</li>`).join("")}
-              </ul>
-              
-              <p style="margin-top: 30px; font-weight: 600;">Status Rapat: 
-                <span style="background-color: ${data.status === 'Selesai' ? '#2e7d32' : '#fbc02d'}; color: ${data.status === 'Selesai' ? 'white' : 'black'}; padding: 4px 10px; border-radius: 5px; font-size: 0.9em; font-weight: normal;">
-                  ${data.status}
-                </span>
-              </p>
-            </div>`;
-            
-          document.getElementById("detailContent").innerHTML = content;
+        <p style="font-weight: 600; color: #003366; margin-top: 15px;">Peserta Rapat:</p>
+        <ul style="padding-left: 20px;">
+          ${data.peserta.map(p=>`<li style="margin-bottom: 5px;">${p}</li>`).join("")}
+        </ul>
+        
+        <h4 style="color: #003366; margin-top: 30px; font-weight: 600; border-bottom: 1px dashed #ccc; padding-bottom: 5px;">Detail Pembahasan:</h4>
+        <table class="table table-bordered table-sm" style="width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 10pt;">
+          <thead>
+            <tr style="background-color: #003366; color: white;">
+              <th style="padding: 10px; text-align: center; width: 5%;">No</th>
+              <th style="padding: 10px; width: 20%;">Topik</th>
+              <th style="padding: 10px; width: 35%;">Pembahasan</th>
+              <th style="padding: 10px; width: 25%;">Tindak Lanjut</th>
+              <th style="padding: 10px; width: 15%;">PIC</th>
+            </tr>
+          </thead>
+          <tbody>${data.pembahasan.map((p,i)=>`
+            <tr>
+              <td style="padding: 8px; text-align: center; background-color: ${i % 2 === 0 ? '#ffffff' : '#f4f4f4'}; border: 1px solid #ddd;">${i+1}</td>
+              <td style="padding: 8px; background-color: ${i % 2 === 0 ? '#ffffff' : '#f4f4f4'}; border: 1px solid #ddd;">${p[0]}</td>
+              <td style="padding: 8px; background-color: ${i % 2 === 0 ? '#ffffff' : '#f4f4f4'}; border: 1px solid #ddd;">${p[1]}</td>
+              <td style="padding: 8px; background-color: ${i % 2 === 0 ? '#ffffff' : '#f4f4f4'}; border: 1px solid #ddd;">${p[2]}</td>
+              <td style="padding: 8px; text-align: center; background-color: ${i % 2 === 0 ? '#ffffff' : '#f4f4f4'}; border: 1px solid #ddd;">${p[3]}</td>
+            </tr>`).join("")}
+          </tbody>
+        </table>
 
-          // SET DATATEL KE TOMBOL EDIT DAN SHARE
-          const modalContent = document.getElementById("detailModal");
-          const btnEdit = modalContent.querySelector("#btnEdit");
-          const btnShare = modalContent.querySelector("#btnShare");
-
-          if(btnEdit) {
-            btnEdit.dataset.rapatId = rapatId;
-            btnEdit.dataset.rapatData = row.dataset.detail;
-          }
-          if(btnShare) {
-            btnShare.dataset.rapatJudul = data.judul;
-          }
-
-          new bootstrap.Modal(document.getElementById("detailModal")).show();
-        });
-      });
-      // =======================================================
+        <h4 style="color: #003366; margin-top: 30px; font-weight: 600; border-bottom: 1px dashed #ccc; padding-bottom: 5px;">Catatan Tambahan:</h4>
+        <ul style="list-style-type: disc; padding-left: 20px;">
+          ${data.catatan.map(c=>`<li style="margin-bottom: 5px;">${c}</li>`).join("")}
+        </ul>
+        
+        <p style="margin-top: 30px; font-weight: 600;">Status Rapat: 
+          <span style="background-color: ${data.status === 'Selesai' ? '#2e7d32' : '#fbc02d'}; color: ${data.status === 'Selesai' ? 'white' : 'black'}; padding: 4px 10px; border-radius: 5px; font-size: 0.9em; font-weight: normal;">
+            ${data.status}
+          </span>
+        </p>
+      </div>`;
       
-      // =======================================================
-      // DOWNLOAD PDF - LOGIKA FINAL (STATUS RAPAT DIHAPUS)
-      // =======================================================
+    document.getElementById("detailContent").innerHTML = content;
+
+    const modalElement = document.getElementById("detailModal");
+    const btnEdit = modalElement.querySelector("#btnEdit");
+    const btnShare = modalElement.querySelector("#btnShare");
+
+    if(btnEdit) {
+      btnEdit.dataset.rapatId = rapatId;
+      btnEdit.dataset.rapatData = row.dataset.detail;
+    }
+    if(btnShare) {
+      btnShare.dataset.rapatJudul = data.judul;
+    }
+
+    new bootstrap.Modal(modalElement).show();
+  });
+});
+
       document.querySelectorAll(".btn-download-pdf").forEach(btn => {
         btn.addEventListener("click", async (e) => {
           const rapatJudul = e.target.dataset.rapatJudul;
@@ -741,7 +698,6 @@ $total_notulen = mysqli_num_rows($query); // Dapatkan jumlah baris
             return alert("Gagal mengambil data notulen untuk dibuat PDF.");
           }
 
-          // Generate konten HTML dengan styling yang disesuaikan
           const pdfContentHtml = `
             <div style="padding: 25px; font-family: Poppins, sans-serif; font-size: 11pt;">
               <h3 style="text-align: center; color: #003366; font-weight: 700; border-bottom: 3px solid #003366; padding-bottom: 10px; margin-bottom: 20px;">
@@ -805,9 +761,7 @@ $total_notulen = mysqli_num_rows($query); // Dapatkan jumlah baris
           }).save();
         });
       });
-      // =======================================================
-      
-      // LOGIKA EDIT DARI MODAL DETAIL 
+
       document.getElementById("detailContent").addEventListener("click", (e) => {
         if (e.target.id === 'btnEdit') {
           const detailModalInstance = bootstrap.Modal.getInstance(document.getElementById("detailModal"));
@@ -829,7 +783,6 @@ $total_notulen = mysqli_num_rows($query); // Dapatkan jumlah baris
         }
       });
       
-      // LOGIKA SHARE DARI MODAL DETAIL 
       document.getElementById("detailContent").addEventListener("click", (e) => {
         if (e.target.id === 'btnShare') {
           const rapatJudul = e.target.dataset.rapatJudul;
@@ -846,7 +799,6 @@ $total_notulen = mysqli_num_rows($query); // Dapatkan jumlah baris
         }
       });
       
-      // LOGIKA SIMPAN PERUBAHAN KE DATABASE DENGAN AJAX
       document.getElementById("editForm").addEventListener("submit", e => {
         e.preventDefault();
         
@@ -854,7 +806,6 @@ $total_notulen = mysqli_num_rows($query); // Dapatkan jumlah baris
         const formData = new FormData(form);
         const data = Object.fromEntries(formData.entries());
 
-        // Kirim data ke edit_rapat.php (Pastikan file ini ada dan berfungsi)
         fetch('edit_rapat.php', {
             method: 'POST',
             headers: {
@@ -878,7 +829,6 @@ $total_notulen = mysqli_num_rows($query); // Dapatkan jumlah baris
             alert("❌ Terjadi kesalahan koneksi atau server.");
         });
       });
-      // =======================================================
     </script>
     
     <br>
@@ -887,7 +837,6 @@ $total_notulen = mysqli_num_rows($query); // Dapatkan jumlah baris
     </footer>
 
     <script>
-      // Fungsi logout (Tidak diubah)
       document.getElementById("logoutLink").addEventListener("click", (e) => {
         e.preventDefault();
         const konfirmasi = confirm("Apakah Anda yakin ingin keluar dari Notulen Tracker?");
@@ -896,7 +845,6 @@ $total_notulen = mysqli_num_rows($query); // Dapatkan jumlah baris
         }
       });
       
-      // === Kirim data tabel ke localStorage untuk dashboard === (Tidak diubah)
       function updateDashboardData() {
         const rows = document.querySelectorAll("#notulenTable tbody tr");
         let selesai = 0;
@@ -926,7 +874,6 @@ $total_notulen = mysqli_num_rows($query); // Dapatkan jumlah baris
     </script>
 
     <?php
-    // Tutup koneksi database setelah semua query selesai
     if (isset($conn)) {
         mysqli_close($conn);
     }
