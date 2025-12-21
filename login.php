@@ -147,7 +147,6 @@
             <i class="bi bi-box-arrow-in-right me-2"></i>Masuk
         </button>
     </form>
-    
     <div class="text-center mt-4">
         <a href="index.php" class="text-decoration-none" style="color:#6c757d; font-size: 13px;">
             <i class="bi bi-arrow-left me-1"></i>Kembali ke Beranda
