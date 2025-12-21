@@ -1,8 +1,6 @@
 <?php
-// 1. Memulai Sesi
 session_start();
 
-// 2. Koneksi ke Database
 $host = "localhost";
 $user = "root";
 $pass = "";
@@ -15,7 +13,6 @@ if (!$conn) {
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Mengambil input dan membersihkan spasi liar
     $nim_input = trim($_POST['nim']); 
     $pass_input = trim($_POST['password']);
 
@@ -24,8 +21,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         exit();
     }
 
-    // 3. Query mencari user berdasarkan NIM
-    // Mengambil 'bergabung_sejak' untuk pengecekan otomatis
     $query = "SELECT id, nim, nama_lengkap, password, bergabung_sejak FROM pengguna WHERE nim = ?";
     $stmt = mysqli_prepare($conn, $query);
     mysqli_stmt_bind_param($stmt, "s", $nim_input);
@@ -34,13 +29,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     if ($row = mysqli_fetch_assoc($result)) {
         
-        // 4. Verifikasi Password (Mendukung Teks Biasa & Hash)
-        // password_verify() digunakan jika pass di DB sudah di-hash
-        // Perbandingan langsung ($pass_input === ...) digunakan jika pass masih teks biasa (NIM)
         if (password_verify($pass_input, $row['password']) || $pass_input === $row['password']) {
-            
-            // --- FITUR AUTO-HASH ---
-            // Jika password masih teks biasa (belum di-hash), otomatis ubah menjadi hash untuk keamanan
+
             if ($pass_input === $row['password'] && !password_get_info($row['password'])['algo']) {
                 $new_hash = password_hash($pass_input, PASSWORD_BCRYPT);
                 $update_hash_query = "UPDATE pengguna SET password = ? WHERE id = ?";
@@ -49,8 +39,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 mysqli_stmt_execute($stmt_hash);
             }
 
-            // --- FITUR AUTO-TANGGAL BERGABUNG ---
-            // Jika kolom bergabung_sejak masih kosong/NULL, isi dengan tanggal hari ini
             if (empty($row['bergabung_sejak']) || $row['bergabung_sejak'] == '0000-00-00') {
                 $today = date('Y-m-d');
                 $update_date_query = "UPDATE pengguna SET bergabung_sejak = ? WHERE id = ?";
@@ -59,15 +47,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 mysqli_stmt_execute($stmt_date);
             }
 
-            // --- PENGATURAN SESSION ---
             $_SESSION['id'] = $row['id']; 
             $_SESSION['nama'] = $row['nama_lengkap'];
             $_SESSION['nim'] = $row['nim'];
 
-            // Regenerasi ID session agar terhindar dari Session Fixation
             session_regenerate_id(true);
 
-            // Arahkan ke dashboard
             header("Location: dashboard.php");
             exit();
             
