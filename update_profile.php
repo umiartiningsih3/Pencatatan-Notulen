@@ -1,5 +1,4 @@
 <?php
-// update_profile.php
 session_start();
 header('Content-Type: application/json');
 
@@ -20,7 +19,6 @@ $nama = $input['nama'];
 
 $conn = mysqli_connect($db_host, $db_user, $db_pass, $db_name);
 
-// UPDATE: Menggunakan tabel 'pengguna' sesuai struktur database Anda
 $query = "UPDATE pengguna SET nama_lengkap = ? WHERE id = ?";
 $stmt = mysqli_prepare($conn, $query);
 
