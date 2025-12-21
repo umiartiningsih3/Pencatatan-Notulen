@@ -60,36 +60,10 @@ h4 {
     color: #007bff;
 }
 
-/* Modern peran card */
-.role-section {
-    display: flex;
-    justify-content: center;
-    gap: 15px;
-    margin-bottom: 20px;
-}
-.role-card {
-    border: 1px solid #90caf9;
-    border-radius: 10px;
-    padding: 10px 20px;
-    cursor: pointer;
-    transition: 0.3s;
-    user-select: none;
-    text-align: center;
-}
-.role-card.active {
-    background: #007bff;
-    color: white;
-    border-color: #007bff;
-}
-.role-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-}
-
-/* Password toggle dengan input group */
-.input-group .btn {
-    border-top-left-radius: 0;
-    border-bottom-left-radius: 0;
+.forgot-link {
+    font-size: 13px;
+    display: block;
+    margin-top: 10px;
 }
 </style>
 </head>
@@ -105,46 +79,23 @@ h4 {
         <input type="email" class="form-control" name="email" id="email" placeholder="Masukkan email" required>
       </div>
 
-      <!-- Password dengan input group Bootstrap -->
       <div class="mb-4">
         <label class="form-label">Kata Sandi</label>
-        <div class="input-group">
-          <input type="password" class="form-control" name="password" id="password" placeholder="Masukkan kata sandi" required>
-          <button type="button" class="btn btn-outline-secondary d-flex align-items-center" onclick="togglePassword()">
-            <i class="bi bi-eye" id="passwordIcon"></i>
-          </button>
-        </div>
+        <input type="password" class="form-control" name="password" id="password" placeholder="Masukkan kata sandi" required>
       </div>
 
-      <button type="submit" class="btn btn-primary w-100">Masuk</button>
+      <button type="submit" class="btn-primary btn w-100">Masuk</button>
     </form>
 
-    <a href="katasandi.php" class="text-decoration-none" style="font-size: 13px;">Lupa Kata Sandi?</a>
+    <a href="katasandi.php" class="text-decoration-none forgot-link">Lupa Kata Sandi?</a>
+    
     <p class="text-center mt-3 mb-0" style="font-size:13px;">
       Belum punya akun? 
       <a href="daftar.php" class="text-decoration-none" style="color:#007bff;">Daftar</a>
-      <a href="#" class="text-decoration-none" style="color:#000000;">|</a>
+      <span class="px-1" style="color:#ccc;">|</span>
       <a href="index.php" class="text-decoration-none" style="color:#007bff;">Kembali</a>
     </p>
 </div>
-
-<script>
-// Hanya untuk toggle password, aman
-function togglePassword() {
-    const passInput = document.getElementById('password');
-    const icon = document.getElementById('passwordIcon');
-    if(passInput.type === "password") {
-        passInput.type = "text";
-        icon.classList.remove('bi-eye');
-        icon.classList.add('bi-eye-slash');
-    } else {
-        passInput.type = "password";
-        icon.classList.remove('bi-eye-slash');
-        icon.classList.add('bi-eye');
-    }
-}
-</script>
-
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
