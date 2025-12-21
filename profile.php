@@ -90,7 +90,8 @@ $dropdown_foto = htmlspecialchars($profile_data['foto_profile']);
         .brand-info { display: flex; flex-direction: column; line-height: 1.1; }
         .brand-name { font-size: 21px; font-weight: 700; color: #ffffff; letter-spacing: 0.3px; }
         .brand-tagline { font-size: 13px; color: #90caf9; letter-spacing: 1px; }
-        .dropdown-menu {
+        /* Dropdown User Info Styles (DIOPTIMALKAN UNTUK MENYERUPAI GAMBAR) */
+      .dropdown-menu {
           /* Untuk memastikan menu dropdown tidak terlalu lebar */
           min-width: 250px !important;
           border-radius: 8px; /* Lebih halus */
@@ -103,12 +104,12 @@ $dropdown_foto = htmlspecialchars($profile_data['foto_profile']);
         margin-bottom: 0;
       }
       .dropdown-menu .user-avatar {
-        width: 40px; 
-        height: 40px;
+        width: 50px; 
+        height: 50px;
         border-radius: 50%; 
         object-fit: cover;
         margin-right: 12px;
-        background-color: #f0f0f0; /* Background jika gambar gagal load */
+        background-color: #f0f0f0;
       }
       .dropdown-menu .user-text {
           display: flex;
@@ -131,7 +132,7 @@ $dropdown_foto = htmlspecialchars($profile_data['foto_profile']);
       .dropdown-menu .dropdown-item {
         display: flex;
         align-items: center;
-        padding: 8px 15px; 
+        padding: 5px 15px; 
       }
       
       .dropdown-menu .dropdown-item i {
@@ -145,6 +146,7 @@ $dropdown_foto = htmlspecialchars($profile_data['foto_profile']);
       .dropdown-menu .user-text small {
         margin-top: 0; 
       }
+      /* Akhir Dropdown User Info Styles */
         main { flex: 1; }
         footer { background-color: #003366; color: white; text-align: center; padding: 15px 0; font-size: 0.9rem; margin-top: auto; }
         #upload-crop-area { width: 100%; height: 350px; margin: auto; }
