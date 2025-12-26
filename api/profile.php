@@ -56,48 +56,203 @@ if (!empty($profile_data['bergabung_sejak']) && $profile_data['bergabung_sejak']
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pengaturan Akun | Notulen Tracker</title>
+    <title>Pengaturan Akun</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.5/croppie.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Poppins', sans-serif; background-color: #f5f7fa; display: flex; flex-direction: column; min-height: 100vh; padding-top: 80px; }
-        .custom-navbar { background-color: #003366; height: 70px; box-shadow: 0 4px 12px rgba(0,0,0,0.12); }
-        .nav-effect .nav-link { color: #dce3ea !important; padding: 10px 18px; border-radius: 12px; display: flex; align-items: center; gap: 10px; font-weight: 500; transition: all 0.3s ease; }
-        .navbar-nav .nav-link:hover { background: rgba(255,255,255,0.08); color: #ffffff !important; }
-        .navbar-nav .nav-link.active { background: rgba(255,255,255,0.15); color: #ffffff !important; font-weight: 600; }
-        .brand-pro { display: flex; align-items: center; gap: 12px; text-decoration: none; }
-        .brand-info { display: flex; flex-direction: column; line-height: 1.1;}
-        .brand-pro img { width: 50px; height: 50px; border-radius: 100px; background: linear-gradient(135deg, #ffffff, #e3f2fd); transition: all 0.35s ease; }
-        .brand-name {font-size: 21px; font-weight: 700; color: #ffffff; letter-spacing: 0.3px; }
-        .brand-tagline { font-size: 13px; color: #90caf9; letter-spacing: 1px; }
+        body { 
+            font-family: 'Poppins', sans-serif; 
+            display: flex; 
+            flex-direction: column; 
+            min-height: 100vh; 
+            padding-top: 80px; 
+            background: url('gambarr.png') no-repeat center center fixed !important;
+            background-size: cover !important;
+            position: relative;
+            z-index: 0;
+        }
 
-        .dropdown-menu { min-width: 250px !important; border-radius: 8px; padding: 0; }
-        .dropdown-menu .user-info-header { display: flex; align-items: center; padding: 10px 15px; }
-        .dropdown-menu .user-avatar { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; margin-right: 12px; background-color: #f0f0f0; }
-        .dropdown-menu .user-text { display: flex; flex-direction: column; overflow: hidden; }
-        .dropdown-menu .user-text strong { font-size: 15px; font-weight: 600; line-height: 1.2; }
-        .dropdown-menu .user-text small { font-size: 13px; color: #6c757d; }
-        
-        .profile-sidebar { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
-        .profile-sidebar img.main-avatar { width: 120px; height: 120px; border-radius: 50%; object-fit: cover; border: 4px solid #0d6efd; transition: 0.3s; cursor: pointer; display: block; margin: 0 auto; }
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(245, 247, 250, 0.85); 
+            z-index: -1;
+        }
+
+        .custom-navbar { 
+            background-color: #003366; 
+            height: 70px; 
+            -shadow: 0 4px 12px rgba(0,0,0,0.12); 
+        }
+
+        .nav-effect .nav-link { 
+            color: #dce3ea !important; 
+            padding: 10px 18px; 
+            border-radius: 12px; 
+            display: flex; 
+            align-items: center; 
+            gap: 10px; 
+            font-weight: 500; 
+            transition: all 0.3s ease; 
+        }
+
+        .navbar-nav .nav-link:hover { 
+            background: rgba(255,255,255,0.08); 
+            color: #ffffff !important; 
+        }
+
+        .navbar-nav .nav-link.active { 
+            : rgba(255,255,255,0.15); 
+            color: #ffffff !important; 
+            font-weight: 600; 
+        }
+        .nav-effect .nav-link.active i {
+            color: #0d6efd;
+        }
+
+        .brand-pro { 
+            display: flex; 
+            align-items: center; 
+            gap: 12px; 
+            text-decoration: none; 
+        }
+
+        .brand-info { 
+            display: flex; 
+            flex-direction: column; 
+            line-height: 1.1;
+        }
+
+        .brand-pro img {
+            width: 45px;            
+            height: 45px;
+            border-radius: 50%;     
+            object-fit: cover;       
+            background: #ffffff;     
+            border: 2px solid rgba(255,255,255,0.2); 
+            transition: all 0.35s ease;
+        }
+        .brand-pro:hover img {
+            transform: scale(1.08) rotate(-4deg);
+            box-shadow: 0 8px 25px rgba(144,202,249,0.45);
+        }
+
+        .brand-name {
+            font-size: 21px; 
+            font-weight: 700; 
+            color: #ffffff; 
+            letter-spacing: 0.3px; 
+        }
+
+        .brand-tagline {
+            font-size: 13px; 
+            color: #90caf9; 
+            letter-spacing: 1px; 
+        }
+
+        .dropdown-menu {
+            min-width: 250px !important;
+            border-radius: 8px;
+            padding: 0;
+        }
+
+        .dropdown-menu .user-info-header { 
+            display: flex; 
+            align-items: center; 
+            padding: 10px 15px; 
+        }
+
+        .dropdown-menu .user-avatar { 
+            width: 50px; 
+            height: 50px; 
+            border-radius: 50%; 
+            object-fit: cover; 
+            margin-right: 12px; 
+            background-color: #f0f0f0; 
+        }
+
+        .dropdown-menu .user-text { 
+            display: flex;
+            flex-direction: column; 
+            overflow: hidden; 
+        }
+
+        .dropdown-menu .user-text strong {
+            font-size: 15px; 
+            font-weight: 600; 
+            line-height: 1.2;
+        }
+
+        .dropdown-menu .user-text small {
+            font-size: 13px;
+            color: #6c757d; 
+        }
+
+        .profile-sidebar { 
+            background: rgba(255,255,255,0.9); 
+            padding: 30px; 
+            border-radius: 12px; 
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05); 
+            backdrop-filter: blur(5px); 
+        }
+
+        .profile-sidebar img.main-avatar { 
+            width: 120px; 
+            height: 120px; 
+            border-radius: 50%; 
+            object-fit: cover; 
+            border: 4px solid #0d6efd; 
+            transition: 0.3s; 
+            cursor: pointer; 
+            display: block; 
+            margin: 0 auto; 
+        }
+
         .profile-sidebar img.main-avatar:hover { opacity: 0.8; }
-        .badge-peserta { background-color: #e3f2fd; color: #0d6efd; font-weight: 600; padding: 5px 15px; border-radius: 8px; margin: 10px 0; display: inline-block; }
+        .badge-peserta { 
+            background-color: #e3f2fd; 
+            color: #0d6efd; 
+            font-weight: 600; 
+            padding: 5px 15px; 
+            border-radius: 8px; 
+            margin: 10px 0; 
+            display: inline-block; 
+        }
         
-        .form-card { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); height: 100%; }
-        footer { background-color: #003366; color: white; text-align: center; padding: 15px 0; margin-top: auto; }
-        #upload-crop-area { width: 100%; height: 300px; }
+        .form-card { 
+            background: rgba(255,255,255,0.9); 
+            padding: 30px; 
+            border-radius: 12px; 
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05); 
+            height: 100%; 
+            backdrop-filter: blur(5px); 
+        }
+
+        footer { 
+            background-color: #003366; 
+            color: white; 
+            text-align: center; 
+            padding: 15px 0; 
+            margin-top: auto; 
+        }
+        #upload-crop-area { 
+            width: 100%; 
+            height: 300px; 
+        }
+        
     </style>
 </head>
 <body>
 
     <nav class="navbar navbar-expand-lg navbar-dark fixed-top px-4 custom-navbar">
         <a class="navbar-brand brand-pro" href="dashboard.php">
-            <img src="logono.jpeg" alt="Logo">
+            <img src="logono.png" alt="Logo">
             <div class="brand-info">
                 <span class="brand-name">Notulen</span>
-                <span class="brand-tagline">Tracker</span>
+                <span class="brand-tagline">TRACKER</span>
             </div>
         </a>
 
@@ -128,7 +283,7 @@ if (!empty($profile_data['bergabung_sejak']) && $profile_data['bergabung_sejak']
         </div>
     </nav>
 
-    <main class="container py-5">
+    <main class="container py-4">
         <h2 class="mb-4">Pengaturan Akun</h2>
 
         <div class="row g-4">
@@ -163,7 +318,7 @@ if (!empty($profile_data['bergabung_sejak']) && $profile_data['bergabung_sejak']
                             <input type="text" class="form-control" id="nama" value="<?php echo $dropdown_nama; ?>" required>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Email</label>
+                            <label class="form-label">Alamat Email</label>
                             <input type="email" class="form-control bg-light" value="<?php echo $dropdown_email; ?>" readonly>
                         </div>
                         <div class="mb-3">
