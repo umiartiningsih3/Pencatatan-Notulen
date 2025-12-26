@@ -27,28 +27,43 @@
     exit();
   }
 
-  $role_display = !empty($profile_db['role']) ? $profile_db['role'] : 'Notulis';
-  $dropdown_nama = htmlspecialchars($profile_db['nama_lengkap']);
+  $role_display   = !empty($profile_db['role']) ? $profile_db['role'] : 'Peserta';
+  $role_check     = strtolower($role_display);
+  $nama_user_login = $profile_db['nama_lengkap'];
+  $dropdown_nama  = htmlspecialchars($nama_user_login);
   $dropdown_email = htmlspecialchars($profile_db['email']);
   
   $dropdown_foto = (!empty($profile_db['foto_profile']) && file_exists($profile_db['foto_profile'])) 
                    ? htmlspecialchars($profile_db['foto_profile']) 
                    : 'user.png';
 
-  $query = mysqli_query($conn, "SELECT judul, tanggal, notulis, status FROM rapat");
+  if ($role_check === 'notulis' || $role_check === 'admin') {
+      $query_all = mysqli_query($conn, "SELECT status FROM rapat");
+  } else {
+      $query_all = mysqli_query($conn, "SELECT status FROM rapat WHERE peserta LIKE '%$nama_user_login%'");
+  }
 
   $total_fallback = 0;
   $selesai_fallback = 0;
   $belum_fallback = 0;
-  $dataTabel = [];
 
-  while ($row = mysqli_fetch_assoc($query)) {
+  while ($row = mysqli_fetch_assoc($query_all)) {
       $total_fallback++;
       if ($row['status'] === 'Selesai') {
           $selesai_fallback++;
       } elseif ($row['status'] === 'Belum Selesai') {
           $belum_fallback++;
       }
+  }
+
+  if ($role_check === 'notulis' || $role_check === 'admin') {
+      $query_limit = mysqli_query($conn, "SELECT judul, tanggal, notulis, status FROM rapat ORDER BY id DESC LIMIT 3");
+  } else {
+      $query_limit = mysqli_query($conn, "SELECT judul, tanggal, notulis, status FROM rapat WHERE peserta LIKE '%$nama_user_login%' ORDER BY id DESC LIMIT 3");
+  }
+
+  $dataTabel = [];
+  while ($row = mysqli_fetch_assoc($query_limit)) {
       $dataTabel[] = $row;
   }
 ?>
@@ -66,45 +81,196 @@
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0"></script>
     <style>
         html, body { height: 100%; margin: 0; display: flex; flex-direction: column; }
-        body { font-family: 'Poppins', sans-serif; background-color: #f5f7fa; padding-top: 80px; }
         
-        .custom-navbar { background-color: #003366; height: 70px; box-shadow: 0 4px 12px rgba(0,0,0,0.12); }
-        .nav-effect { gap: 10px; }
-        .nav-effect .nav-link { color: #dce3ea !important; padding: 10px 18px; border-radius: 12px; display: flex; align-items: center; gap: 10px; font-weight: 500; transition: all 0.3s ease; }
-        .navbar-nav .nav-link:hover { background: rgba(255,255,255,0.08); color: #ffffff !important; }
-        .navbar-nav .nav-link.active { background: rgba(255,255,255,0.15); color: #ffffff !important; font-weight: 600; }
-        
-        .brand-pro { display: flex; align-items: center; gap: 12px; text-decoration: none; }
-        .brand-info { display: flex; flex-direction: column; line-height: 1.1;}
-        .brand-pro img { width: 50px; height: 50px; border-radius: 100px; background: linear-gradient(135deg, #ffffff, #e3f2fd); transition: all 0.35s ease; }
-        .brand-name {font-size: 21px; font-weight: 700; color: #ffffff; letter-spacing: 0.3px; }
-        .brand-tagline { font-size: 13px; color: #90caf9; letter-spacing: 1px; }
+        body { 
+            font-family: 'Poppins', sans-serif; 
+            background: url('gambarr.png') no-repeat center center fixed; 
+            background-size: cover;
+            padding-top: 80px; 
+        }
 
-        .dropdown-menu { min-width: 250px !important; border-radius: 8px; padding: 0; }
-        .dropdown-menu .user-info-header { display: flex; align-items: center; padding: 10px 15px; margin-bottom: 0; }
-        .dropdown-menu .user-avatar { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; margin-right: 12px; background-color: #f0f0f0; }
-        .dropdown-menu .user-text { display: flex; flex-direction: column; overflow: hidden; }
-        .dropdown-menu .user-text strong { font-size: 15px; font-weight: 600; line-height: 1.2; }
-        .dropdown-menu .user-text small { display: block; font-size: 13px; color: #6c757d; line-height: 1.2; }
-        .dropdown-menu .dropdown-item { display: flex; align-items: center; padding: 5px 15px; }
-        .dropdown-menu .dropdown-item i { font-size: 1.1rem; width: 20px; text-align: center; margin-right: 8px; }
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%;
+            background: rgba(245, 247, 250, 0.85);
+            z-index: -1;
+        }
 
-        .dashboard-card { border: none; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); transition: transform 0.3s ease; }
-        .dashboard-card:hover { transform: translateY(-5px); box-shadow: 0 8px 20px rgba(0,0,0,0.15); }
-        .card-icon { font-size: 2.5rem; opacity: 0.6; }
-        .card-value { font-size: 2.5rem; font-weight: 700; }
+        .custom-navbar {
+            background-color: #003366;
+            height: 70px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+        }
+
+        .nav-effect {
+            gap: 10px;
+        }
+
+        .nav-effect .nav-link {
+            color: #dce3ea !important;
+            padding: 10px 18px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .navbar-nav .nav-link:hover {
+            background: rgba(255, 255, 255, 0.08);
+            color: #ffffff !important;
+        }
+
+        .navbar-nav .nav-link.active {
+            background: rgba(255, 255, 255, 0.15);
+            color: #ffffff !important;
+            font-weight: 600;
+        }
+
+        .nav-effect .nav-link.active i {
+            color: #0d6efd;
+        }
+
+        .brand-pro {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+        }
+
+        .brand-pro img {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            object-fit: cover;
+            background: #ffffff;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.35s ease;
+        }
+
+        .brand-pro:hover img {
+            transform: scale(1.08) rotate(-4deg);
+            box-shadow: 0 8px 25px rgba(144, 202, 249, 0.45);
+        }
+
+        .brand-info {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.1;
+        }
+
+        .brand-name {
+            font-size: 21px;
+            font-weight: 700;
+            color: #ffffff;
+            letter-spacing: 0.3px;
+        }
+
+        .brand-tagline {
+            font-size: 13px;
+            color: #90caf9;
+            letter-spacing: 1px;
+        }
+
+        .dropdown-menu {
+            min-width: 250px !important;
+            border-radius: 8px;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        .dropdown-menu .user-info-header {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            background-color: #f8f9fa;
+            border-bottom: 1px solid #eee;
+        }
+
+        .dropdown-menu .user-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 12px;
+            background-color: #e9ecef;
+        }
+
+        .dropdown-menu .user-text {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .dropdown-menu .user-text strong {
+            font-size: 15px;
+            font-weight: 600;
+            line-height: 1.2;
+            color: #333;
+        }
+
+        .dropdown-menu .user-text small {
+            font-size: 12px;
+            color: #6c757d;
+        }
+
+        .dropdown-menu .dropdown-item {
+            display: flex;
+            align-items: center;
+            padding: 10px 15px;
+            transition: background 0.2s;
+        }
+
+        .dropdown-menu .dropdown-item i {
+            font-size: 1.1rem;
+            width: 25px;
+            color: #555;
+        }
+
+        .dashboard-card {
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            background: rgba(255, 255, 255, 0.9);
+        }
         
-        footer { background-color: #003366; color: white; text-align: center; padding: 15px 0; margin-top: auto; }
+        .dashboard-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .card-icon {
+            font-size: 2.5rem;
+            opacity: 0.6;
+        }
+
+        .card-value {
+            font-size: 2.2rem;
+            font-weight: 700;
+        }
+
+        footer {
+            background-color: #003366;
+            color: white;
+            text-align: center;
+            padding: 20px 0;
+            margin-top: auto;
+        }
     </style>
 </head>
 
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark fixed-top px-4 custom-navbar">
         <a class="navbar-brand brand-pro" href="dashboard.php">
-            <img src="logono.jpeg" alt="Logo">
+            <img src="logono.png" alt="Logo">
             <div class="brand-info">
                 <span class="brand-name">Notulen</span>
-                <span class="brand-tagline">Tracker</span>
+                <span class="brand-tagline">TRACKER</span>
             </div>
         </a>
 
@@ -192,9 +358,9 @@
             </div>
         </div>
 
-        <div class="card shadow-sm mt-5">
+        <div class="card shadow-sm mt-5" style="background: rgba(255, 255, 255, 0.9);">
             <div class="card-body">
-                <h4 class="text-primary fw-bold mb-3">📘 Daftar Notulen Rapat Terbaru</h4>
+                <h4 class="text-primary fw-bold mb-3">📘 Daftar Notulen Terbaru</h4>
                 <div class="table-responsive">
                     <table class="table table-hover align-middle">
                         <thead class="table-primary">
@@ -241,8 +407,6 @@
 
         function loadDashboardStats() {
             let stats = fallbackData;
-            const storedStats = localStorage.getItem('notulenStats');
-            if (storedStats) { stats = JSON.parse(storedStats); } 
 
             document.getElementById('totalNotulen').textContent = stats.total;
             document.getElementById('selesaiNotulen').textContent = stats.selesai;
