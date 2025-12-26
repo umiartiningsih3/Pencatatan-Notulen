@@ -1,47 +1,43 @@
 <?php
 include "koneksi.php";
 
-$judul        = $_POST['judul'];
-$tanggal      = $_POST['tanggal'];
-$waktu        = $_POST['waktu'];
-$tempat       = $_POST['tempat'];
-$penyelenggara= $_POST['penyelenggara'];
-$notulis      = $_POST['notulis'];
-$peserta      = $_POST['peserta'];
-$catatan      = $_POST['catatan'];
-$status       = $_POST['status'];
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $judul         = mysqli_real_escape_string($conn, $_POST['judul']);
+    $tanggal       = $_POST['tanggal'];
+    $waktu         = $_POST['waktu'];
+    $tempat        = mysqli_real_escape_string($conn, $_POST['tempat']);
+    $penyelenggara = mysqli_real_escape_string($conn, $_POST['penyelenggara']);
+    $notulis       = mysqli_real_escape_string($conn, $_POST['notulis']);
+    $peserta       = isset($_POST['daftar_peserta']) ? mysqli_real_escape_string($conn, $_POST['daftar_peserta']) : '';
+    $catatan       = isset($_POST['catatan']) ? mysqli_real_escape_string($conn, $_POST['catatan']) : '';
+    
+    $status        = mysqli_real_escape_string($conn, $_POST['status']); 
 
-$query = "INSERT INTO rapat 
-(judul, tanggal, waktu, tempat, penyelenggara, notulis, peserta, catatan, status)
-VALUES 
-('$judul','$tanggal','$waktu','$tempat','$penyelenggara','$notulis','$peserta','$catatan','$status')";
+    $query_rapat = "INSERT INTO rapat (judul, tanggal, waktu, tempat, penyelenggara, notulis, peserta, catatan, status) 
+                    VALUES ('$judul', '$tanggal', '$waktu', '$tempat', '$penyelenggara', '$notulis', '$peserta', '$catatan', '$status')";
 
-mysqli_query($conn, $query);
+    if (mysqli_query($conn, $query_rapat)) {
+        $rapat_id = mysqli_insert_id($conn);
 
-$id_rapat = mysqli_insert_id($conn);
+        if (isset($_POST['topik']) && is_array($_POST['topik'])) {
+            foreach ($_POST['topik'] as $key => $val) {
+                $topik         = mysqli_real_escape_string($conn, $_POST['topik'][$key]);
+                $pembahasan    = mysqli_real_escape_string($conn, $_POST['pembahasan'][$key]);
+                $tindak_lanjut = mysqli_real_escape_string($conn, $_POST['tindak_lanjut'][$key]);
+                $pic           = mysqli_real_escape_string($conn, $_POST['pic'][$key]);
 
-$topik         = $_POST['topik'];
-$pembahasan    = $_POST['pembahasan'];
-$tindak_lanjut = $_POST['tindak_lanjut'];
-$pic           = $_POST['pic'];
-
-for ($i = 0; $i < count($topik); $i++) {
-
-  if (!empty($topik[$i]) && !empty($pembahasan[$i])) {
-
-    $sql = "INSERT INTO rapat_detail 
-    (id_rapat, topik, pembahasan, tindak_lanjut, pic)
-    VALUES
-    ('$id_rapat', '$topik[$i]', '$pembahasan[$i]', '$tindak_lanjut[$i]', '$pic[$i]')";
-
-    mysqli_query($conn, $sql);
-  }
+                if (!empty($topik)) {
+                    $query_detail = "INSERT INTO rapat_detail (id_rapat, topik, pembahasan, tindak_lanjut, pic) 
+                                     VALUES ('$rapat_id', '$topik', '$pembahasan', '$tindak_lanjut', '$pic')";
+                    mysqli_query($conn, $query_detail);
+                }
+            }
+        }
+        
+        header("Location: daftar_notulen.php?status=success");
+        exit();
+    } else {
+        die("Error Database Rapat: " . mysqli_error($conn));
+    }
 }
-
-echo "
-<script>
-alert('✅ Data rapat berhasil disimpan!');
-window.location='daftar_notulen.php';
-</script>
-";
 ?>
