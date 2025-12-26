@@ -44,121 +44,134 @@ if (isset($stmt) && $stmt) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FAQ | Notulen Tracker</title>
+    <title>FAQ</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
 
-
     <style>
       body { 
         font-family: Poppins,system-ui,-apple-system,Segoe UI,Roboto;
-        background-color: #f5f7fa;
         display: flex;
         flex-direction: column;
         min-height: 100vh;
         margin: 0;
-        padding-top: 80px;
+        padding-top: 70px;
+        background: url('gambarr.png') no-repeat center center fixed !important;
+        background-size: cover !important;
+        position: relative;
+        z-index: 0;
       }
 
-.custom-navbar {
-  background-color: #003366;
-  height: 70px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.12);
-}
+      body::before {
+        content: "";
+        position: fixed;
+        top: 0; left: 0; width: 100%; height: 100%;
+        background-color: rgba(245, 247, 250, 0.85); /* Putih transparan */
+        z-index: -1;
+      }
 
-.nav-effect {
-  gap: 10px;
-}
+      .custom-navbar {
+        background-color: #003366;
+        height: 70px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+      }
 
-.nav-effect .nav-link {
-  color: #dce3ea !important;
-  padding: 10px 18px; 
-  border-radius: 12px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-weight: 500;
-  transition: all 0.3s ease;
-  position: relative;
-}
+      .nav-effect {
+        gap: 10px;
+      }
 
-.navbar-nav .nav-link:hover {
-  background: rgba(255,255,255,0.08);
-  color: #ffffff !important;
-}
+      .nav-effect .nav-link {
+        color: #dce3ea !important;
+        padding: 10px 18px; 
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        position: relative;
+      }
 
-.navbar-nav .nav-link.active {
-  background: rgba(255,255,255,0.15);
-  color: #ffffff !important;
-  font-weight: 600;
-}
+      .navbar-nav .nav-link:hover {
+        background: rgba(255,255,255,0.08);
+        color: #ffffff !important;
+      }
 
-.nav-effect .nav-link i {
-  font-size: 1.1rem;
-  transition: transform 0.3s ease;
-}
+      .navbar-nav .nav-link.active {
+        background: rgba(255,255,255,0.15);
+        color: #ffffff !important;
+        font-weight: 600;
+      }
 
-.nav-effect .nav-link:hover i {
-  transform: scale(1.15);
-}
+      .nav-effect .nav-link i {
+        font-size: 1.1rem;
+        transition: transform 0.3s ease;
+      }
 
-.nav-effect .nav-link.active i {
-  color: #0d6efd;
-}
+      .nav-effect .nav-link:hover i {
+        transform: scale(1.15);
+      }
 
+      .nav-effect .nav-link.active i {
+        color: #0d6efd;
+      }
 
-.brand-pro {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  text-decoration: none;
-}
+      .brand-pro {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        text-decoration: none;
+      }
 
-.brand-pro img {
-  width: 50px;
-  height: 50px;
-  border-radius: 100px;
-  padding: 0px;
-  background: linear-gradient(135deg, #ffffff, #e3f2fd);
-  transition: all 0.35s ease;
-}
+      .brand-pro img {
+        width: 45px;
+        height: 45px;
+        border-radius: 50%;
+        object-fit: cover;
+        background: #ffffff;
+        border: 2px solid rgba(255,255,255,0.2);
+        transition: all 0.35s ease;
+      }
 
-.brand-info {
-  display: flex;
-  flex-direction: column;
-  line-height: 1.1;
-}
+      .brand-info {
+        display: flex;
+        flex-direction: column;
+        line-height: 1.1;
+      }
 
-.brand-name {
-  font-size: 21px;
-  font-weight: 700;
-  color: #ffffff;
-  letter-spacing: 0.3px;
-}
+      .brand-name {
+        font-size: 21px;
+        font-weight: 700;
+        color: #ffffff;
+        letter-spacing: 0.3px;
+      }
 
-.brand-tagline {
-  font-size: 13px;
-  color: #90caf9;
-  letter-spacing: 1px;
-}
+      .brand-tagline {
+        font-size: 13px;
+        color: #90caf9;
+        letter-spacing: 1px;
+      }
 
-.brand-pro:hover img {
-  transform: scale(1.08) rotate(-4deg);
-  box-shadow: 0 8px 25px rgba(144,202,249,0.45);
-}
+      .brand-pro:hover img {
+        transform: scale(1.08) rotate(-4deg);
+        box-shadow: 0 8px 25px rgba(144,202,249,0.45);
+      }
+
       .dropdown-menu {
           min-width: 250px !important;
-          border-radius: 8px; /* Lebih halus */
+          border-radius: 8px; 
           padding: 0;
       }
+
       .dropdown-menu .user-info-header {
         display: flex; 
         align-items: center;
         padding: 10px 15px;
         margin-bottom: 0;
       }
+
       .dropdown-menu .user-avatar {
         width: 50px; 
         height: 50px;
@@ -167,16 +180,19 @@ if (isset($stmt) && $stmt) {
         margin-right: 12px;
         background-color: #f0f0f0;
       }
+
       .dropdown-menu .user-text {
           display: flex;
           flex-direction: column;
           overflow: hidden; 
       }
+
       .dropdown-menu .user-text strong {
           font-size: 15px;
           font-weight: 600;
           line-height: 1.2;
       }
+
       .dropdown-menu .user-text small {
         display: block;
         font-size: 13px;
@@ -219,12 +235,17 @@ if (isset($stmt) && $stmt) {
       }
       
       .accordion-button.collapsed {
-        background-color: #ffffff;
+        background-color: rgba(255, 255, 255, 0.7);
         color: #003366;
       }
 
       .accordion-body {
-        background-color: #ffffff;
+        background-color: rgba(255, 255, 255, 0.9); 
+      }
+
+      .accordion-item {
+        background-color: transparent;
+        border: 1px solid rgba(0, 51, 102, 0.1);
       }
 
       footer {
@@ -242,10 +263,10 @@ if (isset($stmt) && $stmt) {
 
     <nav class="navbar navbar-expand-lg navbar-dark fixed-top px-4 custom-navbar">
         <a class="navbar-brand brand-pro" href="dashboard.php">
-            <img src="logono.jpeg" alt="Logo">
+            <img src="logono.png" alt="Logo">
             <div class="brand-info">
                 <span class="brand-name">Notulen</span>
-                <span class="brand-tagline">Tracker</span>
+                <span class="brand-tagline">TRACKER</span>
             </div>
         </a>
 
@@ -305,7 +326,7 @@ if (isset($stmt) && $stmt) {
     </nav>
 
     <main>
-      <div class="container my-5">
+      <div class="container mt-5 mb-5">
         <h2 class="text-center mb-4 text-primary fw-bold">Pertanyaan Umum (FAQ)</h2>
 
         <div class="accordion" id="faqAccordion">
