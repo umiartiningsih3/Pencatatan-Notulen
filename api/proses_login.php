@@ -13,17 +13,18 @@ if (!$conn) {
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $nim_input = trim($_POST['nim']); 
+    $user_input = trim($_POST['nim']); 
     $pass_input = trim($_POST['password']);
 
-    if (empty($nim_input) || empty($pass_input)) {
-        echo "<script>alert('Harap isi NIM dan Password!'); window.location='login.php';</script>";
+    if (empty($user_input) || empty($pass_input)) {
+        echo "<script>alert('Harap isi kolom login dan Password!'); window.location='login.php';</script>";
         exit();
     }
 
-    $query = "SELECT id, nim, nama_lengkap, password, bergabung_sejak FROM pengguna WHERE nim = ?";
+    $query = "SELECT id, nim, nama_lengkap, password, bergabung_sejak FROM pengguna WHERE nim = ? OR email = ?";
     $stmt = mysqli_prepare($conn, $query);
-    mysqli_stmt_bind_param($stmt, "s", $nim_input);
+    
+    mysqli_stmt_bind_param($stmt, "ss", $user_input, $user_input);
     mysqli_stmt_execute($stmt);
     $result = mysqli_stmt_get_result($stmt);
 
@@ -61,7 +62,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             exit();
         }
     } else {
-        echo "<script>alert('NIM tidak terdaftar!'); window.location='login.php';</script>";
+        echo "<script>alert('Akun tidak terdaftar!'); window.location='login.php';</script>";
         exit();
     }
 } else {
