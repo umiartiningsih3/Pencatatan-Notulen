@@ -46,75 +46,159 @@ if (isset($stmt)) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Input Rapat</title>
-
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet"> 
 
     <style>
-        body { background-color: #f5f7fa; display: flex; flex-direction: column; min-height: 100vh; font-family: Poppins,system-ui,-apple-system,Segoe UI,Roboto; margin: 0; padding-top: 80px; }
-        .custom-navbar { background-color: #003366; height: 70px; box-shadow: 0 4px 12px rgba(0,0,0,0.12); }
+        body { 
+            display: flex; 
+            flex-direction: column; 
+            min-height: 100vh; 
+            font-family: Poppins,system-ui,-apple-system,Segoe UI,Roboto; 
+            margin: 0; 
+            padding-top: 80px; 
+            background: url('gambarr.png') no-repeat center center fixed !important;
+            background-size: cover !important;
+            position: relative;
+            z-index: 0;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(245, 247, 250, 0.85);
+            z-index: -1;
+        }
+
+        .custom-navbar { 
+            background-color: #003366; 
+            height: 70px; 
+            box-shadow: 0 4px 12px rgba(0,0,0,0.12); 
+        }
+        
         .nav-effect { gap: 10px; }
-        .nav-effect .nav-link { color: #dce3ea !important; padding: 10px 18px; border-radius: 12px; display: flex; align-items: center; gap: 10px; font-weight: 500; transition: all 0.3s ease; position: relative; }
-        .navbar-nav .nav-link:hover { background: rgba(255,255,255,0.08); color: #ffffff !important; }
-        .navbar-nav .nav-link.active { background: rgba(255,255,255,0.15); color: #ffffff !important; font-weight: 600; }
-        .brand-pro { display: flex; align-items: center; gap: 12px; text-decoration: none; }
-        .brand-pro img { width: 50px; height: 50px; border-radius: 100px; background: linear-gradient(135deg, #ffffff, #e3f2fd); transition: all 0.35s ease; }
-        .brand-name { font-size: 21px; font-weight: 700; color: #ffffff; }
+
+        .nav-effect .nav-link { 
+            color: #dce3ea !important; 
+            padding: 10px 18px; 
+            border-radius: 12px; 
+            display: flex; 
+            align-items: center; 
+            gap: 10px; 
+            font-weight: 500; 
+            transition: all 0.3s ease; 
+            position: relative; 
+        }
+        .navbar-nav .nav-link:hover { 
+            background: rgba(255,255,255,0.08); 
+            color: #ffffff !important; 
+        }
+
+        .navbar-nav .nav-link.active { 
+            background: rgba(255,255,255,0.15); 
+            color: #ffffff !important; 
+            font-weight: 600; 
+        }
+
+        .brand-pro { 
+            display: flex; 
+            align-items: center; 
+            gap: 12px; 
+            text-decoration: none; 
+        }
+
+        .brand-info { 
+            display: flex; 
+            flex-direction: column; 
+            line-height: 1.1;
+        }
+
+        .brand-pro img {
+          width: 45px;            
+          height: 45px;
+          border-radius: 50%;     
+          object-fit: cover;       
+          background: #ffffff;     
+          border: 2px solid rgba(255,255,255,0.2); 
+          transition: all 0.35s ease;
+        }
+
+        .brand-pro:hover img {
+          transform: scale(1.08) rotate(-4deg);
+          box-shadow: 0 8px 25px rgba(144,202,249,0.45);
+        }
+
+        .nav-effect .nav-link.active i {
+            color: #0d6efd;
+        }
+
+        .brand-name { 
+            font-size: 21px; 
+            font-weight: 700; 
+            color: #ffffff; }
         .brand-tagline { font-size: 13px; color: #90caf9; }
-      .dropdown-menu {
+        
+        .dropdown-menu {
           min-width: 250px !important;
           border-radius: 8px;
           padding: 0;
-      }
-      .dropdown-menu .user-info-header {
-        display: flex; 
-        align-items: center;
-        padding: 10px 15px;
-        margin-bottom: 0;
-      }
-      .dropdown-menu .user-avatar {
-        width: 50px; 
-        height: 50px;
-        border-radius: 50%; 
-        object-fit: cover;
-        margin-right: 12px;
-        background-color: #f0f0f0;
-      }
-      .dropdown-menu .user-text {
-          display: flex;
-          flex-direction: column;
-          overflow: hidden; 
-      }
-      .dropdown-menu .user-text strong {
-          font-size: 15px;
-          font-weight: 600;
-          line-height: 1.2;
-      }
-      .dropdown-menu .user-text small {
-        display: block;
-        font-size: 13px;
-        color: #6c757d; 
-        line-height: 1.2;
-      }
+        }
+
+        .dropdown-menu .user-info-header {
+            display: flex; 
+            align-items: center;
+            padding: 10px 15px;
+            margin-bottom: 0;
+        }
+
+        .dropdown-menu .user-avatar {
+            width: 50px; 
+            height: 50px;
+            border-radius: 50%; 
+            object-fit: cover;
+            margin-right: 12px;
+            background-color: #f0f0f0;
+        }
+
+        .dropdown-menu .user-text {
+            display: flex;
+            flex-direction: column;
+            overflow: hidden; 
+        }
+
+        .dropdown-menu .user-text strong {
+            font-size: 15px;
+            font-weight: 600;
+            line-height: 1.2;
+        }
+
+        .dropdown-menu .user-text small {
+            display: block;
+            font-size: 13px;
+            color: #6c757d; 
+            line-height: 1.2;
+        }
       
-      .dropdown-menu .dropdown-item {
-        display: flex;
-        align-items: center;
-        padding: 5px 15px; 
-      }
+        .dropdown-menu .dropdown-item {
+            display: flex;
+            align-items: center;
+            padding: 5px 15px; 
+        }
       
-      .dropdown-menu .dropdown-item i {
-        font-size: 1.1rem;
-        width: 20px; 
-        text-align: center;
-        margin-right: 8px; 
-      }
+        .dropdown-menu .dropdown-item i {
+            font-size: 1.1rem;
+            width: 20px; 
+            text-align: center;
+            margin-right: 8px; 
+        }
       
-      .dropdown-menu .user-text small {
-        margin-top: 0; 
-      }
-        footer { background-color: #003366; color: white; text-align: center; padding: 15px 0; margin-top: auto; }
+        .dropdown-menu .user-text small {
+            margin-top: 0; 
+        }
 
         .brand-info {
             display: flex;
@@ -128,10 +212,17 @@ if (isset($stmt)) {
             color: #ffffff;
             letter-spacing: 0.3px;
         }
-        .brand-tagline { font-size: 13px; color: #90caf9; letter-spacing: 1px; }
+
+        .brand-tagline { 
+            font-size: 13px; 
+            color: #90caf9; 
+            letter-spacing: 1px; 
+        }
 
         .card {
             border-radius: 12px;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(5px);
         }
 
         #tabelHasil textarea {
@@ -165,13 +256,13 @@ if (isset($stmt)) {
 <body>
 
     <nav class="navbar navbar-expand-lg navbar-dark fixed-top px-4 custom-navbar">
-        <a class="navbar-brand brand-pro" href="dashboard.php">
-            <img src="logono.jpeg" alt="Logo">
-            <div class="brand-info">
-                <span class="brand-name">Notulen</span>
-                <span class="brand-tagline">Tracker</span>
-            </div>
-        </a>
+    <a class="navbar-brand brand-pro" href="dashboard.php">
+      <img src="logono.png" alt="Logo">
+      <div class="brand-info">
+        <span class="brand-name">Notulen</span>
+        <span class="brand-tagline">TRACKER</span>
+      </div>
+    </a>
 
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -231,44 +322,56 @@ if (isset($stmt)) {
             <form id="formRapat" method="POST" action="input_hasil.php">
 
                 <div class="mb-3">
-                    <label for="judulRapat" class="form-label">Judul Rapat</label>
+                    <label for="judulRapat" class="form-label fw-bold">Judul Rapat</label>
                     <input type="text" class="form-control" id="judulRapat" placeholder="Masukkan judul rapat" name="judul" required>
                 </div>
 
                 <div class="row">
                     <div class="col-md-6 mb-3">
-                        <label for="tanggalRapat" class="form-label">Tanggal Rapat</label>
+                        <label for="tanggalRapat" class="form-label fw-bold">Tanggal Rapat</label>
                         <input type="date" class="form-control" id="tanggalRapat" name="tanggal" required>
                     </div>
                     <div class="col-md-6 mb-3">
-                        <label for="waktuRapat" class="form-label">Waktu Rapat</label>
+                        <label for="waktuRapat" class="form-label fw-bold">Waktu Rapat</label>
                         <input type="time" class="form-control" id="waktuRapat" name="waktu" required>
                     </div>
                 </div>
 
                 <div class="row">
                     <div class="col-md-6 mb-3">
-                        <label for="tempatRapat" class="form-label">Tempat Rapat</label>
+                        <label for="tempatRapat" class="form-label fw-bold">Tempat Rapat</label>
                         <input type="text" class="form-control" id="tempatRapat" placeholder="Masukkan tempat rapat" name="tempat">
                     </div>
                     <div class="col-md-6 mb-3">
-                        <label for="penyelenggara" class="form-label">Penyelenggara Rapat</label>
+                        <label for="penyelenggara" class="form-label fw-bold">Penyelenggara Rapat</label>
                         <input type="text" class="form-control" id="penyelenggara" placeholder="Masukkan penyelenggara rapat" name="penyelenggara">
                     </div>
                 </div>
-
+                
                 <div class="mb-3">
-                    <label for="notulis" class="form-label">Notulis</label>
-                    <input type="text" class="form-control" id="notulis" placeholder="Nama notulis" name="notulis">
+                    <label class="form-label fw-bold">Nama Notulis</label>
+                    <input type="text" class="form-control bg-light" name="notulis" value="<?= $dropdown_nama; ?>" readonly>
                 </div>
 
-                <div class="mb-3">
-                    <label for="peserta" class="form-label">Peserta Rapat</label>
-                    <textarea class="form-control" id="peserta" rows="3" placeholder="Daftar peserta rapat" name="peserta"></textarea>
+                <div class="mb-3 position-relative">
+                    <label class="form-label fw-bold">Daftar Peserta</label>
+                    <div class="input-group">
+                        <input type="text" id="inputNama" class="form-control" placeholder="Cari nama peserta..." autocomplete="off">
+                        <button class="btn btn-outline-primary" type="button" id="btnTambahPeserta">+Tambah</button>
+                    </div>
+                    <div id="hasilPencarian" class="list-group position-absolute w-100" style="z-index: 1000;"></div>
+                    <div id="containerPeserta" class="mt-2 d-flex flex-wrap gap-2 p-2 border rounded bg-light" style="min-height: 50px;">
+                        <span class="text-muted small">Belum ada peserta...</span>
+                    </div>
+                    <input type="hidden" name="daftar_peserta" id="hiddenPeserta">
                 </div>
-
+                
+                <input type="hidden" name="peserta" id="pesertaFinal">
+            
+            </div>
+                <br>
                 <div class="mb-3">
-                    <label class="form-label">Hasil Rapat</label>
+                    <label class="form-label fw-bold">Hasil Rapat</label>
                     <table class="table table-bordered align-middle" id="tabelHasil" name="hasil">
                         <thead class="table-primary">
                             <tr>
@@ -295,12 +398,12 @@ if (isset($stmt)) {
                 </div>
 
                 <div class="mb-3">
-                    <label for="catatan" class="form-label">Catatan Tambahan</label>
+                    <label for="catatan" class="form-label fw-bold">Catatan Tambahan</label>
                     <textarea class="form-control" id="catatan" rows="3" placeholder="Tambahkan catatan tambahan di sini..." name="catatan"></textarea>
                 </div>
 
                 <div class="mb-3">
-                    <label for="status" class="form-label">Status Rapat</label>
+                    <label for="status" class="form-label fw-bold">Status Rapat</label>
                     <select class="form-select" id="status" name="status">
                         <option value="Belum Selesai">Belum Selesai</option>
                         <option value="Selesai">Selesai</option>
@@ -320,116 +423,133 @@ if (isset($stmt)) {
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        document.addEventListener("input", function (e) {
-            if (e.target.tagName.toLowerCase() === "textarea") {
-                e.target.style.height = "auto";
-                e.target.style.height = e.target.scrollHeight + "px";
-            }
-        });
+<script>
+    const inputPeserta = document.getElementById('inputNama'); 
+    const btnTambah = document.getElementById('btnTambahPeserta');
+    const containerBadge = document.getElementById('containerPeserta'); 
+    const hiddenInputPeserta = document.getElementById('hiddenPeserta');
+    const hasilPencarian = document.getElementById('hasilPencarian');
+    let daftarPeserta = [];
 
-        document.getElementById("tambahBaris").addEventListener("click", () => {
-            const tbody = document.querySelector("#tabelHasil tbody");
-            const rowCount = tbody.rows.length + 1;
-            const newRow = `
-                <tr>
-                    <td>${rowCount}</td>
-                    <td><textarea name="topik[]" placeholder="Masukkan topik"></textarea></td>
-                    <td><textarea name="pembahasan[]" placeholder="Masukkan pembahasan"></textarea></td>
-                    <td><textarea name="tindak_lanjut[]" placeholder="Masukkan tindak lanjut"></textarea></td>
-                    <td><textarea name="pic[]" placeholder="Nama PIC"></textarea></td>
-                    <td><button type="button" class="btn btn-danger btn-sm" onclick="hapusBaris(this)">Hapus</button></td>
-                </tr>`;
-            tbody.insertAdjacentHTML("beforeend", newRow);
-            tbody.lastElementChild.querySelectorAll('textarea').forEach(textarea => {
-                textarea.style.height = 'auto';
-            });
-        });
-
-        function hapusBaris(btn) {
-            btn.closest("tr").remove();
-            const rows = document.querySelectorAll("#tabelHasil tbody tr");
-            rows.forEach((r, i) => r.cells[0].textContent = i + 1);
-        }
-
-        document.getElementById("btnBatal").addEventListener("click", () => {
-            if (confirm("Apakah Anda yakin ingin membatalkan?")) {
-                window.location.href = "daftar_notulen.php";
-            }
-        });
-    </script>
-
-    <script>
-    document.getElementById("logoutLink").addEventListener("click", (e) => {
-        e.preventDefault();
-        const konfirmasi = confirm("Apakah Anda yakin ingin keluar dari Notulen Tracker?");
-        if (konfirmasi) {
-            window.location.href = "login.php";
+    inputPeserta.addEventListener('keyup', function() {
+        let keyword = this.value;
+        if (keyword.length > 0) {
+            fetch('cari_peserta.php?key=' + keyword)
+                .then(res => res.text())
+                .then(data => {
+                    hasilPencarian.innerHTML = data;
+                });
+        } else {
+            hasilPencarian.innerHTML = '';
         }
     });
-    </script>
 
-    <script>
+    function pilihPeserta(nama) {
+        inputPeserta.value = nama;
+        hasilPencarian.innerHTML = '';
+        btnTambah.click();
+    }
+
+    document.addEventListener('click', function(e) {
+        if (e.target !== inputPeserta) {
+            hasilPencarian.innerHTML = '';
+        }
+    });
+
+    btnTambah.addEventListener('click', function() {
+        const nama = inputPeserta.value.trim();
+        
+        if (nama === "") return;
+        if (daftarPeserta.includes(nama)) {
+            alert("Nama sudah ada di daftar!");
+            return;
+        }
+
+        daftarPeserta.push(nama);
+        renderBadges();
+        inputPeserta.value = ""; 
+    });
+
+    function renderBadges() {
+        containerBadge.innerHTML = ""; 
+        if (daftarPeserta.length === 0) {
+            containerBadge.innerHTML = '<span class="text-muted small">Belum ada peserta...</span>';
+        }
+
+        daftarPeserta.forEach((nama, index) => {
+            const badge = document.createElement('span');
+            badge.className = "badge bg-primary d-flex align-items-center p-2";
+            badge.style.fontSize = "14px";
+            badge.innerHTML = `
+                ${nama} 
+                <i class="bi bi-x-circle-fill ms-2" style="cursor:pointer" onclick="hapusPeserta(${index})"></i>
+            `;
+            containerBadge.appendChild(badge);
+        });
+        hiddenInputPeserta.value = daftarPeserta.join(', ');
+    }
+
+    window.hapusPeserta = function(index) {
+        daftarPeserta.splice(index, 1);
+        renderBadges();
+    };
+
+    document.getElementById("tambahBaris").addEventListener("click", () => {
+        const tbody = document.querySelector("#tabelHasil tbody");
+        const rowCount = tbody.rows.length + 1;
+        const newRow = `
+            <tr>
+                <td>${rowCount}</td>
+                <td><textarea name="topik[]" placeholder="Masukkan topik"></textarea></td>
+                <td><textarea name="pembahasan[]" placeholder="Masukkan pembahasan"></textarea></td>
+                <td><textarea name="tindak_lanjut[]" placeholder="Masukkan tindak lanjut"></textarea></td>
+                <td><textarea name="pic[]" placeholder="Nama PIC"></textarea></td>
+                <td><button type="button" class="btn btn-danger btn-sm" onclick="hapusBaris(this)">Hapus</button></td>
+            </tr>`;
+        tbody.insertAdjacentHTML("beforeend", newRow);
+    });
+
+    window.hapusBaris = function(btn) {
+        btn.closest("tr").remove();
+        const rows = document.querySelectorAll("#tabelHasil tbody tr");
+        rows.forEach((r, i) => r.cells[0].textContent = i + 1);
+    };
+
+    document.addEventListener("input", function (e) {
+        if (e.target.tagName.toLowerCase() === "textarea") {
+            e.target.style.height = "auto";
+            e.target.style.height = e.target.scrollHeight + "px";
+        }
+    });
+
     document.getElementById("formRapat").addEventListener("submit", function(e) {
-        e.preventDefault();
-
         let error = [];
-
-        let judul = document.getElementById("judulRapat").value.trim();
-        let tanggal = document.getElementById("tanggalRapat").value;
-        let waktu = document.getElementById("waktuRapat").value;
-        let notulis = document.getElementById("notulis").value.trim();
+        let judul = document.querySelector("input[name='judul']").value.trim();
+        let tanggal = document.querySelector("input[name='tanggal']").value;
+        let waktu = document.querySelector("input[name='waktu']").value;
 
         if (!judul) error.push("Judul rapat wajib diisi");
         if (!tanggal) error.push("Tanggal wajib diisi");
         if (!waktu) error.push("Waktu wajib diisi");
-        if (!notulis) error.push("Notulis wajib diisi");
 
-        const rows = document.querySelectorAll("#tabelHasil tbody tr");
-        let adaIsi = false;
-        let hasIncompleteRow = false;
-
-        rows.forEach((row, i) => {
-            let cells = row.querySelectorAll("textarea");
-            let isi = 0;
-            
-            cells.forEach(c => { 
-                if (c.value.trim() !== "") isi++; 
-            });
-
-            if (isi > 0) {
-                adaIsi = true;
-            }
-
-            if (isi > 0 && isi < cells.length) { 
-                hasIncompleteRow = true;
-                error.push("Baris Hasil Rapat No. " + (i + 1) + " harus diisi lengkap (Topik, Pembahasan, Tindak Lanjut, PIC) atau dikosongkan.");
-            }
-        });
-
-        if (!adaIsi && rows.length > 0) {
-            let allRowsAreEmpty = Array.from(rows).every(row => 
-                Array.from(row.querySelectorAll("textarea")).every(c => c.value.trim() === "")
-            );
-            
-            if (!allRowsAreEmpty) {
-                 error.push("Tabel hasil rapat tidak boleh kosong!");
-            }
+        if (daftarPeserta.length === 0) {
+            error.push("Minimal harus ada satu peserta");
         }
-        
+
         if (error.length > 0) {
+            e.preventDefault();
             alert("⚠️ ERROR:\n\n" + error.join("\n"));
-            return;
         }
-
-        this.submit(); 
     });
-    </script>
 
-    <?php
-    if (isset($conn)) {
-        mysqli_close($conn);
-    }
-    ?>
+    document.getElementById("logoutLink")?.addEventListener("click", (e) => {
+        e.preventDefault();
+        if (confirm("Apakah Anda yakin ingin keluar?")) window.location.href = "login.php";
+    });
+
+    document.getElementById("btnBatal")?.addEventListener("click", () => {
+        if (confirm("Apakah Anda yakin ingin membatalkan?")) window.location.href = "daftar_notulen.php";
+    });
+</script>
 </body>
 </html>
