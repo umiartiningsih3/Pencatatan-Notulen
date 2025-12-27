@@ -260,12 +260,13 @@ if (!empty($tgl_lahir) && $tgl_lahir !== '0000-00-00') {
             backdrop-filter: blur(5px); 
         }
 
-        footer { 
-            background-color: #003366; 
-            color: white; 
-            text-align: center; 
-            padding: 15px 0; 
-            margin-top: auto; 
+        footer {
+            background-color: #003366;
+            color: white;
+            text-align: center;
+            padding: 15px 0;
+            font-size: 0.9rem;
+            margin-top: auto;
         }
         #upload-crop-area { 
             width: 100%; 
