@@ -257,6 +257,39 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['btn_kirim'])) {
       font-size: 0.9rem;
       margin-top: auto;
     }
+
+    @media (max-width: 991.98px) {
+        .custom-navbar {
+            height: auto;
+            padding: 10px 15px;
+        }
+    
+        body {
+            padding-top: 100px;
+        }
+
+        .navbar-collapse {
+            background: #003366; 
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 10px;
+        }
+    }
+
+        @media (max-width: 576px) {
+        .brand-name {
+            font-size: 18px; 
+        }
+    
+        .profile-sidebar, .form-card {
+            padding: 20px; 
+        }
+    
+        .profile-sidebar img.main-avatar {
+            width: 100px;
+            height: 100px;
+        }
+    }
   </style>
 </head>
 
@@ -271,8 +304,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['btn_kirim'])) {
       </div>
     </a>
 
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+    </button>
 
-    <div class="collapse navbar-collapse">
+    <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav ms-auto nav-effect">
         <li class="nav-item">
           <a class="nav-link" href="dashboard.php">
