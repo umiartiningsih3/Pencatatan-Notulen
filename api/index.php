@@ -150,9 +150,56 @@
     }
 
     @media (max-width: 992px) {
-      .hero-grid { grid-template-columns: 1fr; text-align: center; gap: 30px; }
-      .visual-side { justify-content: center; }
-      .visual-side img { max-width: 400px; }
+      header {
+        padding: 20px 5%;
+        flex-direction: row !important;
+        justify-content: space-between !important;
+      }
+      .logo { font-size: 1.2rem; }
+      .btn-masuk { padding: 8px 20px; font-size: 0.85rem; }
+      .hero-grid { 
+        display: flex !important;
+        flex-direction: column !important; 
+        align-items: center !important; 
+        text-align: center !important;
+        gap: 20px;
+      }
+
+      .visual-side { 
+        display: flex !important;
+        justify-content: center !important;
+        width: 100% !important;
+        margin: 0 auto !important;
+      }
+
+      .visual-side img { 
+        max-width: 250px;
+        height: auto;
+      }
+
+      .text-side { 
+        padding: 0 !important;
+        width: 100%;
+      }
+
+      .text-side h1 {
+        font-size: 2rem; 
+        line-height: 1.2;
+      }
+
+      .no-break {
+        white-space: normal !important; 
+      }
+
+      .text-side p {
+        font-size: 0.95rem;
+        margin: 0 auto 20px auto;
+        max-width: 90%;
+      }
+
+      .text-float-wrapper br {
+        display: none;
+      }
     }
   </style>
 </head>
@@ -184,7 +231,7 @@
         <div class="text-side">
           <div class="text-float-wrapper">
             <br><br>
-            <h1>Selamat Datang,<br><span class="no-break">di Notulen Tracker</span></h1>
+            <h1>Selamat Datang,<br><span class="no-break"> di Notulen Tracker</span></h1>
             <p>Solusi digital modern untuk mencatat, mengelola, dan memantau hasil rapat secara efisien dan profesional.</p>
           </div>
         </div>
