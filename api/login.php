@@ -32,7 +32,7 @@
             box-shadow: 0 15px 35px rgba(0,0,0,0.5); 
             padding: 40px 35px; 
             width: 100%; 
-            max-width: 400px; 
+            max-width: 490px; 
             transition: transform 0.3s ease;
             animation: float 5s ease-in-out infinite;
         }
@@ -102,8 +102,30 @@
         .forgot-link { 
             font-size: 13px; 
             color: #007bff; 
+            font-weight: 600;
             display: inline-block; 
-            margin-top: 15px; 
+            margin-top: 10px; 
+            transition: 0.3s;
+        }
+
+        .forgot-link:hover {
+            color: #003366;
+            text-decoration: underline !important;
+        }
+
+        /* Style untuk link Kembali ke Beranda */
+        .back-link {
+            color: #007bff; 
+            font-size: 13px; 
+            font-weight: 600;
+            transition: 0.3s;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .back-link:hover {
+            color: #003366;
+            text-decoration: underline !important;
         }
 
         .alert { 
@@ -141,7 +163,7 @@
                 </span>
                 <input type="text" class="form-control border-start-0" 
                        name="nim" 
-                       placeholder="Masukkan NIM atau NIK" 
+                       placeholder="Masukkan NIM/NIK" 
                        style="border-radius: 0 10px 10px 0;"
                        required>
             </div>
@@ -170,7 +192,7 @@
     </form>
 
     <div class="text-center mt-4">
-        <a href="index.php" class="text-decoration-none" style="color:#6c757d; font-size: 13px;">
+        <a href="index.php" class="text-decoration-none back-link">
             <i class="bi bi-arrow-left me-1"></i>Kembali ke Beranda
         </a>
     </div>
