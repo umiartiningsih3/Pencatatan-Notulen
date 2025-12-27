@@ -340,9 +340,16 @@
       }
       
       .table-actions {
-        display: flex;
+        display: grid;
+        grid-template-columns: repeat(3, 65px); 
         gap: 5px;
         justify-content: center;
+      }
+
+      .table-actions .btn, .table-actions a {
+        width: 59px; 
+        text-align: center;
+        padding: 5px 0;
       }
     </style>
 </head>
@@ -495,7 +502,7 @@
                     <button class="btn btn-download-pdf btn-sm btn-secondary" 
                     data-rapat-id="<?= $r['id'] ?>" 
                     data-rapat-judul="<?= htmlspecialchars($r['judul']) ?>">
-                    PDF
+                    Unduh
                   </button>
                   
                   <?php 
@@ -512,7 +519,7 @@
             <?php else: ?>
               <tr>
                 <td colspan="5" class="text-center text-muted py-4">
-                  Tidak ada daftar rapat yg tersedia
+                  Tidak ada daftar rapat yang tersedia.
                 </td>
               </tr><?php endif; ?>
             </tbody>
@@ -544,7 +551,7 @@
     <div class="modal-dialog modal-lg modal-dialog-centered">
       <div class="modal-content">
         <div class="modal-header modal-edit-header">
-          <h5 class="modal-title">Edit Notulen Rapat</h5>
+          <h5 class="modal-title fw-bold">Edit Notulen Rapat</h5>
           <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
         </div>
         <div class="modal-body">
@@ -552,27 +559,44 @@
             <input type="hidden" id="editId" name="id"> 
             
             <div class="mb-3">
-              <label class="form-label">Judul Rapat</label>
+              <label class="form-label fw-bold">Judul Rapat</label>
               <input type="text" class="form-control" id="editJudul" name="judul" required>
             </div>
             
             <div class="mb-3">
-              <label class="form-label">Tanggal Rapat</label>
+              <label class="form-label fw-bold">Tanggal Rapat</label>
               <input type="date" class="form-control" id="editTanggal" name="tanggal" required>
             </div>
-          
+
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label class="form-label fw-bold">Waktu Rapat</label>
+                <input type="time" class="form-control" id="editWaktu" name="waktu">
+              </div>
+
+            <div class="col-md-6 mb-3">
+              <label class="form-label fw-bold">Tempat Rapat</label>
+              <input type="text" class="form-control" id="editTempat" name="tempat">
+            </div>
+            </div>
+
             <div class="mb-3">
-              <label class="form-label">Notulis</label>
+              <label class="form-label fw-bold">Penyelenggara Rapat</label>
+              <input type="text" class="form-control" id="editPenyelenggara" name="penyelenggara">
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label fw-bold">Notulis</label>
               <input type="text" class="form-control bg-light" id="editNotulis" name="notulis" readonly>
             </div>
           
             <div class="mb-3">
-              <label class="form-label">Catatan</label>
+              <label class="form-label fw-bold">Catatan</label>
               <textarea class="form-control" id="editCatatan" name="catatan" rows="3"></textarea>
             </div>
           
             <div class="mb-3">
-              <label class="form-label">Status</label>
+              <label class="form-label fw-bold">Status</label>
               <select class="form-select" id="editStatus" name="status">
                 <option value="Belum Selesai">Belum Selesai</option>
                 <option value="Selesai">Selesai</option>
@@ -587,12 +611,13 @@
   
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script>
-      const userRole = <?= json_encode(strtolower($role_display)); ?>;
-      const form = document.getElementById("filterForm");
-      const resetBtn = document.getElementById("resetFilter");
-      const table = document.getElementById("notulenTable").getElementsByTagName("tbody")[0];
+    const userRole = <?= json_encode(strtolower($role_display)); ?>;
+    const userName = "<?= $nama_lengkap_user ?>"; 
+    const form = document.getElementById("filterForm");
+    const resetBtn = document.getElementById("resetFilter");
+    const table = document.getElementById("notulenTable").getElementsByTagName("tbody")[0];
 
-      form.addEventListener("submit", e => {
+    form.addEventListener("submit", e => {
         e.preventDefault();
         const judul = document.getElementById("filterJudul").value.toLowerCase();
         const tanggal = document.getElementById("filterTanggal").value;
@@ -603,152 +628,153 @@
         const initialEmptyRow = document.getElementById("initialEmptyRow");
         const noDataRow = document.getElementById("noFilterResultRow");
         
-        if (initialEmptyRow) {
-            initialEmptyRow.style.display = "none";
-        }
+        if (initialEmptyRow) initialEmptyRow.style.display = "none";
         
         for (let row of table.rows) {
-          if (row.id === 'noFilterResultRow' || row.id === 'initialEmptyRow') continue; 
-          if (row.cells.length < 5) continue; 
-          
-          const judulText = row.cells[0].textContent.toLowerCase();
-          const tanggalText = row.cells[1].textContent.trim();
-          const notulisText = row.cells[2].textContent.toLowerCase();
-          const statusText = row.cells[3].textContent.trim();
-          
-          let visible = true;
-          
-          if (judul && !judulText.includes(judul)) visible = false;
-          if (tanggal && tanggalText !== tanggal) visible = false;
-          if (notulis && !notulisText.includes(notulis)) visible = false;
-          if (status !== "Semua" && statusText !== status) visible = false;
-          
-          row.style.display = visible ? "" : "none";
-          if (visible) {
-            visibleCount++;
-          }
+            if (row.id === 'noFilterResultRow' || row.id === 'initialEmptyRow') continue; 
+            if (row.cells.length < 5) continue; 
+            
+            const judulText = row.cells[0].textContent.toLowerCase();
+            const tanggalText = row.cells[1].textContent.trim();
+            const notulisText = row.cells[2].textContent.toLowerCase();
+            const statusText = row.cells[3].textContent.trim();
+            
+            let visible = true;
+            if (judul && !judulText.includes(judul)) visible = false;
+            if (tanggal && tanggalText !== tanggal) visible = false;
+            if (notulis && !notulisText.includes(notulis)) visible = false;
+            if (status !== "Semua" && statusText !== status) visible = false;
+            
+            row.style.display = visible ? "" : "none";
+            if (visible) visibleCount++;
         }
         
-        if (noDataRow) {
-            noDataRow.style.display = visibleCount === 0 ? "" : "none";
-        }
-      });
-      
-      resetBtn.addEventListener("click", () => {
+        if (noDataRow) noDataRow.style.display = visibleCount === 0 ? "" : "none";
+    });
+
+    resetBtn.addEventListener("click", () => {
         form.reset();
         const initialEmptyRow = document.getElementById("initialEmptyRow");
         const noDataRow = document.getElementById("noFilterResultRow");
-        
-        if (noDataRow) {
-            noDataRow.style.display = "none";
-        }
+        if (noDataRow) noDataRow.style.display = "none";
         
         let hasDataRows = false;
-        
         for (let row of table.rows) {
             if (row.id === 'noFilterResultRow' || row.id === 'initialEmptyRow') continue;
-            
             if (row.cells.length === 5) {
                 row.style.display = ""; 
                 hasDataRows = true;
             }
         }
-        
-        if (!hasDataRows && initialEmptyRow) {
-            initialEmptyRow.style.display = "";
-        }
-      });
-      
-      document.querySelectorAll(".btn-lihat").forEach(btn => {
-        btn.addEventListener("click", e => {
-          const row = e.target.closest("tr");
-          const rapatId = row.dataset.id;
-          const data = JSON.parse(row.dataset.detail || '{}'); 
-          if (!data.judul) return alert("Tidak ada detail untuk baris ini.");
-          
-          let actionButtons = "";
-          if (userRole === "notulis") {
-            actionButtons = `
-            <div class="text-end mb-3" id="modalTopActions">
-            <button class="btn btn-success btn-sm me-2" id="btnEdit"><i class="bi bi-pencil-square"></i> Edit</button>
-            <button class="btn btn-secondary btn-sm" id="btnShare"><i class="bi bi-share"></i> Bagikan</button>
-            </div>`;
-          }
-          
-          const content = `
-          <div id="printableArea" style="font-family: Poppins, sans-serif; font-size: 11pt; padding: 10px;">
-          ${actionButtons}
-          
-          <h3 style="text-align: center; color: #003366; font-weight: 700; border-bottom: 3px solid #003366; padding-bottom: 10px; margin-bottom: 20px;">
-          HASIL RAPAT
-          </h3>
-        
-        <table style="width: 100%; margin-bottom: 20px;">
-            <tr><td style="width: 30%; font-weight: 600; color: #003366;">Judul Rapat</td><td style="width: 5%;">:</td><td>${data.judul}</td></tr>
-            <tr><td style="font-weight: 600; color: #003366;">Tanggal/Waktu</td><td>:</td><td>${data.tanggal} / ${data.waktu}</td></tr>
-            <tr><td style="font-weight: 600; color: #003366;">Tempat</td><td>:</td><td>${data.tempat}</td></tr>
-            <tr><td style="font-weight: 600; color: #003366;">Penyelenggara</td><td>:</td><td>${data.penyelenggara}</td></tr>
-            <tr><td style="font-weight: 600; color: #003366;">Notulis</td><td>:</td><td>${data.notulis}</td></tr>
-        </table>
-
-        <p style="font-weight: 600; color: #003366; margin-top: 15px;">Peserta Rapat:</p>
-        <ul style="padding-left: 20px;">
-          ${data.peserta.map(p=>`<li style="margin-bottom: 5px;">${p}</li>`).join("")}
-        </ul>
-        
-        <h4 style="color: #003366; margin-top: 30px; font-weight: 600; border-bottom: 1px dashed #ccc; padding-bottom: 5px;">Detail Pembahasan:</h4>
-        <table class="table table-bordered table-sm" style="width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 10pt;">
-          <thead>
-            <tr style="background-color: #003366; color: white;">
-              <th style="padding: 10px; text-align: center; width: 5%;">No</th>
-              <th style="padding: 10px; width: 20%;">Topik</th>
-              <th style="padding: 10px; width: 35%;">Pembahasan</th>
-              <th style="padding: 10px; width: 25%;">Tindak Lanjut</th>
-              <th style="padding: 10px; width: 15%;">PIC</th>
-            </tr>
-          </thead>
-          <tbody>${data.pembahasan.map((p,i)=>`
-            <tr>
-              <td style="padding: 8px; text-align: center; background-color: ${i % 2 === 0 ? '#ffffff' : '#f4f4f4'}; border: 1px solid #ddd;">${i+1}</td>
-              <td style="padding: 8px; background-color: ${i % 2 === 0 ? '#ffffff' : '#f4f4f4'}; border: 1px solid #ddd;">${p[0]}</td>
-              <td style="padding: 8px; background-color: ${i % 2 === 0 ? '#ffffff' : '#f4f4f4'}; border: 1px solid #ddd;">${p[1]}</td>
-              <td style="padding: 8px; background-color: ${i % 2 === 0 ? '#ffffff' : '#f4f4f4'}; border: 1px solid #ddd;">${p[2]}</td>
-              <td style="padding: 8px; text-align: center; background-color: ${i % 2 === 0 ? '#ffffff' : '#f4f4f4'}; border: 1px solid #ddd;">${p[3]}</td>
-            </tr>`).join("")}
-          </tbody>
-        </table>
-
-        <h4 style="color: #003366; margin-top: 30px; font-weight: 600; border-bottom: 1px dashed #ccc; padding-bottom: 5px;">Catatan Tambahan:</h4>
-        <ul style="list-style-type: disc; padding-left: 20px;">
-          ${data.catatan.map(c=>`<li style="margin-bottom: 5px;">${c}</li>`).join("")}
-        </ul>
-        
-        <p style="margin-top: 30px; font-weight: 600;">Status Rapat: 
-          <span style="background-color: ${data.status === 'Selesai' ? '#2e7d32' : '#fbc02d'}; color: ${data.status === 'Selesai' ? 'white' : 'black'}; padding: 4px 10px; border-radius: 5px; font-size: 0.9em; font-weight: normal;">
-            ${data.status}
-          </span>
-        </p>
-        </div>`;
-        
-        document.getElementById("detailContent").innerHTML = content;
-        
-        const modalElement = document.getElementById("detailModal");
-        const btnEdit = modalElement.querySelector("#btnEdit");
-        const btnShare = modalElement.querySelector("#btnShare");
-
-        if(btnEdit) {
-          btnEdit.dataset.rapatId = rapatId;
-          btnEdit.dataset.rapatData = row.dataset.detail;
-        }
-        if(btnShare) {
-          btnShare.dataset.rapatJudul = data.judul;
-        }
-        
-        new bootstrap.Modal(modalElement).show();
-      });
+        if (!hasDataRows && initialEmptyRow) initialEmptyRow.style.display = "";
     });
 
-      document.querySelectorAll(".btn-download-pdf").forEach(btn => {
+    document.querySelectorAll(".btn-lihat").forEach(btn => {
+        btn.addEventListener("click", e => {
+            const row = e.target.closest("tr");
+            const rapatId = row.dataset.id;
+            const data = JSON.parse(row.dataset.detail || '{}'); 
+            
+            if (!data.judul) return alert("Tidak ada detail untuk baris ini.");
+            
+            const isOwner = (data.notulis === userName);
+            const canEdit = (userRole === "admin" || (userRole === "notulis" && isOwner));
+
+            let actionButtons = "";
+            if (canEdit || userRole === "notulis") {
+                actionButtons = `<div class="text-end mb-3" id="modalTopActions">`;
+                if (canEdit) {
+                    actionButtons += `<button class="btn btn-success btn-sm me-2" id="btnEdit" data-rapat-id="${rapatId}"><i class="bi bi-pencil-square"></i> Edit</button>`;
+                }
+                actionButtons += `<button class="btn btn-secondary btn-sm" id="btnShare" data-rapat-judul="${data.judul}"><i class="bi bi-share"></i> Bagikan</button></div>`;
+            }
+
+            const content = `
+            <div id="printableArea" style="font-family: Poppins, sans-serif; font-size: 11pt; padding: 10px;">
+                ${actionButtons}
+                <h3 style="text-align: center; color: #003366; font-weight: 700; border-bottom: 3px solid #003366; padding-bottom: 10px; margin-bottom: 20px;">HASIL RAPAT</h3>
+                <table style="width: 100%; margin-bottom: 20px;">
+                    <tr><td style="width: 30%; font-weight: 600; color: #003366;">Judul Rapat</td><td style="width: 5%;">:</td><td>${data.judul}</td></tr>
+                    <tr><td style="font-weight: 600; color: #003366;">Tanggal/Waktu</td><td>:</td><td>${data.tanggal} / ${data.waktu}</td></tr>
+                    <tr><td style="font-weight: 600; color: #003366;">Tempat</td><td>:</td><td>${data.tempat}</td></tr>
+                    <tr><td style="font-weight: 600; color: #003366;">Penyelenggara</td><td>:</td><td>${data.penyelenggara}</td></tr>
+                    <tr><td style="font-weight: 600; color: #003366;">Notulis</td><td>:</td><td>${data.notulis}</td></tr>
+                </table>
+                <p style="font-weight: 600; color: #003366; margin-top: 15px;">Peserta Rapat:</p>
+                <ul style="padding-left: 20px;">
+                    ${data.peserta.map(p=>`<li style="margin-bottom: 5px;">${p}</li>`).join("")}
+                </ul>
+                <h4 style="color: #003366; margin-top: 30px; font-weight: 600; border-bottom: 1px dashed #ccc; padding-bottom: 5px;">Detail Pembahasan:</h4>
+                <table class="table table-bordered table-sm" style="width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 10pt;">
+                    <thead>
+                        <tr style="background-color: #003366; color: white;">
+                            <th style="padding: 10px; text-align: center; width: 5%;">No</th>
+                            <th style="padding: 10px; width: 20%;">Topik</th>
+                            <th style="padding: 10px; width: 35%;">Pembahasan</th>
+                            <th style="padding: 10px; width: 25%;">Tindak Lanjut</th>
+                            <th style="padding: 10px; width: 15%;">PIC</th>
+                        </tr>
+                    </thead>
+                    <tbody>${data.pembahasan.map((p,i)=>`
+                        <tr>
+                            <td style="padding: 8px; text-align: center; background-color: ${i % 2 === 0 ? '#ffffff' : '#f4f4f4'}; border: 1px solid #ddd;">${i+1}</td>
+                            <td style="padding: 8px; border: 1px solid #ddd;">${p[0]}</td>
+                            <td style="padding: 8px; border: 1px solid #ddd;">${p[1]}</td>
+                            <td style="padding: 8px; border: 1px solid #ddd;">${p[2]}</td>
+                            <td style="padding: 8px; text-align: center; border: 1px solid #ddd;">${p[3]}</td>
+                        </tr>`).join("")}
+                    </tbody>
+                </table>
+                <h4 style="color: #003366; margin-top: 30px; font-weight: 600; border-bottom: 1px dashed #ccc; padding-bottom: 5px;">Catatan Tambahan:</h4>
+                <ul style="list-style-type: disc; padding-left: 20px;">
+                    ${data.catatan.map(c=>`<li style="margin-bottom: 5px;">${c}</li>`).join("")}
+                </ul>
+                <p style="margin-top: 30px; font-weight: 600;">Status Rapat: 
+                    <span style="background-color: ${data.status === 'Selesai' ? '#2e7d32' : '#fbc02d'}; color: ${data.status === 'Selesai' ? 'white' : 'black'}; padding: 4px 10px; border-radius: 5px; font-size: 0.9em; font-weight: normal;">
+                        ${data.status}
+                    </span>
+                </p>
+            </div>`;
+            
+            document.getElementById("detailContent").innerHTML = content;
+            
+            const btnEditModal = document.getElementById("btnEdit");
+            if(btnEditModal) {
+                btnEditModal.addEventListener("click", () => {
+                    const detailModalInstance = bootstrap.Modal.getInstance(document.getElementById("detailModal"));
+                    detailModalInstance.hide();
+                    document.getElementById("editId").value = rapatId; 
+                    document.getElementById("editJudul").value = data.judul;
+                    document.getElementById("editTanggal").value = data.tanggal;
+                    document.getElementById("editWaktu").value = data.waktu;
+                    document.getElementById("editTempat").value = data.tempat;
+                    document.getElementById("editPenyelenggara").value = data.penyelenggara;
+                    document.getElementById("editNotulis").value = data.notulis;
+                    document.getElementById("editCatatan").value = data.catatan.join("\n"); 
+                    document.getElementById("editStatus").value = data.status;
+
+                    setTimeout(() => {
+                        new bootstrap.Modal(document.getElementById("editModal")).show();
+                    }, 300);
+                });
+            }
+
+            const btnShareModal = document.getElementById("btnShare");
+            if(btnShareModal) {
+                btnShareModal.addEventListener("click", () => {
+                    if (navigator.share) {
+                        navigator.share({ title: "Notulen: " + data.judul, url: window.location.href });
+                    } else {
+                        alert('Share tidak didukung browser ini.');
+                    }
+                });
+            }
+
+            new bootstrap.Modal(document.getElementById("detailModal")).show();
+        });
+    });
+
+    document.querySelectorAll(".btn-download-pdf").forEach(btn => {
         btn.addEventListener("click", async (e) => {
           const rapatJudul = e.target.dataset.rapatJudul;
           const row = e.target.closest("tr");
@@ -761,7 +787,7 @@
           const pdfContentHtml = `
             <div style="padding: 25px; font-family: Poppins, sans-serif; font-size: 11pt;">
               <h3 style="text-align: center; color: #003366; font-weight: 700; border-bottom: 3px solid #003366; padding-bottom: 10px; margin-bottom: 20px;">
-                HASIL NOTULEN RAPAT
+                HASIL RAPAT
               </h3>
               
               <table style="width: 100%; margin-bottom: 20px;">
@@ -822,125 +848,46 @@
         });
       });
 
-      document.getElementById("detailContent").addEventListener("click", (e) => {
-        if (e.target.id === 'btnEdit') {
-          const detailModalInstance = bootstrap.Modal.getInstance(document.getElementById("detailModal"));
-          const rapatId = e.target.dataset.rapatId;
-          const data = JSON.parse(e.target.dataset.rapatData || '{}');
-              
-          detailModalInstance.hide(); 
-
-          document.getElementById("editId").value = rapatId; 
-          document.getElementById("editJudul").value = data.judul;
-          document.getElementById("editTanggal").value = data.tanggal;
-          document.getElementById("editNotulis").value = data.notulis;
-          document.getElementById("editCatatan").value = data.catatan.join("\n"); 
-          document.getElementById("editStatus").value = data.status;
-              
-          setTimeout(() => {
-              new bootstrap.Modal(document.getElementById("editModal")).show();
-          }, 100); 
-        }
-      });
-      
-      document.getElementById("detailContent").addEventListener("click", (e) => {
-        if (e.target.id === 'btnShare') {
-          const rapatJudul = e.target.dataset.rapatJudul;
-          const currentUrl = window.location.href;
-            if (navigator.share) {
-            navigator.share({
-            title: "Notulen Rapat: " + rapatJudul,
-            text: "Lihat notulen rapat lengkap di link berikut:",
-            url: currentUrl
-          }).catch(err => console.error("Gagal membagikan:", err));
-          } else {
-            alert('Fungsi Share tidak didukung di browser ini.');
-          }
-        }
-      });
-      
-      document.getElementById("editForm").addEventListener("submit", e => {
+    document.getElementById("editForm").addEventListener("submit", e => {
         e.preventDefault();
+        const formData = new FormData(e.target);
         
-        const form = e.target;
-        const formData = new FormData(form);
-        const data = Object.fromEntries(formData.entries());
-
         fetch('edit_rapat.php', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            body: new URLSearchParams(data)
+            body: new URLSearchParams(Object.fromEntries(formData.entries()))
         })
-        .then(response => response.json())
+        .then(res => res.json())
         .then(result => {
             if (result.status === "success") {
                 alert("✅ " + result.message);
-                
-                bootstrap.Modal.getInstance(document.getElementById("editModal")).hide();
                 window.location.reload(); 
             } else {
                 alert("❌ Gagal: " + result.message);
             }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert("❌ Terjadi kesalahan koneksi atau server.");
         });
-      });
-    </script>
-    
-    <br>
-    <footer>
-      ©2025 Notulen Tracker. Semua hak cipta dilindungi
-    </footer>
+    });
 
-    <script>
-      document.getElementById("logoutLink").addEventListener("click", (e) => {
-        e.preventDefault();
-        const konfirmasi = confirm("Apakah Anda yakin ingin keluar dari Notulen Tracker?");
-        if (konfirmasi) {
-          window.location.href = "login.php";
-        }
-      });
-      
-      function updateDashboardData() {
+    function updateDashboardData() {
         const rows = document.querySelectorAll("#notulenTable tbody tr");
-        let selesai = 0;
-        let belum = 0;
-
+        let selesai = 0, belum = 0;
         rows.forEach(row => {
-          if (row.cells.length === 5) {
-              const statusCell = row.cells[3];
-              const statusText = statusCell.innerText.trim();
-              if (statusText === "Selesai") selesai++;
-              else if (statusText === "Belum Selesai") belum++;
-          }
+            if (row.cells.length === 5) {
+                const status = row.cells[3].innerText.trim();
+                if (status === "Selesai") selesai++;
+                else if (status === "Belum Selesai") belum++;
+            }
         });
-
-        const data = {
-          selesai,
-          belum,
-          total: selesai + belum
-        };
-
-        localStorage.setItem("notulenStats", JSON.stringify(data));
-      }
-
-      updateDashboardData();
-      document.getElementById("filterForm").addEventListener("submit", updateDashboardData);
-      document.getElementById("resetFilter").addEventListener("click", updateDashboardData);
-    </script>
-
-    <?php
-    if (isset($conn)) {
-        mysqli_close($conn);
+        localStorage.setItem("notulenStats", JSON.stringify({ selesai, belum, total: selesai + belum }));
     }
-    ?>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script>
+    updateDashboardData();
+    document.getElementById("logoutLink").addEventListener("click", (e) => {
+        e.preventDefault();
+        if (confirm("Keluar dari sistem?")) window.location.href = "login.php";
+    });
+</script>
 
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
     const urlParams = new URLSearchParams(window.location.search);
     if (urlParams.get('status') === 'success') {
         Swal.fire({
@@ -949,7 +896,7 @@
             icon: "success",
             confirmButtonColor: "#3085d6",
             confirmButtonText: "Sip!"
-        }).then((result) => {
+        }).then(() => {
             window.history.replaceState({}, document.title, window.location.pathname);
         });
     }
