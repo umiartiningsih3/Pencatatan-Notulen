@@ -330,7 +330,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['btn_kirim'])) {
     <div class="container">
       <div class="contact-container">
         <h2 class="text-center mb-4 text-primary fw-bold">Hubungi Kami</h2>
-        <p class="text-center text-muted mb-4">Punya pertanyaan atau butuh bantuan? Kirimkan pesan kepada kami!</p>
+        <p class="text-center text-muted mb-4">Ada kendala atau ingin tanya-tanya? Yuk, sapa kami melalui pesan di bawah ini!</p>
 
         <form action="kontak.php" method="POST">
           <div class="mb-3">
