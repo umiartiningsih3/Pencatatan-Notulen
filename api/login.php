@@ -134,14 +134,14 @@
 
     <form action="proses_login.php" method="POST" class="text-start">
         <div class="mb-3">
-            <label class="form-label">NIM atau Email (students)</label>
+            <label class="form-label">NIM atau NIK</label>
             <div class="input-group">
                 <span class="input-group-text bg-white border-end-0" style="border-radius: 10px 0 0 10px; border-color: #90caf9;">
                     <i class="bi bi-person text-muted"></i>
                 </span>
                 <input type="text" class="form-control border-start-0" 
                        name="nim" 
-                       placeholder="Masukkan NIM atau Email" 
+                       placeholder="Masukkan NIM atau NIK" 
                        style="border-radius: 0 10px 10px 0;"
                        required>
             </div>
