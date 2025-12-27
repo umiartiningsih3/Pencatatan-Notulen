@@ -425,7 +425,7 @@
           <h4 class="text-primary fw-bold mb-0">📘 DAFTAR NOTULEN</h4>
           <div class="d-flex gap-2">
             <button class="btn btn-outline-primary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#filterPanel">
-              <i class="bi bi-funnel"></i> Filter
+              <i class="bi bi-funnel"></i> Pencarian
             </button>
             <?php if ($role_check === 'notulis'): ?>
               <a href="input_rapat.php"><button class="btn-tambah-notulen">+ Tambah Notulen</button></a>
@@ -448,7 +448,7 @@
                 </div>
                 
                 <div class="col-12 text-end">
-                  <button type="submit" class="btn btn-primary btn-sm"><i class="bi bi-search"></i> Terapkan Filter</button>
+                  <button type="submit" class="btn btn-primary btn-sm"><i class="bi bi-search"></i> Cari Data</button>
                   <button type="button" id="resetFilter" class="btn btn-secondary btn-sm ms-1"><i class="bi bi-arrow-repeat"></i> Muat Ulang</button>
                 </div>
               </form>
@@ -608,6 +608,7 @@
       </div>
     </div>
   </div>
+  <footer>©2025 Notulen Tracker. Semua hak cipta dilindungi</footer>
   
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script>
