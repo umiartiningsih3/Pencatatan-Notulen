@@ -80,6 +80,7 @@ if (!empty($tgl_lahir) && $tgl_lahir !== '0000-00-00') {
             background-size: cover !important;
             position: relative;
             z-index: 0;
+            font-size : 18px;
         }
 
         body::before {
@@ -272,45 +273,82 @@ if (!empty($tgl_lahir) && $tgl_lahir !== '0000-00-00') {
             width: 100%; 
             height: 300px; 
         }
+
+        @media (max-width: 991.98px) {
+        .custom-navbar {
+            height: auto;
+            padding: 10px 15px;
+        }
+    
+        body {
+            padding-top: 100px;
+        }
+
+        .navbar-collapse {
+            background: #003366; 
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 10px;
+        }
+    }
+
+        @media (max-width: 576px) {
+        .brand-name {
+            font-size: 18px; 
+        }
+    
+        .profile-sidebar, .form-card {
+            padding: 20px; 
+        }
+    
+        .profile-sidebar img.main-avatar {
+            width: 100px;
+            height: 100px;
+        }
+    }
     </style>
 </head>
 <body>
 
     <nav class="navbar navbar-expand-lg navbar-dark fixed-top px-4 custom-navbar">
-        <a class="navbar-brand brand-pro" href="dashboard.php">
-            <img src="logono.png" alt="Logo">
-            <div class="brand-info">
-                <span class="brand-name">Notulen</span>
-                <span class="brand-tagline">TRACKER</span>
-            </div>
-        </a>
+    <a class="navbar-brand brand-pro" href="dashboard.php">
+      <img src="logono.png" alt="Logo">
+      <div class="brand-info">
+        <span class="brand-name">Notulen</span>
+        <span class="brand-tagline">TRACKER</span>
+      </div>
+    </a>
 
-        <div class="collapse navbar-collapse">
-            <ul class="navbar-nav ms-auto nav-effect">
-                <li class="nav-item"><a class="nav-link" href="dashboard.php"><i class="bi bi-grid"></i><span>Dashboard</span></a></li>
-                <li class="nav-item"><a class="nav-link" href="daftar_notulen.php"><i class="bi bi-file-text"></i><span>Daftar Notulen</span></a></li>
-                <li class="nav-item"><a class="nav-link" href="kontak.php"><i class="bi bi-envelope"></i><span>Kontak</span></a></li>
-                <li class="nav-item"><a class="nav-link" href="FAQ.php"><i class="bi bi-question-circle"></i><span>FAQ</span></a></li>
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle active" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
-                        <i class="bi bi-person-circle me-1"></i> <?php echo ucwords(htmlspecialchars($role_display)); ?>
-                    </a>
-                    <ul class="dropdown-menu dropdown-menu-end shadow">
-                        <li class="user-info-header">
-                            <img src="<?php echo $foto_path; ?>" class="user-avatar" alt="User">
-                            <div class="user-text">
-                                <strong class="text-truncate"><?php echo $dropdown_nama; ?></strong>
-                                <small class="text-truncate"><?php echo $dropdown_email; ?></small>
-                            </div>
-                        </li>
-                        <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item" href="profile.php"><i class="bi bi-person"></i> Profil Saya</a></li>
-                        <li><a class="dropdown-item text-danger" href="logout.php" onclick="return confirm('Keluar dari sistem?')"><i class="bi bi-box-arrow-right"></i> Keluar</a></li>
-                    </ul>
-                </li>
-            </ul>
-        </div>
-    </nav>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto nav-effect">
+            <li class="nav-item"><a class="nav-link" href="dashboard.php"><i class="bi bi-grid"></i><span>Dashboard</span></a></li>
+            <li class="nav-item"><a class="nav-link" href="daftar_notulen.php"><i class="bi bi-file-text"></i><span>Daftar Notulen</span></a></li>
+            <li class="nav-item"><a class="nav-link" href="kontak.php"><i class="bi bi-envelope"></i><span>Kontak</span></a></li>
+            <li class="nav-item"><a class="nav-link" href="FAQ.php"><i class="bi bi-question-circle"></i><span>FAQ</span></a></li>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle active" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
+                    <i class="bi bi-person-circle me-1"></i> <?php echo ucwords(htmlspecialchars($role_display)); ?>
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end shadow">
+                    <li class="user-info-header">
+                        <img src="<?php echo $foto_path; ?>" class="user-avatar" alt="User">
+                        <div class="user-text">
+                            <strong class="text-truncate"><?php echo $dropdown_nama; ?></strong>
+                            <small class="text-truncate"><?php echo $dropdown_email; ?></small>
+                        </div>
+                    </li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item" href="profile.php"><i class="bi bi-person"></i> Profil Saya</a></li>
+                    <li><a class="dropdown-item text-danger" href="logout.php" onclick="return confirm('Keluar dari sistem?')"><i class="bi bi-box-arrow-right"></i> Keluar</a></li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+</nav>
 
     <main class="container py-4">
         <h2 class="mb-4 fw-bold text-primary">Pengaturan Akun</h2>
@@ -374,7 +412,7 @@ if (!empty($tgl_lahir) && $tgl_lahir !== '0000-00-00') {
                             <label class="form-label">Password Saat Ini</label>
                             <input type="password" class="form-control" placeholder="Masukkan password saat ini" id="passwordLama" required>
                         </div>
-                        <div class="row mb-3">
+                        <div class="row mb-3 g-3">
                             <div class="col-md-6">
                                 <label class="form-label">Password Baru</label>
                                 <input type="password" class="form-control" placeholder="Masukkan password baru" id="passwordBaru" minlength="4" required>
