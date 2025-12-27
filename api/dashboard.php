@@ -272,7 +272,8 @@
             background-color: #003366;
             color: white;
             text-align: center;
-            padding: 20px 0;
+            padding: 15px 0;
+            font-size: 0.9rem;
             margin-top: auto;
         }
     </style>
@@ -351,7 +352,7 @@
         <header class="text-center mt-4 mb-5">
             <?php if ($role_check === 'notulis'): ?>
                 <h1 class="fw-bold text-primary">Halo, <?= $dropdown_nama; ?>! Siap produktif bareng hari ini?</h1>
-                <p class="lead">Pantau progres rapat kamu dengan lebih transparan.</p>
+                <p class="lead">Pantau progres rapat anda dengan lebih transparan.</p>
                 
                 <?php else: ?>
                     <h1 class="fw-bold text-primary">Hai, <?= $dropdown_nama; ?>!</h1>
