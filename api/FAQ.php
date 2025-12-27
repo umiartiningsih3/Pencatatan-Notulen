@@ -108,28 +108,44 @@ if (isset($stmt) && $stmt) {
             box-shadow: 0 4px 12px rgba(0,0,0,0.12); 
         }
         
-        .nav-effect { gap: 10px; }
+        .nav-effect {
+            gap: 10px;
+        }
 
-        .nav-effect .nav-link { 
-            color: #dce3ea !important; 
+        .nav-effect .nav-link {
+            color: #dce3ea !important;
             padding: 10px 18px; 
-            border-radius: 12px; 
-            display: flex; 
-            align-items: center; 
-            gap: 10px; 
-            font-weight: 500; 
-            transition: all 0.3s ease; 
-            position: relative; 
-        }
-        .navbar-nav .nav-link:hover { 
-            background: rgba(255,255,255,0.08); 
-            color: #ffffff !important; 
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            position: relative;
         }
 
-        .navbar-nav .nav-link.active { 
-            background: rgba(255,255,255,0.15); 
-            color: #ffffff !important; 
-            font-weight: 600; 
+        .navbar-nav .nav-link:hover {
+            background: rgba(255,255,255,0.08);
+            color: #ffffff !important;
+        }
+
+        .navbar-nav .nav-link.active {
+            background: rgba(255,255,255,0.15);
+            color: #ffffff !important;
+            font-weight: 600;
+        }
+
+        .nav-effect .nav-link i {
+            font-size: 1.1rem;
+            transition: transform 0.3s ease;
+        }
+
+        .nav-effect .nav-link:hover i {
+            transform: scale(1.15);
+        }
+
+        .nav-effect .nav-link.active i {
+            color: #0d6efd;
         }
 
         .brand-pro { 
@@ -291,58 +307,61 @@ if (isset($stmt) && $stmt) {
         <span class="brand-tagline">TRACKER</span>
       </div>
     </a>
-
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
+    
+    <div class="collapse navbar-collapse">
+      <ul class="navbar-nav ms-auto nav-effect">
+        <li class="nav-item">
+          <a class="nav-link" href="dashboard.php">
+            <i class="bi bi-grid"></i>
+            <span>Dashboard</span>
+          </a>
+        </li>
         
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ms-auto nav-effect">
-                <li class="nav-item">
-                    <a class="nav-link" href="dashboard.php">
-                        <i class="bi bi-grid"></i>
-                        <span>Dashboard</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="daftar_notulen.php">
-                        <i class="bi bi-file-text"></i>
-                        <span>Daftar Notulen</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="kontak.php">
-                        <i class="bi bi-envelope"></i>
-                        <span>Kontak</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link active" href="faq.php">
-                        <i class="bi bi-question-circle"></i>
-                        <span>FAQ</span>
-                    </a>
-                </li>
-                
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
-                        <i class="bi bi-person-circle me-1"></i> <?php echo ucwords(htmlspecialchars($role_display)); ?>
-                    </a>    
-                    <ul class="dropdown-menu dropdown-menu-end shadow">
-                        <li class="user-info-header">
-                            <img src="<?= $dropdown_foto; ?>" alt="Avatar" class="user-avatar">
-                            <div class="user-text">
-                                <strong class="text-truncate"><?= $dropdown_nama; ?></strong>
-                                <small class="text-muted text-truncate"><?= $dropdown_email; ?></small>
-                            </div>
-                        </li>
-                        <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item" href="profile.php"><i class="bi bi-person"></i> Profil Saya</a></li>
-                        <li><a id="logoutLink" class="dropdown-item text-danger" href="login.php"><i class="bi bi-box-arrow-right"></i> Keluar</a></li>
-                    </ul>
-                </li>
-            </ul>
-        </div>
-    </nav>
+        <li class="nav-item">
+          <a class="nav-link" href="daftar_notulen.php">
+            <i class="bi bi-file-text"></i>
+            <span>Daftar Notulen</span>
+          </a>
+        </li>
+        
+        <li class="nav-item">
+          <a class="nav-link" href="kontak.php">
+            <i class="bi bi-envelope"></i>
+            <span>Kontak</span>
+          </a>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link active" href="FAQ.php">
+            <i class="bi bi-question-circle"></i>
+            <span>FAQ</span>
+          </a>
+        </li>
+        
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
+            <i class="bi bi-person-circle me-1"></i> <?php echo ucwords(htmlspecialchars($role_display)); ?>
+          </a>
+          <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="userDropdown">
+            <li class="user-info-header">
+              <img
+              src="<?php echo $dropdown_foto; ?>"
+              alt="Avatar"
+              class="user-avatar"
+              >
+              <div class="user-text">
+                <strong class="text-truncate"><?php echo $dropdown_nama; ?></strong>
+                <small class="text-muted text-truncate"><?php echo $dropdown_email; ?></small>
+              </div>
+            </li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item" href="profile.php"><i class="bi bi-person"></i> Profil Saya</a></li>
+            <li><a id="logoutLink" class="dropdown-item text-danger" href="login.php"><i class="bi bi-box-arrow-right"></i> Keluar</a></li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+  </nav>
 
     <main class="container my-4">
         <h2 class="text-center faq-title">Pertanyaan Umum (FAQ)</h2>
