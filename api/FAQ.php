@@ -45,7 +45,6 @@ if (isset($stmt) && $stmt) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FAQ - Notulen Tracker</title>
-
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
@@ -294,6 +293,39 @@ if (isset($stmt) && $stmt) {
             font-size: 0.9rem;
             margin-top: auto;
         }
+
+        @media (max-width: 991.98px) {
+        .custom-navbar {
+            height: auto;
+            padding: 10px 15px;
+        }
+    
+        body {
+            padding-top: 100px;
+        }
+
+        .navbar-collapse {
+            background: #003366; 
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 10px;
+        }
+    }
+
+        @media (max-width: 576px) {
+        .brand-name {
+            font-size: 18px; 
+        }
+    
+        .profile-sidebar, .form-card {
+            padding: 20px; 
+        }
+    
+        .profile-sidebar img.main-avatar {
+            width: 100px;
+            height: 100px;
+        }
+    }
     </style>
 </head>
 
@@ -307,8 +339,12 @@ if (isset($stmt) && $stmt) {
         <span class="brand-tagline">TRACKER</span>
       </div>
     </a>
-    
-    <div class="collapse navbar-collapse">
+
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav ms-auto nav-effect">
         <li class="nav-item">
           <a class="nav-link" href="dashboard.php">
