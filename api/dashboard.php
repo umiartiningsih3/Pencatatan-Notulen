@@ -103,7 +103,7 @@
         .custom-navbar {
             background-color: #003366;
             height: 70px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.12);
         }
 
         .nav-effect {
@@ -112,24 +112,34 @@
 
         .nav-effect .nav-link {
             color: #dce3ea !important;
-            padding: 10px 18px;
+            padding: 10px 18px; 
             border-radius: 12px;
             display: flex;
             align-items: center;
             gap: 10px;
             font-weight: 500;
             transition: all 0.3s ease;
+            position: relative;
         }
 
         .navbar-nav .nav-link:hover {
-            background: rgba(255, 255, 255, 0.08);
+            background: rgba(255,255,255,0.08);
             color: #ffffff !important;
         }
 
         .navbar-nav .nav-link.active {
-            background: rgba(255, 255, 255, 0.15);
+            background: rgba(255,255,255,0.15);
             color: #ffffff !important;
             font-weight: 600;
+        }
+
+        .nav-effect .nav-link i {
+            font-size: 1.1rem;
+            transition: transform 0.3s ease;
+        }
+
+        .nav-effect .nav-link:hover i {
+            transform: scale(1.15);
         }
 
         .nav-effect .nav-link.active i {
@@ -178,32 +188,31 @@
         }
 
         .dropdown-menu {
-            min-width: 250px !important;
-            border-radius: 8px;
-            padding: 0;
-            overflow: hidden;
+          min-width: 250px !important;
+          border-radius: 8px;
+          padding: 0;
         }
 
         .dropdown-menu .user-info-header {
-            display: flex;
+            display: flex; 
             align-items: center;
-            padding: 12px 15px;
-            background-color: #f8f9fa;
-            border-bottom: 1px solid #eee;
+            padding: 10px 15px;
+            margin-bottom: 0;
         }
 
         .dropdown-menu .user-avatar {
-            width: 50px;
+            width: 50px; 
             height: 50px;
-            border-radius: 50%;
+            border-radius: 50%; 
             object-fit: cover;
             margin-right: 12px;
-            background-color: #e9ecef;
+            background-color: #f0f0f0;
         }
 
         .dropdown-menu .user-text {
             display: flex;
             flex-direction: column;
+            overflow: hidden; 
         }
 
         .dropdown-menu .user-text strong {
@@ -218,18 +227,22 @@
             color: #6c757d; 
             line-height: 1.2;
         }
-
+      
         .dropdown-menu .dropdown-item {
             display: flex;
             align-items: center;
-            padding: 10px 15px;
-            transition: background 0.2s;
+            padding: 5px 15px; 
         }
-
+      
         .dropdown-menu .dropdown-item i {
             font-size: 1.1rem;
-            width: 25px;
-            color: #555;
+            width: 20px;
+            text-align: center;
+            margin-right: 8px;
+        }
+      
+        .dropdown-menu .user-text small {
+            margin-top: 0; 
         }
 
         .dashboard-card {
@@ -279,37 +292,60 @@
             <span class="navbar-toggler-icon"></span>
         </button>
 
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ms-auto nav-effect">
-                <li class="nav-item"><a class="nav-link active" href="dashboard.php"><i class="bi bi-grid"></i> Dashboard</a></li>
-                <li class="nav-item"><a class="nav-link" href="daftar_notulen.php"><i class="bi bi-file-text"></i> Daftar Notulen</a></li>
-                <li class="nav-item"><a class="nav-link" href="kontak.php"><i class="bi bi-envelope"></i> Kontak</a></li>
-                <li class="nav-item"><a class="nav-link" href="FAQ.php"><i class="bi bi-question-circle"></i> FAQ</a></li>
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
-                        <i class="bi bi-person-circle me-1"></i> <?php echo ucwords(htmlspecialchars($role_display)); ?>
-                    </a>
-                    <ul class="dropdown-menu dropdown-menu-end shadow border-0" aria-labelledby="userDropdown">
-                        <li class="user-info-header d-flex align-items-center p-3">
-                            <img src="<?= $dropdown_foto; ?>" alt="Avatar" class="user-avatar rounded-circle me-2" width="40" height="40" style="object-fit: cover;">
-                            <div class="user-text d-flex flex-column">
-                                <strong class="text-truncate"><?= $dropdown_nama; ?></strong>
-                                <small class="text-muted text-truncate"><?= $dropdown_email; ?></small>
-                            </div>
-                        </li>
-                        <li><hr class="dropdown-divider m-0"></li>
-                        <li><a class="dropdown-item py-2" href="profile.php"><i class="bi bi-person me-2"></i> Profil Saya</a></li>
-                        <li>
-                            <a id="logoutLink" class="dropdown-item text-danger py-2 d-flex align-items-center" href="login.php">
-                                <i class="bi bi-box-arrow-right me-2" style="color: #dc3545 !important;"></i> 
-                                <span style="color: #dc3545 !important;">Keluar</span>
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-            </ul>
-        </div>
-    </nav>
+        <<div class="collapse navbar-collapse">
+      <ul class="navbar-nav ms-auto nav-effect">
+        <li class="nav-item">
+          <a class="nav-link active" href="dashboard.php">
+            <i class="bi bi-grid"></i>
+            <span>Dashboard</span>
+          </a>
+        </li>
+        
+        <li class="nav-item">
+          <a class="nav-link" href="daftar_notulen.php">
+            <i class="bi bi-file-text"></i>
+            <span>Daftar Notulen</span>
+          </a>
+        </li>
+        
+        <li class="nav-item">
+          <a class="nav-link" href="kontak.php">
+            <i class="bi bi-envelope"></i>
+            <span>Kontak</span>
+          </a>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link" href="FAQ.php">
+            <i class="bi bi-question-circle"></i>
+            <span>FAQ</span>
+          </a>
+        </li>
+        
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
+            <i class="bi bi-person-circle me-1"></i> <?php echo ucwords(htmlspecialchars($role_display)); ?>
+          </a>
+          <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="userDropdown">
+            <li class="user-info-header">
+              <img
+              src="<?php echo $dropdown_foto; ?>"
+              alt="Avatar"
+              class="user-avatar"
+              >
+              <div class="user-text">
+                <strong class="text-truncate"><?php echo $dropdown_nama; ?></strong>
+                <small class="text-muted text-truncate"><?php echo $dropdown_email; ?></small>
+              </div>
+            </li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item" href="profile.php"><i class="bi bi-person"></i> Profil Saya</a></li>
+            <li><a id="logoutLink" class="dropdown-item text-danger" href="login.php"><i class="bi bi-box-arrow-right"></i> Keluar</a></li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+</nav>
 
     <div class="container mt-4 mb-5">
         <header class="text-center mt-4 mb-5">
