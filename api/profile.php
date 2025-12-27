@@ -36,19 +36,27 @@ if (!$profile_data) {
 $role_display = !empty($profile_data['role']) ? $profile_data['role'] : 'Notulis';
 $dropdown_nama = htmlspecialchars($profile_data['nama_lengkap']);
 $dropdown_email = htmlspecialchars($profile_data['email']);
+$tgl_lahir = !empty($profile_data['tgl_lahir']) ? $profile_data['tgl_lahir'] : '';
 
 $is_default_photo = empty($profile_data['foto_profile']) || !file_exists($profile_data['foto_profile']);
 $foto_path = (!$is_default_photo) ? htmlspecialchars($profile_data['foto_profile']) : 'user.png';
 
+$bulan_indonesia = [
+    1 => 'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 
+    'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
+];
+
 if (!empty($profile_data['bergabung_sejak']) && $profile_data['bergabung_sejak'] !== '0000-00-00') {
     $timestamp = strtotime($profile_data['bergabung_sejak']);
-    $bulan_indonesia = [
-        1 => 'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 
-        'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
-    ];
     $formatted_date = date('d', $timestamp) . ' ' . $bulan_indonesia[date('n', $timestamp)] . ' ' . date('Y', $timestamp);
 } else {
     $formatted_date = "Baru Saja"; 
+}
+
+$tgl_lahir_display = "Belum diatur";
+if (!empty($tgl_lahir) && $tgl_lahir !== '0000-00-00') {
+    $ts_lahir = strtotime($tgl_lahir);
+    $tgl_lahir_display = date('d', $ts_lahir) . ' ' . $bulan_indonesia[date('n', $ts_lahir)] . ' ' . date('Y', $ts_lahir);
 }
 ?>
 <!DOCTYPE html>
@@ -85,7 +93,7 @@ if (!empty($profile_data['bergabung_sejak']) && $profile_data['bergabung_sejak']
         .custom-navbar { 
             background-color: #003366; 
             height: 70px; 
-            -shadow: 0 4px 12px rgba(0,0,0,0.12); 
+            box-shadow: 0 4px 12px rgba(0,0,0,0.12); 
         }
 
         .nav-effect .nav-link { 
@@ -105,7 +113,7 @@ if (!empty($profile_data['bergabung_sejak']) && $profile_data['bergabung_sejak']
         }
 
         .navbar-nav .nav-link.active { 
-            : rgba(255,255,255,0.15); 
+            background: rgba(255,255,255,0.15); 
             color: #ffffff !important; 
             font-weight: 600; 
         }
@@ -159,36 +167,56 @@ if (!empty($profile_data['bergabung_sejak']) && $profile_data['bergabung_sejak']
             padding: 0;
         }
 
-        .dropdown-menu .user-info-header { 
+        .dropdown-menu .user-info-header {
             display: flex; 
-            align-items: center; 
-            padding: 10px 15px; 
+            align-items: center;
+            padding: 10px 15px;
+            margin-bottom: 0;
         }
 
-        .dropdown-menu .user-avatar { 
+        .dropdown-menu .user-avatar {
             width: 50px; 
-            height: 50px; 
+            height: 50px;
             border-radius: 50%; 
-            object-fit: cover; 
-            margin-right: 12px; 
-            background-color: #f0f0f0; 
+            object-fit: cover;
+            margin-right: 12px;
+            background-color: #f0f0f0;
         }
 
-        .dropdown-menu .user-text { 
+        .dropdown-menu .user-text {
             display: flex;
-            flex-direction: column; 
+            flex-direction: column;
             overflow: hidden; 
         }
 
         .dropdown-menu .user-text strong {
-            font-size: 15px; 
-            font-weight: 600; 
+            font-size: 15px;
+            font-weight: 600;
             line-height: 1.2;
         }
 
         .dropdown-menu .user-text small {
+            display: block;
             font-size: 13px;
             color: #6c757d; 
+            line-height: 1.2;
+        }
+      
+        .dropdown-menu .dropdown-item {
+            display: flex;
+            align-items: center;
+            padding: 5px 15px; 
+        }
+      
+        .dropdown-menu .dropdown-item i {
+            font-size: 1.1rem;
+            width: 20px;
+            text-align: center;
+            margin-right: 8px;
+        }
+      
+        .dropdown-menu .user-text small {
+            margin-top: 0; 
         }
 
         .profile-sidebar { 
@@ -212,6 +240,7 @@ if (!empty($profile_data['bergabung_sejak']) && $profile_data['bergabung_sejak']
         }
 
         .profile-sidebar img.main-avatar:hover { opacity: 0.8; }
+        
         .badge-peserta { 
             background-color: #e3f2fd; 
             color: #0d6efd; 
@@ -242,7 +271,6 @@ if (!empty($profile_data['bergabung_sejak']) && $profile_data['bergabung_sejak']
             width: 100%; 
             height: 300px; 
         }
-        
     </style>
 </head>
 <body>
@@ -301,8 +329,12 @@ if (!empty($profile_data['bergabung_sejak']) && $profile_data['bergabung_sejak']
                         </div>
                         <?php endif; ?>
 
-                        <h5 class="mt-3"><?php echo $dropdown_nama; ?></h5>
-                        <p class="text-muted"><?php echo $dropdown_email; ?></p>
+                        <h5 class="mt-3 mb-0"><?php echo $dropdown_nama; ?></h5>
+                        <div class="text-muted small mb-2">
+                            <i class="bi bi-calendar3 me-1"></i><?php echo $tgl_lahir_display; ?>
+                        </div>
+                        
+                        <p class="text-muted mb-1"><?php echo $dropdown_email; ?></p>
                         <span class="badge-peserta"><?php echo htmlspecialchars($profile_data['role']); ?></span>
                         <hr>
                         <div class="d-flex justify-content-between small mb-4">
@@ -316,6 +348,10 @@ if (!empty($profile_data['bergabung_sejak']) && $profile_data['bergabung_sejak']
                         <div class="mb-3">
                             <label class="form-label">Nama Lengkap</label>
                             <input type="text" class="form-control" id="nama" value="<?php echo $dropdown_nama; ?>" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Tanggal Lahir</label>
+                            <input type="date" class="form-control" id="tgl_lahir" value="<?php echo $tgl_lahir; ?>" required>
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Alamat Email</label>
@@ -394,7 +430,11 @@ if (!empty($profile_data['bergabung_sejak']) && $profile_data['bergabung_sejak']
         fetch('update_profile.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ id: userId, nama: document.getElementById('nama').value })
+            body: JSON.stringify({ 
+                id: userId, 
+                nama: document.getElementById('nama').value,
+                tgl_lahir: document.getElementById('tgl_lahir').value 
+            })
         })
         .then(res => res.json())
         .then(data => {
