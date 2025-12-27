@@ -210,12 +210,13 @@
             font-size: 15px;
             font-weight: 600;
             line-height: 1.2;
-            color: #333;
         }
 
         .dropdown-menu .user-text small {
-            font-size: 12px;
-            color: #6c757d;
+            display: block;
+            font-size: 13px;
+            color: #6c757d; 
+            line-height: 1.2;
         }
 
         .dropdown-menu .dropdown-item {
@@ -287,18 +288,23 @@
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
                         <i class="bi bi-person-circle me-1"></i> <?php echo ucwords(htmlspecialchars($role_display)); ?>
-                    </a>    
-                    <ul class="dropdown-menu dropdown-menu-end shadow">
-                        <li class="user-info-header">
-                            <img src="<?= $dropdown_foto; ?>" alt="Avatar" class="user-avatar">
-                            <div class="user-text">
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end shadow border-0" aria-labelledby="userDropdown">
+                        <li class="user-info-header d-flex align-items-center p-3">
+                            <img src="<?= $dropdown_foto; ?>" alt="Avatar" class="user-avatar rounded-circle me-2" width="40" height="40" style="object-fit: cover;">
+                            <div class="user-text d-flex flex-column">
                                 <strong class="text-truncate"><?= $dropdown_nama; ?></strong>
                                 <small class="text-muted text-truncate"><?= $dropdown_email; ?></small>
                             </div>
                         </li>
-                        <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item" href="profile.php"><i class="bi bi-person"></i> Profil Saya</a></li>
-                        <li><a id="logoutLink" class="dropdown-item text-danger" href="login.php"><i class="bi bi-box-arrow-right"></i> Keluar</a></li>
+                        <li><hr class="dropdown-divider m-0"></li>
+                        <li><a class="dropdown-item py-2" href="profile.php"><i class="bi bi-person me-2"></i> Profil Saya</a></li>
+                        <li>
+                            <a id="logoutLink" class="dropdown-item text-danger py-2 d-flex align-items-center" href="login.php">
+                                <i class="bi bi-box-arrow-right me-2" style="color: #dc3545 !important;"></i> 
+                                <span style="color: #dc3545 !important;">Keluar</span>
+                            </a>
+                        </li>
                     </ul>
                 </li>
             </ul>
@@ -307,45 +313,54 @@
 
     <div class="container mt-4 mb-5">
         <header class="text-center mt-4 mb-5">
-            <h1 class="fw-bold text-primary">Selamat Datang di Notulen Tracker, <?= $dropdown_nama; ?>!</h1>
-            <p class="lead">Solusi digital terbaik untuk kebutuhan rapat Anda.</p>
-        </header>
+            <?php if ($role_check === 'notulis'): ?>
+                <h1 class="fw-bold text-primary">Halo, <?= $dropdown_nama; ?>! Siap produktif bareng hari ini?</h1>
+                <p class="lead">Pantau progres rapat kamu dengan lebih transparan.</p>
+                
+                <?php else: ?>
+                    <h1 class="fw-bold text-primary">Hai, <?= $dropdown_nama; ?>!</h1>
+                    <h1 class="fw-bold text-primary"> Cek hasil keputusan diskusi kita yuk.</h1>
+                    <p class="lead">Langsung dapet, nggak pakai ribet!</p>
+                    <?php endif; ?>
+                </header>
+                
+                <div class="row g-4 mb-5">
+                    <div class="col-md-4">
+                        <div class="card dashboard-card p-3">
+                            <div class="card-body d-flex align-items-center justify-content-between">
+                                <div>
+                                    <h6 class="text-uppercase text-muted fw-bold">Total Rapat</h6>
+                                        <p id="totalNotulen" class="card-value text-primary">0</p> 
+                                    </div>
+                                    <i class="bi bi-list-columns card-icon text-primary"></i>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-4">
+                            <div class="card dashboard-card p-3">
+                                <div class="card-body d-flex align-items-center justify-content-between">
+                                    <div>
+                                        <h6 class="text-uppercase text-muted fw-bold">Rapat Selesai</h6>
+                                        <p id="selesaiNotulen" class="card-value text-success">0</p> 
+                                    </div>
+                                    <i class="bi bi-check-circle card-icon text-success"></i>
+                                </div>
+                            </div>
+                        </div>
 
-        <div class="row g-4 mb-5">
-            <div class="col-md-4">
-                <div class="card dashboard-card p-3">
-                    <div class="card-body d-flex align-items-center justify-content-between">
-                        <div>
-                            <h6 class="text-uppercase text-muted fw-bold">Total Rapat</h6>
-                            <p id="totalNotulen" class="card-value text-primary">0</p> 
+                        <div class="col-md-4">
+                            <div class="card dashboard-card p-3">
+                                <div class="card-body d-flex align-items-center justify-content-between">
+                                    <div>
+                                        <h6 class="text-uppercase text-muted fw-bold">Belum Selesai</h6>
+                                        <p id="belumNotulen" class="card-value text-danger">0</p> 
+                                    </div>
+                                    <i class="bi bi-x-circle card-icon text-danger"></i>
+                                </div>
+                            </div>
                         </div>
-                        <i class="bi bi-list-columns card-icon text-primary"></i>
                     </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card dashboard-card p-3">
-                    <div class="card-body d-flex align-items-center justify-content-between">
-                        <div>
-                            <h6 class="text-uppercase text-muted fw-bold">Rapat Selesai</h6>
-                            <p id="selesaiNotulen" class="card-value text-success">0</p> 
-                        </div>
-                        <i class="bi bi-check-circle card-icon text-success"></i>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card dashboard-card p-3">
-                    <div class="card-body d-flex align-items-center justify-content-between">
-                        <div>
-                            <h6 class="text-uppercase text-muted fw-bold">Belum Selesai</h6>
-                            <p id="belumNotulen" class="card-value text-danger">0</p> 
-                        </div>
-                        <i class="bi bi-x-circle card-icon text-danger"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
 
         <div class="row justify-content-center">
             <div class="col-md-8">
@@ -373,7 +388,7 @@
                         </thead>
                         <tbody>
                             <?php if (empty($dataTabel)): ?>
-                                <tr><td colspan="4" class="text-center text-muted">Belum ada data.</td></tr>
+                                <tr><td colspan="4" class="text-center text-muted">Belum ada data rapat untuk ditampilkan.</td></tr>
                             <?php else: ?>
                                 <?php foreach ($dataTabel as $row): ?>
                                     <tr>
