@@ -528,6 +528,7 @@
       </div>
     </div>
   </div>
+  <br>
   
   <div class="modal fade" id="detailModal" tabindex="-1">
     <div class="modal-dialog modal-lg modal-dialog-centered">
@@ -609,7 +610,7 @@
     </div>
   </div>
   <footer>©2025 Notulen Tracker. Semua hak cipta dilindungi</footer>
-  
+
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script>
     const userRole = <?= json_encode(strtolower($role_display)); ?>;
