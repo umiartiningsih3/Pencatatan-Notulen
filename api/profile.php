@@ -313,8 +313,7 @@ if (!empty($tgl_lahir) && $tgl_lahir !== '0000-00-00') {
     </nav>
 
     <main class="container py-4">
-        <h2 class="mb-4">Pengaturan Akun</h2>
-
+        <h2 class="mb-4 fw-bold text-primary">Pengaturan Akun</h2>
         <div class="row g-4">
             <div class="col-lg-5">
                 <div class="profile-sidebar">
@@ -373,16 +372,16 @@ if (!empty($tgl_lahir) && $tgl_lahir !== '0000-00-00') {
                     <form id="passwordForm">
                         <div class="mb-3">
                             <label class="form-label">Password Saat Ini</label>
-                            <input type="password" class="form-control" id="passwordLama" required>
+                            <input type="password" class="form-control" placeholder="Masukkan password saat ini" id="passwordLama" required>
                         </div>
                         <div class="row mb-3">
                             <div class="col-md-6">
                                 <label class="form-label">Password Baru</label>
-                                <input type="password" class="form-control" id="passwordBaru" minlength="4" required>
+                                <input type="password" class="form-control" placeholder="Masukkan password baru" id="passwordBaru" minlength="4" required>
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label">Konfirmasi Password Baru</label>
-                                <input type="password" class="form-control" id="konfirmasiPassword" required>
+                                <input type="password" class="form-control" placeholder="Konfirmasi password baru" id="konfirmasiPassword" required>
                             </div>
                         </div>
                         <div class="alert alert-info small">
