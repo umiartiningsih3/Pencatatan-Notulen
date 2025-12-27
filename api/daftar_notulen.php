@@ -210,15 +210,15 @@
       }
 
       .dropdown-menu .user-text {
-          display: flex;
-          flex-direction: column;
-          overflow: hidden; 
+        display: flex;
+        flex-direction: column;
+        overflow: hidden; 
       }
 
       .dropdown-menu .user-text strong {
-          font-size: 15px;
-          font-weight: 600;
-          line-height: 1.2;
+        font-size: 15px;
+        font-weight: 600;
+        line-height: 1.2;
       }
 
       .dropdown-menu .user-text small {
