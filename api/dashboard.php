@@ -276,24 +276,57 @@
             font-size: 0.9rem;
             margin-top: auto;
         }
+
+        @media (max-width: 991.98px) {
+        .custom-navbar {
+            height: auto;
+            padding: 10px 15px;
+        }
+    
+        body {
+            padding-top: 100px;
+        }
+
+        .navbar-collapse {
+            background: #003366; 
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 10px;
+        }
+    }
+
+        @media (max-width: 576px) {
+        .brand-name {
+            font-size: 18px; 
+        }
+    
+        .profile-sidebar, .form-card {
+            padding: 20px; 
+        }
+    
+        .profile-sidebar img.main-avatar {
+            width: 100px;
+            height: 100px;
+        }
+    }
     </style>
 </head>
 
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark fixed-top px-4 custom-navbar">
-        <a class="navbar-brand brand-pro" href="dashboard.php">
-            <img src="logono.png" alt="Logo">
-            <div class="brand-info">
-                <span class="brand-name">Notulen</span>
-                <span class="brand-tagline">TRACKER</span>
-            </div>
-        </a>
+    <a class="navbar-brand brand-pro" href="dashboard.php">
+      <img src="logono.png" alt="Logo">
+      <div class="brand-info">
+        <span class="brand-name">Notulen</span>
+        <span class="brand-tagline">TRACKER</span>
+      </div>
+    </a>
 
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-            <span class="navbar-toggler-icon"></span>
-        </button>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+    </button>
 
-        <<div class="collapse navbar-collapse">
+    <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav ms-auto nav-effect">
         <li class="nav-item">
           <a class="nav-link active" href="dashboard.php">
