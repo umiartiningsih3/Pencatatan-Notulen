@@ -361,6 +361,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['btn_kirim'])) {
         <h5 class="text-primary fw-bold">Informasi Kontak Lainnya</h5>
         <p class="mb-1">📍 Politeknik Negeri Batam</p>
         <p class="mb-1">📞 0821-1234-5678</p>
+        <br>
       </div>
     </div>
   </main>
