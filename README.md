@@ -31,7 +31,7 @@ Sistem berbasis web untuk mendokumentasikan hasil rapat secara digital, efisien,
 
 1.  **Clone Repositori**
     ```bash
-    git clone [https://github.com/username/Pencatatan-Notulen.git](https://github.com/username/Pencatatan-Notulen.git)
+    git clone [https://github.com/umiartiningsih3/Pencatatan-Notulen.git]
     ```
 2.  **Persiapan Database**
     * Buka XAMPP dan aktifkan Apache serta MySQL.
