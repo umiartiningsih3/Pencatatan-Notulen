@@ -39,11 +39,11 @@ $dropdown_email = htmlspecialchars($profile_data['email']);
 $tgl_lahir = !empty($profile_data['tgl_lahir']) ? $profile_data['tgl_lahir'] : '';
 
 $is_default_photo = empty($profile_data['foto_profile']) || !file_exists($profile_data['foto_profile']);
-$foto_path = (!$is_default_photo) ? htmlspecialchars($profile_data['foto_profile']) : 'user.png';
+$foto_path = (!$is_default_photo) ? htmlspecialchars($profile_data['foto_profile']) : 'userr.png';
 
 $bulan_indonesia = [
     1 => 'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 
-    'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
+    'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'   
 ];
 
 if (!empty($profile_data['bergabung_sejak']) && $profile_data['bergabung_sejak'] !== '0000-00-00') {
@@ -75,12 +75,12 @@ if (!empty($tgl_lahir) && $tgl_lahir !== '0000-00-00') {
             display: flex; 
             flex-direction: column; 
             min-height: 100vh; 
-            padding-top: 80px; 
+            padding-top: 70px; 
             background: url('gambarr.png') no-repeat center center fixed !important;
             background-size: cover !important;
             position: relative;
             z-index: 0;
-            font-size : 18px;
+            font-size: 18px;
         }
 
         body::before {
@@ -89,6 +89,10 @@ if (!empty($tgl_lahir) && $tgl_lahir !== '0000-00-00') {
             top: 0; left: 0; width: 100%; height: 100%;
             background-color: rgba(245, 247, 250, 0.85); 
             z-index: -1;
+        }
+
+        .nav-effect {
+            gap: 10px;
         }
 
         .custom-navbar { 
@@ -149,11 +153,11 @@ if (!empty($tgl_lahir) && $tgl_lahir !== '0000-00-00') {
             box-shadow: 0 8px 25px rgba(144,202,249,0.45);
         }
 
-        .brand-name {
+        .brand-name { 
             font-size: 21px; 
             font-weight: 700; 
             color: #ffffff; 
-            letter-spacing: 0.3px; 
+            letter-spacing: 0.3px;
         }
 
         .brand-tagline {
@@ -356,19 +360,26 @@ if (!empty($tgl_lahir) && $tgl_lahir !== '0000-00-00') {
             <div class="col-lg-5">
                 <div class="profile-sidebar">
                     <div class="text-center">
-                        <img id="fotoProfil" class="main-avatar" src="<?php echo $foto_path; ?>" alt="Foto Profil" title="Klik untuk ganti foto">
-                        <input type="file" id="uploadFoto" accept="image/*" style="display: none;">
-                        
-                        <?php if (!$is_default_photo): ?>
+                        <div class="position-relative d-inline-block">
+                            <img id="fotoProfil" class="main-avatar" src="<?php echo $foto_path; ?>" alt="Foto Profil" title="Klik untuk ganti foto">
+                            <div class="position-absolute bottom-0 end-0 bg-primary text-white rounded-circle d-flex align-items-center justify-content-center" 
+                            style="width: 35px; height: 35px; border: 3px solid #fff; cursor: pointer;"
+                            onclick="document.getElementById('uploadFoto').click();">
+                            <i class="bi bi-camera-fill" style="font-size: 16px;"></i>
+                        </div>
+                    </div>
+                    
+                    <input type="file" id="uploadFoto" accept="image/*" style="display: none;">
+                    <?php if (!$is_default_photo): ?>
                         <div class="mt-2">
                             <button type="button" id="btnHapusFoto" class="btn btn-sm btn-outline-danger border-0">
                                 <i class="bi bi-trash me-1"></i>Hapus Foto
                             </button>
                         </div>
                         <?php endif; ?>
-
-                        <h5 class="mt-3 mb-0"><?php echo $dropdown_nama; ?></h5>
-                        <div class="text-muted small mb-2">
+                        
+                        <h5 class="mt-3 mb-0 fw-bold"><?php echo $dropdown_nama; ?></h5>
+                        <div class="text-muted mb-2">
                             <i class="bi bi-calendar3 me-1"></i><?php echo $tgl_lahir_display; ?>
                         </div>
                         
@@ -406,20 +417,20 @@ if (!empty($tgl_lahir) && $tgl_lahir !== '0000-00-00') {
 
             <div class="col-lg-7">
                 <div class="form-card">
-                    <h5 class="text-dark mb-4"><i class="bi bi-shield-lock me-2"></i>Keamanan & Password</h5>
+                    <h5 class="text-dark mb-4"><i class="bi bi-shield-lock me-2"></i>Keamanan & Privasi</h5>
                     <form id="passwordForm">
                         <div class="mb-3">
-                            <label class="form-label">Password Saat Ini</label>
-                            <input type="password" class="form-control" placeholder="Masukkan password saat ini" id="passwordLama" required>
+                            <label class="form-label">Kata Sandi Saat Ini</label>
+                            <input type="password" class="form-control" placeholder="Masukkan kata sandi sekarang" id="passwordLama" required>
                         </div>
                         <div class="row mb-3 g-3">
                             <div class="col-md-6">
-                                <label class="form-label">Password Baru</label>
-                                <input type="password" class="form-control" placeholder="Masukkan password baru" id="passwordBaru" minlength="4" required>
+                                <label class="form-label">Kata Sandi Baru</label>
+                                <input type="password" class="form-control" placeholder="Masukkan kata sandi baru" id="passwordBaru" minlength="4" required>
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label">Konfirmasi Password Baru</label>
-                                <input type="password" class="form-control" placeholder="Konfirmasi password baru" id="konfirmasiPassword" required>
+                                <label class="form-label">Ulangi Kata Sandi Baru</label>
+                                <input type="password" class="form-control" placeholder="Ketik ulang kata sandi baru" id="konfirmasiPassword" required>
                             </div>
                         </div>
                         <div class="alert alert-info small">
