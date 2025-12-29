@@ -87,6 +87,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['btn_kirim'])) {
       background-size: cover !important;
       position: relative;
       z-index: 0;
+      font-size: 18px;
     }
 
     body::before {
