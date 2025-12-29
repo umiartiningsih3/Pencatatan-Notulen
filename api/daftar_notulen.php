@@ -34,7 +34,7 @@
   $dropdown_email = htmlspecialchars($profile_db['email']);
   $dropdown_foto  = (!empty($profile_db['foto_profile']) && file_exists($profile_db['foto_profile'])) 
                     ? htmlspecialchars($profile_db['foto_profile']) 
-                    : 'user.png';
+                    : 'userr.png';
   
   if ($role_check === 'notulis' || $role_check === 'admin') {
       $sql_query = "SELECT * FROM rapat ORDER BY id DESC";
