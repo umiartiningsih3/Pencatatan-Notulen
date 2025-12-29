@@ -60,6 +60,7 @@ if (isset($stmt) && $stmt) {
             background-size: cover !important;
             position: relative;
             z-index: 0;
+            font-size: 18px;
         }
 
         body::before {
