@@ -33,7 +33,7 @@
   
   $dropdown_foto = (!empty($profile_db['foto_profile']) && file_exists($profile_db['foto_profile'])) 
                    ? htmlspecialchars($profile_db['foto_profile']) 
-                   : 'user.png';
+                   : 'userr.png';
 
 if (isset($stmt)) {
     mysqli_stmt_close($stmt);
@@ -196,29 +196,6 @@ if (isset($stmt)) {
             text-align: center;
             margin-right: 8px; 
         }
-      
-        .dropdown-menu .user-text small {
-            margin-top: 0; 
-        }
-
-        .brand-info {
-            display: flex;
-            flex-direction: column;
-            line-height: 1.1;
-        }
-
-        .brand-name {
-            font-size: 21px;
-            font-weight: 700;
-            color: #ffffff;
-            letter-spacing: 0.3px;
-        }
-
-        .brand-tagline { 
-            font-size: 13px; 
-            color: #90caf9; 
-            letter-spacing: 1px; 
-        }
 
         .card {
             border-radius: 12px;
@@ -243,6 +220,20 @@ if (isset($stmt)) {
             word-break: break-word;
         }
 
+        #containerPeserta .badge {
+            padding: 8px 12px;
+            border-radius: 50px;
+            font-weight: 500;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            transition: transform 0.2s;
+        }
+
+        #containerPeserta .badge:hover {
+            transform: translateY(-2px);
+        }
+
+        .italic { font-style: italic; }
+
         footer {
             background-color: #003366;
             color: white;
@@ -253,80 +244,33 @@ if (isset($stmt)) {
         }
 
         @media (max-width: 991.98px) {
-        .custom-navbar {
-            height: auto;
-            padding: 10px 15px;
+            .custom-navbar { height: auto; padding: 10px 15px; }
+            body { padding-top: 100px; }
+            .navbar-collapse { background: #003366; padding: 15px; border-radius: 10px; margin-top: 10px; }
         }
-    
-        body {
-            padding-top: 100px;
-        }
-
-        .navbar-collapse {
-            background: #003366; 
-            padding: 15px;
-            border-radius: 10px;
-            margin-top: 10px;
-        }
-    }
-
-        @media (max-width: 576px) {
-        .brand-name {
-            font-size: 18px; 
-        }
-    
-        .profile-sidebar, .form-card {
-            padding: 20px; 
-        }
-    
-        .profile-sidebar img.main-avatar {
-            width: 100px;
-            height: 100px;
-        }
-    }
     </style>
 </head>
 
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark fixed-top px-4 custom-navbar">
-    <a class="navbar-brand brand-pro" href="dashboard.php">
-      <img src="logono.png" alt="Logo">
-      <div class="brand-info">
-        <span class="brand-name">Notulen</span>
-        <span class="brand-tagline">TRACKER</span>
-      </div>
-    </a>
+        <a class="navbar-brand brand-pro" href="dashboard.php">
+          <img src="logono.png" alt="Logo">
+          <div class="brand-info">
+            <span class="brand-name">Notulen</span>
+            <span class="brand-tagline">TRACKER</span>
+          </div>
+        </a>
 
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-        <span class="navbar-toggler-icon"></span>
-    </button>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
 
-    <div class="collapse navbar-collapse" id="navbarNav">
+        <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ms-auto nav-effect">
-                <li class="nav-item">
-                    <a class="nav-link" href="dashboard.php">
-                        <i class="bi bi-grid"></i>
-                        <span>Dashboard</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link active" href="daftar_notulen.php">
-                        <i class="bi bi-file-text"></i>
-                        <span>Daftar Notulen</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="kontak.php">
-                        <i class="bi bi-envelope"></i>
-                        <span>Kontak</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="faq.php">
-                        <i class="bi bi-question-circle"></i>
-                        <span>FAQ</span>
-                    </a>
-                </li>
+                <li class="nav-item"><a class="nav-link" href="dashboard.php"><i class="bi bi-grid"></i><span>Dashboard</span></a></li>
+                <li class="nav-item"><a class="nav-link active" href="daftar_notulen.php"><i class="bi bi-file-text"></i><span>Daftar Notulen</span></a></li>
+                <li class="nav-item"><a class="nav-link" href="kontak.php"><i class="bi bi-envelope"></i><span>Kontak</span></a></li>
+                <li class="nav-item"><a class="nav-link" href="faq.php"><i class="bi bi-question-circle"></i><span>FAQ</span></a></li>
                 
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
@@ -388,24 +332,26 @@ if (isset($stmt)) {
 
                 <div class="mb-3 position-relative">
                     <label class="form-label fw-bold">Daftar Peserta</label>
-                    <div class="input-group">
-                        <input type="text" id="inputNama" class="form-control" placeholder="Cari nama peserta..." autocomplete="off">
-                        <button class="btn btn-outline-primary" type="button" id="btnTambahPeserta">+Tambah</button>
+                    <div class="input-group shadow-sm">
+                        <span class="input-group-text bg-white border-end-0">
+                            <i class="bi bi-people text-muted"></i>
+                        </span>
+                        <input type="text" id="inputNama" class="form-control border-start-0 ps-0" placeholder="Ketik nama atau cari peserta..." autocomplete="off">
+                        <button class="btn btn-primary px-3" type="button" id="btnTambahPeserta" title="Tambah Peserta">
+                            <i class="bi bi-plus-lg"></i>
+                        </button>
                     </div>
-                    <div id="hasilPencarian" class="list-group position-absolute w-100" style="z-index: 1000;"></div>
-                    <div id="containerPeserta" class="mt-2 d-flex flex-wrap gap-2 p-2 border rounded bg-light" style="min-height: 50px;">
-                        <span class="text-muted small">Belum ada peserta...</span>
+                    <div id="hasilPencarian" class="list-group position-absolute w-100 shadow" style="z-index: 1000;"></div>
+                    
+                    <div id="containerPeserta" class="mt-2 d-flex flex-wrap gap-2 p-3 border rounded bg-light-subtle" style="min-height: 60px; border-style: dashed !important;">
+                        <span class="text-muted small italic"><i class="bi bi-info-circle me-1"></i>Belum ada peserta yang ditambahkan...</span>
                     </div>
                     <input type="hidden" name="daftar_peserta" id="hiddenPeserta">
                 </div>
                 
-                <input type="hidden" name="peserta" id="pesertaFinal">
-            
-            </div>
-                <br>
                 <div class="mb-3">
                     <label class="form-label fw-bold">Hasil Rapat</label>
-                    <table class="table table-bordered align-middle" id="tabelHasil" name="hasil">
+                    <table class="table table-bordered align-middle" id="tabelHasil">
                         <thead class="table-primary">
                             <tr>
                                 <th>No</th>
@@ -419,10 +365,10 @@ if (isset($stmt)) {
                         <tbody>
                             <tr>
                                 <td>1</td>
-                                <td><textarea name="topik[]" placeholder="Masukkan topik"></textarea></td>
-                                <td><textarea name="pembahasan[]" placeholder="Masukkan pembahasan"></textarea></td>
-                                <td><textarea name="tindak_lanjut[]" placeholder="Masukkan tindak lanjut"></textarea></td>
-                                <td><textarea name="pic[]" placeholder="Nama PIC"></textarea></td>
+                                <td><textarea name="topik[]" placeholder="Masukkan Topik"></textarea></td>
+                                <td><textarea name="pembahasan[]" placeholder="Masukkan Pembahasan"></textarea></td>
+                                <td><textarea name="tindak_lanjut[]" placeholder="Masukkan Tindak lanjut"></textarea></td>
+                                <td><textarea name="pic[]" placeholder="Masukkan PIC"></textarea></td>
                                 <td><button type="button" class="btn btn-danger btn-sm" onclick="hapusBaris(this)">Hapus</button></td>
                             </tr>
                         </tbody>
@@ -432,7 +378,7 @@ if (isset($stmt)) {
 
                 <div class="mb-3">
                     <label for="catatan" class="form-label fw-bold">Catatan Tambahan</label>
-                    <textarea class="form-control" id="catatan" rows="3" placeholder="Tambahkan catatan tambahan di sini..." name="catatan"></textarea>
+                    <textarea class="form-control" id="catatan" rows="3" placeholder="Masukkan catatan tambahan di sini..." name="catatan"></textarea>
                 </div>
 
                 <div class="mb-3">
@@ -451,9 +397,7 @@ if (isset($stmt)) {
         </div>
     </div>
 
-    <footer>
-        ©2025 Notulen Tracker. Semua hak cipta dilindungi
-    </footer>
+    <footer>©2025 Notulen Tracker. Semua hak cipta dilindungi</footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
@@ -506,16 +450,15 @@ if (isset($stmt)) {
     function renderBadges() {
         containerBadge.innerHTML = ""; 
         if (daftarPeserta.length === 0) {
-            containerBadge.innerHTML = '<span class="text-muted small">Belum ada peserta...</span>';
+            containerBadge.innerHTML = '<span class="text-muted small italic"><i class="bi bi-info-circle me-1"></i>Belum ada peserta yang ditambahkan...</span>';
         }
 
         daftarPeserta.forEach((nama, index) => {
             const badge = document.createElement('span');
-            badge.className = "badge bg-primary d-flex align-items-center p-2";
-            badge.style.fontSize = "14px";
+            badge.className = "badge bg-primary d-flex align-items-center";
             badge.innerHTML = `
                 ${nama} 
-                <i class="bi bi-x-circle-fill ms-2" style="cursor:pointer" onclick="hapusPeserta(${index})"></i>
+                <i class="bi bi-x ms-2" style="cursor:pointer; font-size: 1.1rem" onclick="hapusPeserta(${index})"></i>
             `;
             containerBadge.appendChild(badge);
         });
@@ -533,10 +476,10 @@ if (isset($stmt)) {
         const newRow = `
             <tr>
                 <td>${rowCount}</td>
-                <td><textarea name="topik[]" placeholder="Masukkan topik"></textarea></td>
-                <td><textarea name="pembahasan[]" placeholder="Masukkan pembahasan"></textarea></td>
-                <td><textarea name="tindak_lanjut[]" placeholder="Masukkan tindak lanjut"></textarea></td>
-                <td><textarea name="pic[]" placeholder="Nama PIC"></textarea></td>
+                <td><textarea name="topik[]" placeholder="Topik"></textarea></td>
+                <td><textarea name="pembahasan[]" placeholder="Pembahasan"></textarea></td>
+                <td><textarea name="tindak_lanjut[]" placeholder="Tindak lanjut"></textarea></td>
+                <td><textarea name="pic[]" placeholder="PIC"></textarea></td>
                 <td><button type="button" class="btn btn-danger btn-sm" onclick="hapusBaris(this)">Hapus</button></td>
             </tr>`;
         tbody.insertAdjacentHTML("beforeend", newRow);
@@ -557,18 +500,9 @@ if (isset($stmt)) {
 
     document.getElementById("formRapat").addEventListener("submit", function(e) {
         let error = [];
-        let judul = document.querySelector("input[name='judul']").value.trim();
-        let tanggal = document.querySelector("input[name='tanggal']").value;
-        let waktu = document.querySelector("input[name='waktu']").value;
-
-        if (!judul) error.push("Judul rapat wajib diisi");
-        if (!tanggal) error.push("Tanggal wajib diisi");
-        if (!waktu) error.push("Waktu wajib diisi");
-
         if (daftarPeserta.length === 0) {
             error.push("Minimal harus ada satu peserta");
         }
-
         if (error.length > 0) {
             e.preventDefault();
             alert("⚠️ ERROR:\n\n" + error.join("\n"));
