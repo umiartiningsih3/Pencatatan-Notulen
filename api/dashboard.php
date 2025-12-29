@@ -35,7 +35,7 @@
   
   $dropdown_foto = (!empty($profile_db['foto_profile']) && file_exists($profile_db['foto_profile'])) 
                    ? htmlspecialchars($profile_db['foto_profile']) 
-                   : 'user.png';
+                   : 'userr.png';
 
   if ($role_check === 'notulis' || $role_check === 'admin') {
       $query_all = mysqli_query($conn, "SELECT status FROM rapat");
