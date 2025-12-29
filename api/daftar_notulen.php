@@ -559,6 +559,12 @@
                   Tidak ada daftar rapat yang tersedia.
                 </td>
               </tr><?php endif; ?>
+              <tr id="noFilterResultRow" style="display: none;">
+                <td colspan="5" class="text-center text-muted py-4">
+                  <i class="bi bi-search" style="font-size: 2rem; display: block; margin-bottom: 10px;"></i>
+                  Tidak ada notulen ditemukan dengan kata kunci tersebut.
+                </td>
+              </tr>
             </tbody>
           </table>
         </div>
@@ -657,56 +663,50 @@
     const table = document.getElementById("notulenTable").getElementsByTagName("tbody")[0];
 
     form.addEventListener("submit", e => {
-        e.preventDefault();
-        const judul = document.getElementById("filterJudul").value.toLowerCase();
-        const tanggal = document.getElementById("filterTanggal").value;
-        const notulis = document.getElementById("filterNotulis").value.toLowerCase();
-        const status = document.getElementById("filterStatus").value;
+    e.preventDefault();
+    const judul = document.getElementById("filterJudul").value.toLowerCase();
+    const tanggal = document.getElementById("filterTanggal").value;
+    const notulis = document.getElementById("filterNotulis").value.toLowerCase();
+    const status = document.getElementById("filterStatus").value;
+    
+    let visibleCount = 0; 
+    const noDataRow = document.getElementById("noFilterResultRow");
+    
+    for (let row of table.rows) {
+        if (row.id === 'noFilterResultRow') continue; 
+        if (row.cells.length < 5) continue; 
         
-        let visibleCount = 0; 
-        const initialEmptyRow = document.getElementById("initialEmptyRow");
-        const noDataRow = document.getElementById("noFilterResultRow");
+        const judulText = row.cells[0].textContent.toLowerCase();
+        const tanggalText = row.cells[1].textContent.trim();
+        const notulisText = row.cells[2].textContent.toLowerCase();
+        const statusText = row.cells[3].textContent.trim();
         
-        if (initialEmptyRow) initialEmptyRow.style.display = "none";
+        let visible = true;
+        if (judul && !judulText.includes(judul)) visible = false;
+        if (tanggal && !tanggalText.includes(tanggal)) visible = false; // Gunakan includes untuk pencocokan fleksibel
+        if (notulis && !notulisText.includes(notulis)) visible = false;
+        if (status !== "Semua" && statusText !== status) visible = false;
         
-        for (let row of table.rows) {
-            if (row.id === 'noFilterResultRow' || row.id === 'initialEmptyRow') continue; 
-            if (row.cells.length < 5) continue; 
-            
-            const judulText = row.cells[0].textContent.toLowerCase();
-            const tanggalText = row.cells[1].textContent.trim();
-            const notulisText = row.cells[2].textContent.toLowerCase();
-            const statusText = row.cells[3].textContent.trim();
-            
-            let visible = true;
-            if (judul && !judulText.includes(judul)) visible = false;
-            if (tanggal && tanggalText !== tanggal) visible = false;
-            if (notulis && !notulisText.includes(notulis)) visible = false;
-            if (status !== "Semua" && statusText !== status) visible = false;
-            
-            row.style.display = visible ? "" : "none";
-            if (visible) visibleCount++;
-        }
-        
-        if (noDataRow) noDataRow.style.display = visibleCount === 0 ? "" : "none";
-    });
+        row.style.display = visible ? "" : "none";
+        if (visible) visibleCount++;
+    }
+    
+    if (noDataRow) {
+        noDataRow.style.display = visibleCount === 0 ? "" : "none";
+    }
+});
 
     resetBtn.addEventListener("click", () => {
-        form.reset();
-        const initialEmptyRow = document.getElementById("initialEmptyRow");
-        const noDataRow = document.getElementById("noFilterResultRow");
-        if (noDataRow) noDataRow.style.display = "none";
-        
-        let hasDataRows = false;
-        for (let row of table.rows) {
-            if (row.id === 'noFilterResultRow' || row.id === 'initialEmptyRow') continue;
-            if (row.cells.length === 5) {
-                row.style.display = ""; 
-                hasDataRows = true;
-            }
+    form.reset();
+    const noDataRow = document.getElementById("noFilterResultRow");
+    if (noDataRow) noDataRow.style.display = "none";
+    
+    for (let row of table.rows) {
+        if (row.id !== 'noFilterResultRow') {
+            row.style.display = ""; 
         }
-        if (!hasDataRows && initialEmptyRow) initialEmptyRow.style.display = "";
-    });
+    }
+});
 
     document.querySelectorAll(".btn-lihat").forEach(btn => {
         btn.addEventListener("click", e => {
