@@ -33,7 +33,7 @@
   
   $dropdown_foto = (!empty($profile_db['foto_profile']) && file_exists($profile_db['foto_profile'])) 
                    ? htmlspecialchars($profile_db['foto_profile']) 
-                   : 'user.png';
+                   : 'userr.png';
 if (isset($stmt) && $stmt) { 
     mysqli_stmt_close($stmt);
 }
