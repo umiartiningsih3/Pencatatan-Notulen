@@ -87,6 +87,7 @@
             background: url('gambarr.png') no-repeat center center fixed; 
             background-size: cover;
             padding-top: 80px; 
+            font-size: 18px;
         }
 
         body::before {
