@@ -161,7 +161,7 @@
                 <span class="input-group-text bg-white border-end-0" style="border-radius: 10px 0 0 10px; border-color: #90caf9;">
                     <i class="bi bi-person text-muted"></i>
                 </span>
-                <input type="text" class="form-control border-start-0" 
+                <input type="text" class="form-control bg-white border-start-0" 
                        name="nim" 
                        placeholder="Masukkan NIM/NIK" 
                        style="border-radius: 0 10px 10px 0;"
@@ -186,7 +186,8 @@
             style="border-radius: 0;"
             required>
             
-            <span class="input-group-text toggle-password"
+            <span class="input-group-text bg-white toggle-password"
+            style="border-color: #90caf9;"
             onclick="togglePassword()">
             <i class="bi bi-eye" id="eyeIcon"></i>
         </span>
