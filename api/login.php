@@ -171,20 +171,34 @@
 
         <div class="mb-4">
             <label class="form-label">Kata Sandi</label>
+            
             <div class="input-group">
-                <span class="input-group-text bg-white border-end-0" style="border-radius: 10px 0 0 10px; border-color: #90caf9;">
-                    <i class="bi bi-lock text-muted"></i>
-                </span>
-                <input type="password" class="form-control border-start-0" 
-                       name="password" 
-                       placeholder="Masukkan kata sandi" 
-                       style="border-radius: 0 10px 10px 0;"
-                       required>
-            </div>
-            <div class="d-flex justify-content-end">
-                <a href="katasandi.php" class="text-decoration-none forgot-link">Lupa Kata Sandi?</a>
-            </div>
-        </div>
+                <span class="input-group-text bg-white border-end-0"
+                style="border-radius: 10px 0 0 10px; border-color: #90caf9;">
+                <i class="bi bi-lock text-muted"></i>
+            </span>
+            
+            <input type="password"
+            class="form-control border-start-0"
+            id="password"
+            name="password"
+            placeholder="Masukkan kata sandi"
+            style="border-radius: 0;"
+            required>
+            
+            <span class="input-group-text toggle-password"
+            onclick="togglePassword()">
+            <i class="bi bi-eye" id="eyeIcon"></i>
+        </span>
+    </div>
+
+    <div class="d-flex justify-content-end">
+        <a href="katasandi.php" class="text-decoration-none forgot-link">
+            Lupa Kata Sandi?
+        </a>
+    </div>
+</div>
+
 
         <button type="submit" class="btn btn-primary w-100">
             <i class="bi bi-box-arrow-in-right me-2"></i>Masuk
@@ -199,5 +213,20 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+function togglePassword() {
+    const password = document.getElementById("password");
+    const icon = document.getElementById("eyeIcon");
+
+    if (password.type === "password") {
+        password.type = "text";
+        icon.classList.replace("bi-eye", "bi-eye-slash");
+    } else {
+        password.type = "password";
+        icon.classList.replace("bi-eye-slash", "bi-eye");
+    }
+}
+</script>
+
 </body>
 </html>
