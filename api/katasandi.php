@@ -194,7 +194,7 @@ if (isset($_POST['reset'])) {
             <label class="form-label">Kata Sandi Baru</label>
             <div class="input-group shadow-sm">
                 <span class="input-group-text bg-white"><i class="bi bi-lock"></i></span>
-                <input type="password" class="form-control" name="password" placeholder="Min. 8 karakter" required>
+                <input type="password" class="form-control" id="password1" name="password" placeholder="Min. 8 karakter" required>
             </div>
         </div>
 
@@ -202,10 +202,19 @@ if (isset($_POST['reset'])) {
             <label class="form-label">Konfirmasi Kata Sandi</label>
             <div class="input-group shadow-sm">
                 <span class="input-group-text bg-white"><i class="bi bi-shield-check"></i></span>
-                <input type="password" class="form-control" name="confirm" placeholder="Ulangi sandi" required>
+                <input type="password" class="form-control" id="password2" name="confirm" placeholder="Ulangi sandi" required>
             </div>
         </div>
-
+        <div class="form-check small mt-2">
+            <input class="form-check-input" type="checkbox" id="lihatSandi"
+            onclick="
+            password1.type = this.checked ? 'text' : 'password';
+            password2.type = this.checked ? 'text' : 'password';
+            ">
+            <label class="form-check-label" for="lihatSandi">
+                Lihat kata sandi
+            </label>
+        </div>
         <button type="submit" name="reset" class="btn btn-primary w-100 shadow">
             <i class="bi bi-check-circle me-2"></i>Simpan Perubahan
         </button>
