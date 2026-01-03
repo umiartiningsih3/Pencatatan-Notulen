@@ -53,8 +53,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $_SESSION['nim'] = $row['nim'];
 
             session_regenerate_id(true);
-
-            header("Location: dashboard.php");
+            
+            header("Location: login.php?status=success");
             exit();
             
         } else {
