@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Masuk</title>
@@ -215,6 +216,22 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
+document.addEventListener("DOMContentLoaded", function() {
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('status') === 'success') {
+        Swal.fire({
+            title: 'Berhasil Masuk!',
+            text: 'Menuju ke Dashboard...',
+            icon: 'success',
+            timer: 1000,
+            showConfirmButton: false,
+            timerProgressBar: true
+        }).then(() => {
+            window.location.href = 'dashboard.php';
+        });
+    }
+});
+
 function togglePassword() {
     const password = document.getElementById("password");
     const icon = document.getElementById("eyeIcon");
