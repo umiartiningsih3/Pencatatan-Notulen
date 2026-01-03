@@ -421,24 +421,24 @@ if (!empty($tgl_lahir) && $tgl_lahir !== '0000-00-00') {
                     <form id="passwordForm">
                         <div class="mb-3">
                             <label class="form-label">Kata Sandi Saat Ini</label>
-                            <input type="password" id="password1" name="password" class="form-control" placeholder="Masukkan kata sandi sekarang" id="passwordLama" required>
+                            <input type="password" id="passwordLama" name="password" class="form-control" placeholder="Masukkan kata sandi sekarang" id="passwordLama" required>
                         </div>
                         <div class="row mb-3 g-3">
                             <div class="col-md-6">
                                 <label class="form-label">Kata Sandi Baru</label>
-                                <input type="password" id="password2" name="password" class="form-control" placeholder="Masukkan kata sandi baru" id="passwordBaru" minlength="4" required>
+                                <input type="password" id="passwordBaru" name="password" class="form-control" placeholder="Masukkan kata sandi baru" id="passwordBaru" minlength="4" required>
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label">Ulangi Kata Sandi Baru</label>
-                                <input type="password" id="password3" name="confirm" class="form-control" placeholder="Ketik ulang kata sandi baru" id="konfirmasiPassword" required>
+                                <input type="password" id="konfirmasiPassword" name="confirm" class="form-control" placeholder="Ketik ulang kata sandi baru" id="konfirmasiPassword" required>
                             </div>
                         </div>
                         <div class="form-check small mt-2">
                             <input class="form-check-input " type="checkbox" id="lihatSandi"
                             onclick="
-                            password1.type = this.checked ? 'text' : 'password';
-                            password2.type = this.checked ? 'text' : 'password';
-                            password3.type = this.checked ? 'text' : 'password';
+                            passwordLama.type = this.checked ? 'text' : 'password';
+                            passwordBaru.type = this.checked ? 'text' : 'password';
+                            konfirmasiPassword.type = this.checked ? 'text' : 'password';
                             ">
                             <label class="form-check-label" for="lihatSandi">
                                 Lihat kata sandi
