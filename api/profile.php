@@ -396,7 +396,7 @@ if (!empty($tgl_lahir) && $tgl_lahir !== '0000-00-00') {
                     <form id="dataDiriForm">
                         <div class="mb-3">
                             <label class="form-label">Nama Lengkap</label>
-                            <input type="text" class="form-control" id="nama" value="<?php echo $dropdown_nama; ?>" required>
+                            <input type="text" class="form-control bg-light" id="nama" value="<?php echo $dropdown_nama; ?>" readonly>
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Tanggal Lahir</label>
