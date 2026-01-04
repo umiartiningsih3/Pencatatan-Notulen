@@ -594,65 +594,71 @@
   
   <div class="modal fade" id="editModal" tabindex="-1">
     <div class="modal-dialog modal-lg modal-dialog-centered">
-      <div class="modal-content">
-        <div class="modal-header modal-edit-header">
-          <h5 class="modal-title fw-bold">Edit Notulen Rapat</h5>
-          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-        </div>
-        <div class="modal-body">
-          <form id="editForm" action="update_rapat.php" method="POST">
-            <input type="hidden" id="editId" name="id"> 
-            
-            <div class="mb-3">
-              <label class="form-label fw-bold">Judul Rapat</label>
-              <input type="text" class="form-control" id="editJudul" name="judul" required>
+        <div class="modal-content">
+            <div class="modal-header bg-success text-white">
+                <h5 class="modal-title fw-bold">Edit Notulen Rapat</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
-            
-            <div class="mb-3">
-              <label class="form-label fw-bold">Tanggal Rapat</label>
-              <input type="date" class="form-control" id="editTanggal" name="tanggal" required>
-            </div>
+            <div class="modal-body">
+                <form id="editForm">
+                    <input type="hidden" id="editId" name="id">
 
-            <div class="row">
-              <div class="col-md-6 mb-3">
-                <label class="form-label fw-bold">Waktu Rapat</label>
-                <input type="time" class="form-control" id="editWaktu" name="waktu">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Judul Rapat</label>
+                        <input type="text" class="form-control" id="editJudul" name="judul" required>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-bold">Tanggal Rapat</label>
+                            <input type="date" class="form-control" id="editTanggal" name="tanggal" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-bold">Waktu Rapat</label>
+                            <input type="time" class="form-control" id="editWaktu" name="waktu">
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-bold">Tempat Rapat</label>
+                            <input type="text" class="form-control" id="editTempat" name="tempat">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-bold">Penyelenggara Rapat</label>
+                            <input type="text" class="form-control" id="editPenyelenggara" name="penyelenggara">
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                      <label class="form-label fw-bold">Notulis</label>
+                      <input type="text" id="editNotulis" name="notulis" class="form-control bg-light" readonly>
+                    </div>
+                    
+                    <div id="containerPesertaEdit" style="display: none;"></div>
+                    <table id="tabelTopikEdit" style="display: none;">
+                      <tbody></tbody>
+                    </table>
+                    
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Catatan</label>
+                        <textarea class="form-control" id="editCatatan" name="catatan" rows="3"></textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Status</label>
+                        <select class="form-select" id="editStatus" name="status">
+                            <option value="Belum Selesai">Belum Selesai</option>
+                            <option value="Selesai">Selesai</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="btn btn-success w-100 fw-bold">SIMPAN PERUBAHAN</button>
+                </form>
+                </div>
               </div>
-
-            <div class="col-md-6 mb-3">
-              <label class="form-label fw-bold">Tempat Rapat</label>
-              <input type="text" class="form-control" id="editTempat" name="tempat">
             </div>
-            </div>
-
-            <div class="mb-3">
-              <label class="form-label fw-bold">Penyelenggara Rapat</label>
-              <input type="text" class="form-control" id="editPenyelenggara" name="penyelenggara">
-            </div>
-
-            <div class="mb-3">
-              <label class="form-label fw-bold">Notulis</label>
-              <input type="text" class="form-control bg-light" id="editNotulis" name="notulis" readonly>
-            </div>
-          
-            <div class="mb-3">
-              <label class="form-label fw-bold">Catatan</label>
-              <textarea class="form-control" id="editCatatan" name="catatan" rows="3"></textarea>
-            </div>
-          
-            <div class="mb-3">
-              <label class="form-label fw-bold">Status</label>
-              <select class="form-select" id="editStatus" name="status">
-                <option value="Belum Selesai">Belum Selesai</option>
-                <option value="Selesai">Selesai</option>
-              </select>
-            </div>
-            <button type="submit" class="btn btn-success w-100">Simpan Perubahan</button>
-          </form>
-        </div>
-      </div>
-    </div>
-  </div>
+</div>
   <footer>©2025 Notulen Tracker. Semua hak cipta dilindungi</footer>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
@@ -777,27 +783,69 @@
             </div>`;
             
             document.getElementById("detailContent").innerHTML = content;
-            
-            const btnEditModal = document.getElementById("btnEdit");
-            if(btnEditModal) {
-                btnEditModal.addEventListener("click", () => {
-                    const detailModalInstance = bootstrap.Modal.getInstance(document.getElementById("detailModal"));
-                    detailModalInstance.hide();
-                    document.getElementById("editId").value = rapatId; 
-                    document.getElementById("editJudul").value = data.judul;
-                    document.getElementById("editTanggal").value = data.tanggal;
-                    document.getElementById("editWaktu").value = data.waktu;
-                    document.getElementById("editTempat").value = data.tempat;
-                    document.getElementById("editPenyelenggara").value = data.penyelenggara;
-                    document.getElementById("editNotulis").value = data.notulis;
-                    document.getElementById("editCatatan").value = data.catatan.join("\n"); 
-                    document.getElementById("editStatus").value = data.status;
 
-                    setTimeout(() => {
-                        new bootstrap.Modal(document.getElementById("editModal")).show();
-                    }, 300);
+const btnEditModal = document.getElementById("btnEdit");
+
+if(btnEditModal) {
+    btnEditModal.addEventListener("click", () => {
+
+        const detailModalEl = document.getElementById("detailModal");
+        const detailModalInstance = bootstrap.Modal.getInstance(detailModalEl);
+        if(detailModalInstance) detailModalInstance.hide();
+
+        document.getElementById("editId").value = rapatId; 
+        document.getElementById("editJudul").value = data.judul || "";
+        document.getElementById("editTanggal").value = data.tanggal || "";
+        document.getElementById("editWaktu").value = data.waktu || "";
+        document.getElementById("editTempat").value = data.tempat || "";
+        document.getElementById("editPenyelenggara").value = data.tempat || "";
+        const fieldNotulis = document.getElementById("editNotulis");
+        if(fieldNotulis) {
+            fieldNotulis.value = data.notulis || "";
+            fieldNotulis.readOnly = true; 
+        }
+        document.getElementById("editCatatan").value = data.catatan ? data.catatan.join("\n") : "";
+        document.getElementById("editStatus").value = data.status || "Draf";
+
+        const containerHiddenPeserta = document.getElementById('containerPesertaEdit');
+        if (containerHiddenPeserta) {
+            containerHiddenPeserta.innerHTML = ""; 
+            const pesertaLama = data.peserta ? [...data.peserta] : [];
+            pesertaLama.forEach(nama => {
+                const hiddenInput = document.createElement('input');
+                hiddenInput.type = 'hidden';
+                hiddenInput.name = 'peserta[]'; 
+                hiddenInput.value = nama;
+                containerHiddenPeserta.appendChild(hiddenInput);
+            });
+        }
+
+        const tbodyHiddenEdit = document.querySelector("#tabelTopikEdit tbody");
+        if(tbodyHiddenEdit) {
+            tbodyHiddenEdit.innerHTML = ""; 
+            if (data.pembahasan && data.pembahasan.length > 0) {
+                data.pembahasan.forEach(p => {
+                    const row = document.createElement('tr');
+                    row.style.display = 'none';
+                    row.innerHTML = `
+                        <td>
+                            <input type="hidden" name="topik[]" value="${p[0]}">
+                            <input type="hidden" name="pembahasan[]" value="${p[1]}">
+                            <input type="hidden" name="tindak_lanjut[]" value="${p[2]}">
+                            <input type="hidden" name="pic[]" value="${p[3]}">
+                        </td>
+                    `;
+                    tbodyHiddenEdit.appendChild(row);
                 });
             }
+        }
+
+        setTimeout(() => {
+            const editModalEl = document.getElementById("editModal");
+            new bootstrap.Modal(editModalEl).show();
+        }, 300);
+    });
+}
 
             const btnShareModal = document.getElementById("btnShare");
             if(btnShareModal) {
@@ -888,24 +936,30 @@
         });
       });
 
-    document.getElementById("editForm").addEventListener("submit", e => {
-        e.preventDefault();
-        const formData = new FormData(e.target);
-        
-        fetch('edit_rapat.php', {
-            method: 'POST',
-            body: new URLSearchParams(Object.fromEntries(formData.entries()))
-        })
-        .then(res => res.json())
-        .then(result => {
-            if (result.status === "success") {
-                alert("✅ " + result.message);
-                window.location.reload(); 
-            } else {
-                alert("❌ Gagal: " + result.message);
-            }
-        });
+    document.getElementById("editForm").addEventListener("submit", function(e) {
+    e.preventDefault();
+
+    const formData = new FormData(this);
+    
+    fetch('edit_rapat.php', {
+        method: 'POST',
+        body: formData 
+    })
+    .then(res => res.json())
+    .then(result => {
+        if (result.status === "success") {
+            Swal.fire("Berhasil!", result.message, "success").then(() => {
+                window.location.reload();
+            });
+        } else {
+            Swal.fire("Gagal!", "Kesalahan database: " + result.message, "error");
+        }
+    })
+    .catch(err => {
+        console.error(err);
+        Swal.fire("Error!", "Terjadi kesalahan pada server.", "error");
     });
+});
 
     function updateDashboardData() {
         const rows = document.querySelectorAll("#notulenTable tbody tr");

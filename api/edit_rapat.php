@@ -1,68 +1,56 @@
 <?php
+include 'koneksi.php';
+
 header('Content-Type: application/json');
-$conn = mysqli_connect("localhost", "root", "", "notulen_db");
 
-if (!$conn) {
-    echo json_encode(["status" => "error", "message" => "Koneksi database gagal"]);
-    exit();
-}
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $id_rapat = mysqli_real_escape_string($conn, $_POST['id']);
+    $judul    = mysqli_real_escape_string($conn, $_POST['judul']);
+    $tanggal  = $_POST['tanggal'];
+    $waktu    = $_POST['waktu'];
+    $tempat   = mysqli_real_escape_string($conn, $_POST['tempat']);
+    $penyelenggara = mysqli_real_escape_string($conn, $_POST['penyelenggara']);
+    $status   = $_POST['status'];
+    $catatan  = mysqli_real_escape_string($conn, $_POST['catatan']);
+    $peserta_arr = isset($_POST['peserta']) ? $_POST['peserta'] : [];
+    $peserta_str = mysqli_real_escape_string($conn, implode(",", $peserta_arr));
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $id = $_POST['id'];
-    $judul = $_POST['judul'];
-    $tanggal = $_POST['tanggal'];
-    $waktu = $_POST['waktu'] ?? '';
-    $tempat = $_POST['tempat'] ?? '';
-    $penyelenggara = $_POST['penyelenggara'] ?? '';
-    $catatan = $_POST['catatan'];
-    $status = $_POST['status'];
-    $peserta = isset($_POST['peserta']) ? implode(", ", $_POST['peserta']) : '';
+    $queryUpdate = "UPDATE rapat SET 
+                    judul = '$judul', 
+                    tanggal = '$tanggal', 
+                    waktu = '$waktu', 
+                    tempat = '$tempat',
+                    penyelenggara = '$penyelenggara', 
+                    peserta = '$peserta_str', 
+                    catatan = '$catatan',
+                    status = '$status' 
+                    WHERE id = '$id_rapat'";
+    
+    if (mysqli_query($conn, $queryUpdate)) {
+        
+        if (isset($_POST['topik']) && !empty($_POST['topik'])) {
+            mysqli_query($conn, "DELETE FROM rapat_detail WHERE id_rapat = '$id_rapat'");
 
-    mysqli_begin_transaction($conn);
+            $topik = $_POST['topik'];
+            $pembahasan = $_POST['pembahasan'];
+            $tindak_lanjut = $_POST['tindak_lanjut'];
+            $pic = $_POST['pic'];
 
-    try {
-        $query_update = "UPDATE rapat SET 
-            judul = ?, 
-            tanggal = ?, 
-            waktu = ?, 
-            tempat = ?, 
-            penyelenggara = ?, 
-            peserta = ?, 
-            catatan = ?, 
-            status = ? 
-            WHERE id = ?";
-            
-        $stmt = mysqli_prepare($conn, $query_update);
-        mysqli_stmt_bind_param($stmt, "ssssssssi", $judul, $tanggal, $waktu, $tempat, $penyelenggara, $peserta, $catatan, $status, $id);
-        mysqli_stmt_execute($stmt);
+            for ($i = 0; $i < count($topik); $i++) {
+                $t = mysqli_real_escape_string($conn, $topik[$i]);
+                $p = mysqli_real_escape_string($conn, $pembahasan[$i]);
+                $tl = mysqli_real_escape_string($conn, $tindak_lanjut[$i]);
+                $pc = mysqli_real_escape_string($conn, $pic[$i]);
 
-        if (isset($_POST['topik'])) {
-            $query_delete = "DELETE FROM rapat_detail WHERE id_rapat = ?";
-            $stmt_del = mysqli_prepare($conn, $query_delete);
-            mysqli_stmt_bind_param($stmt_del, "i", $id);
-            mysqli_stmt_execute($stmt_del);
-
-            $query_detail = "INSERT INTO rapat_detail (id_rapat, topik, pembahasan, tindak_lanjut, pic) VALUES (?, ?, ?, ?, ?)";
-            $stmt_ins = mysqli_prepare($conn, $query_detail);
-
-            foreach ($_POST['topik'] as $key => $val) {
-                $topik = $_POST['topik'][$key];
-                $pembahasan = $_POST['pembahasan'][$key];
-                $tindak_lanjut = $_POST['tindak_lanjut'][$key];
-                $pic = $_POST['pic'][$key];
-                
-                mysqli_stmt_bind_param($stmt_ins, "issss", $id, $topik, $pembahasan, $tindak_lanjut, $pic);
-                mysqli_stmt_execute($stmt_ins);
+                $queryDetail = "INSERT INTO rapat_detail (id_rapat, topik, pembahasan, tindak_lanjut, pic) 
+                                VALUES ('$id_rapat', '$t', '$p', '$tl', '$pc')";
+                mysqli_query($conn, $queryDetail);
             }
         }
 
-        mysqli_commit($conn);
-        echo json_encode(["status" => "success", "message" => "Data rapat berhasil diperbarui"]);
-
-    } catch (Exception $e) {
-        mysqli_rollback($conn);
-        echo json_encode(["status" => "error", "message" => "Terjadi kesalahan: " . $e->getMessage()]);
+        echo json_encode(["status" => "success", "message" => "Data berhasil diperbarui"]);
+    } else {
+        echo json_encode(["status" => "error", "message" => mysqli_error($conn)]);
     }
 }
-mysqli_close($conn);
 ?>
