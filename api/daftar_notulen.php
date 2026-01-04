@@ -798,7 +798,7 @@ if(btnEditModal) {
         document.getElementById("editTanggal").value = data.tanggal || "";
         document.getElementById("editWaktu").value = data.waktu || "";
         document.getElementById("editTempat").value = data.tempat || "";
-        document.getElementById("editPenyelenggara").value = data.tempat || "";
+        document.getElementById("editPenyelenggara").value = data.penyelenggara || "";
         const fieldNotulis = document.getElementById("editNotulis");
         if(fieldNotulis) {
             fieldNotulis.value = data.notulis || "";
