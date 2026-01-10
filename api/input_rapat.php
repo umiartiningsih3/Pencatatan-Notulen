@@ -45,7 +45,7 @@ if (isset($stmt)) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Input Rapat</title>
+    <title>Input Notulen Baru</title>
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -104,44 +104,51 @@ if (isset($stmt)) {
             color: #ffffff !important; 
             font-weight: 600; 
         }
-
-        .brand-pro { 
-            display: flex; 
-            align-items: center; 
-            gap: 12px; 
-            text-decoration: none; 
-        }
-
-        .brand-info { 
-            display: flex; 
-            flex-direction: column; 
-            line-height: 1.1;
+        
+        .brand-pro {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
         }
 
         .brand-pro img {
-          width: 45px;            
-          height: 45px;
-          border-radius: 50%;     
-          object-fit: cover;       
-          background: #ffffff;     
-          border: 2px solid rgba(255,255,255,0.2); 
-          transition: all 0.35s ease;
+            width: 45px;            
+            height: 45px;
+            border-radius: 50%;     
+            object-fit: cover;       
+            background: #ffffff;     
+            border: 2px solid rgba(255,255,255,0.2); 
+            transition: all 0.35s ease;
+        }
+
+        .brand-info {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.1;
+        }
+
+        .brand-name {
+            font-size: 21px;
+            font-weight: 700;
+            color: #ffffff;
+            letter-spacing: 0.3px;
+        }
+
+        .brand-tagline {
+            font-size: 13px;
+            color: #90caf9;
+            letter-spacing: 1px;
         }
 
         .brand-pro:hover img {
-          transform: scale(1.08) rotate(-4deg);
-          box-shadow: 0 8px 25px rgba(144,202,249,0.45);
+            transform: scale(1.08) rotate(-4deg);
+            box-shadow: 0 8px 25px rgba(144,202,249,0.45);
         }
 
         .nav-effect .nav-link.active i {
             color: #0d6efd;
         }
-
-        .brand-name { 
-            font-size: 21px; 
-            font-weight: 700; 
-            color: #ffffff; }
-        .brand-tagline { font-size: 13px; color: #90caf9; }
         
         .dropdown-menu {
           min-width: 250px !important;
@@ -254,11 +261,11 @@ if (isset($stmt)) {
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark fixed-top px-4 custom-navbar">
         <a class="navbar-brand brand-pro" href="dashboard.php">
-          <img src="logono.png" alt="Logo">
-          <div class="brand-info">
-            <span class="brand-name">Notulen</span>
-            <span class="brand-tagline">TRACKER</span>
-          </div>
+            <img src="logono.png" alt="Logo">
+            <div class="brand-info">
+                <span class="brand-name">Notulen</span>
+                <span class="brand-tagline">TRACKER</span>
+            </div>
         </a>
 
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -295,7 +302,7 @@ if (isset($stmt)) {
 
     <div class="container mt-5 mb-5">
         <div class="card shadow p-4">
-            <h4 class="text-center mb-4 text-primary fw-bold">Formulir Hasil Rapat</h4>
+            <h3 class="text-center mb-4 text-primary fw-bold">Input Notulen Baru</h3>
             <form id="formRapat" method="POST" action="input_hasil.php">
 
                 <div class="mb-3">
