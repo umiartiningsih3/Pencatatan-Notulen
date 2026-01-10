@@ -357,11 +357,11 @@
         .custom-navbar {
             height: auto;
             padding: 10px 15px;
-        }
-    
-        body {
+          }
+          
+          body {
             padding-top: 100px;
-        }
+          }
 
         .navbar-collapse {
             background: #003366; 
@@ -385,6 +385,46 @@
             height: 100px;
         }
     }
+    
+    #wrapperPesertaEdit {
+    max-height: 250px;
+    overflow-y: auto;
+    display: block;
+    column-count: 2;
+    column-gap: 10px;
+    border: 1px solid #dee2e6;
+    padding: 10px;
+    border-radius: 5px;
+    background-color: #f8f9fa;
+  }
+  .badge-peserta {
+    display: inline-block;
+    width: 100%;
+    margin-bottom: 5px;
+    break-inside: avoid;
+    text-align: left;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .peserta-list-container {
+    column-count: 3;
+    column-gap: 15px;
+    list-style-position: inside;
+    margin-top: 10px;
+    max-height: 300px;
+  }
+  .peserta-list-container li {
+    break-inside: avoid;
+    margin-bottom: 5px;
+    font-size: 10.5pt;
+  }
+  
+  @media (max-width: 576px) {
+    .peserta-list-container {
+        column-count: 1;
+    }
+  }
     </style>
 </head>
 <body>
@@ -641,6 +681,39 @@
                     </table>
                     
                     <div class="mb-3">
+                      <label class="form-label fw-bold">Daftar Peserta (<span id="pesertaCount">0</span>)</label>
+                      <div class="input-group mb-2">
+                        <input type="text" id="inputPesertaEdit" class="form-control" placeholder="Cari nama...">
+                      </div>
+                      <div id="suggestionBoxEdit" class="list-group position-absolute w-100 shadow-sm" style="z-index:10; display:none;"></div>
+                      <div id="wrapperPesertaEdit"></div>
+                    </div>
+                    
+                    <div class="mb-3">
+                      <label class="form-label fw-bold">Hasil Rapat</label>
+                      <div class="table-responsive">
+                        <table class="table table-bordered align-middle" id="tabelEditPembahasan">
+                          <thead class="table-light">
+                            <tr class="text-center">
+                              <th style="width: 5%">No</th>
+                              <th>Topik</th>
+                              <th>Pembahasan</th>
+                              <th>Tindak Lanjut</th>
+                              <th>PIC</th>
+                              <th style="width: 10%">Aksi</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+
+                          </tbody>
+                        </table>
+                      </div>
+                      <button type="button" class="btn btn-outline-primary btn-sm" id="btnTambahBarisEdit">
+                        <i class="bi bi-plus"></i> Tambah Baris
+                      </button>
+                    </div>
+
+                    <div class="mb-3">
                         <label class="form-label fw-bold">Catatan</label>
                         <textarea class="form-control" id="editCatatan" name="catatan" rows="3"></textarea>
                     </div>
@@ -746,19 +819,25 @@
                     <tr><td style="font-weight: 600; color: #003366;">Penyelenggara</td><td>:</td><td>${data.penyelenggara}</td></tr>
                     <tr><td style="font-weight: 600; color: #003366;">Notulis</td><td>:</td><td>${data.notulis}</td></tr>
                 </table>
+
                 <p style="font-weight: 600; color: #003366; margin-top: 15px;">Peserta Rapat:</p>
-                <ul style="padding-left: 20px;">
-                    ${data.peserta.map(p=>`<li style="margin-bottom: 5px;">${p}</li>`).join("")}
-                </ul>
+                <div style="column-count: 3; column-gap: 20px;">
+                ${data.peserta.map(p => `
+                <div style="display: block; padding-left: 15px; text-indent: -9px;margin-bottom: 5px; break-inside: avoid; font-size: 10pt; line-height: 1.4; text-align: left;">
+                • ${p.trim()}
+                </div>
+                `).join("")}
+                </div>
+
                 <h4 style="color: #003366; margin-top: 30px; font-weight: 600; border-bottom: 1px dashed #ccc; padding-bottom: 5px;">Detail Pembahasan:</h4>
                 <table class="table table-bordered table-sm" style="width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 10pt;">
                     <thead>
                         <tr style="background-color: #003366; color: white;">
                             <th style="padding: 10px; text-align: center; width: 5%;">No</th>
-                            <th style="padding: 10px; width: 20%;">Topik</th>
-                            <th style="padding: 10px; width: 35%;">Pembahasan</th>
-                            <th style="padding: 10px; width: 25%;">Tindak Lanjut</th>
-                            <th style="padding: 10px; width: 15%;">PIC</th>
+                            <th style="padding: 10px; text-align: center; width: 20%;">Topik</th>
+                            <th style="padding: 10px; text-align: center; width: 35%;">Pembahasan</th>
+                            <th style="padding: 10px; text-align: center; width: 25%;">Tindak Lanjut</th>
+                            <th style="padding: 10px; text-align: center; width: 15%;">PIC</th>
                         </tr>
                     </thead>
                     <tbody>${data.pembahasan.map((p,i)=>`
@@ -767,7 +846,7 @@
                             <td style="padding: 8px; border: 1px solid #ddd;">${p[0]}</td>
                             <td style="padding: 8px; border: 1px solid #ddd;">${p[1]}</td>
                             <td style="padding: 8px; border: 1px solid #ddd;">${p[2]}</td>
-                            <td style="padding: 8px; text-align: center; border: 1px solid #ddd;">${p[3]}</td>
+                            <td style="padding: 8px; border: 1px solid #ddd;">${p[3]}</td>
                         </tr>`).join("")}
                     </tbody>
                 </table>
@@ -783,11 +862,10 @@
             </div>`;
             
             document.getElementById("detailContent").innerHTML = content;
-
-const btnEditModal = document.getElementById("btnEdit");
-
-if(btnEditModal) {
-    btnEditModal.addEventListener("click", () => {
+            
+            const btnEditModal = document.getElementById("btnEdit");
+            if(btnEditModal) {
+              btnEditModal.addEventListener("click", () => {
 
         const detailModalEl = document.getElementById("detailModal");
         const detailModalInstance = bootstrap.Modal.getInstance(detailModalEl);
@@ -806,38 +884,21 @@ if(btnEditModal) {
         }
         document.getElementById("editCatatan").value = data.catatan ? data.catatan.join("\n") : "";
         document.getElementById("editStatus").value = data.status || "Draf";
-
-        const containerHiddenPeserta = document.getElementById('containerPesertaEdit');
-        if (containerHiddenPeserta) {
-            containerHiddenPeserta.innerHTML = ""; 
-            const pesertaLama = data.peserta ? [...data.peserta] : [];
-            pesertaLama.forEach(nama => {
-                const hiddenInput = document.createElement('input');
-                hiddenInput.type = 'hidden';
-                hiddenInput.name = 'peserta[]'; 
-                hiddenInput.value = nama;
-                containerHiddenPeserta.appendChild(hiddenInput);
-            });
+        
+        const wrapperPeserta = document.getElementById("wrapperPesertaEdit");
+        wrapperPeserta.innerHTML = "";
+        if (data.peserta && data.peserta.length > 0) {
+          data.peserta.forEach(nama => {
+            if(nama.trim() !== "") tambahTagPeserta(nama.trim());
+          });
         }
-
-        const tbodyHiddenEdit = document.querySelector("#tabelTopikEdit tbody");
-        if(tbodyHiddenEdit) {
-            tbodyHiddenEdit.innerHTML = ""; 
-            if (data.pembahasan && data.pembahasan.length > 0) {
-                data.pembahasan.forEach(p => {
-                    const row = document.createElement('tr');
-                    row.style.display = 'none';
-                    row.innerHTML = `
-                        <td>
-                            <input type="hidden" name="topik[]" value="${p[0]}">
-                            <input type="hidden" name="pembahasan[]" value="${p[1]}">
-                            <input type="hidden" name="tindak_lanjut[]" value="${p[2]}">
-                            <input type="hidden" name="pic[]" value="${p[3]}">
-                        </td>
-                    `;
-                    tbodyHiddenEdit.appendChild(row);
-                });
-            }
+        
+        const tbodyEdit = document.querySelector("#tabelEditPembahasan tbody");
+        tbodyEdit.innerHTML = "";
+        if (data.pembahasan && data.pembahasan.length > 0) {
+          data.pembahasan.forEach((p, index) => {
+            tambahBarisPembahasan(index + 1, p[0], p[1], p[2], p[3]);
+          });
         }
 
         setTimeout(() => {
@@ -886,20 +947,20 @@ if(btnEditModal) {
                   <tr><td style="font-weight: 600; color: #003366;">Notulis</td><td>:</td><td>${data.notulis}</td></tr>
               </table>
 
-              <p style="font-weight: 600; color: #003366; margin-top: 15px;">Peserta Rapat:</p>
-              <ul style="margin-left: -20px; padding-left: 20px;">
-                ${data.peserta.map(p=>`<li style="margin-bottom: 5px;">${p}</li>`).join("")}
-              </ul>
+              <p style="font-weight: 600; color: #003366; margin-top: 15px;">Data Kehadiran:</p>
+<p style="margin-left: 0; padding-left: 0;">
+  Total Peserta: <strong>${data.peserta.length} orang</strong>
+</p>
               
-              <h4 style="color: #003366; margin-top: 30px; font-weight: 600; border-bottom: 1px dashed #ccc; padding-bottom: 5px;">Detail Pembahasan:</h4>
+              <h5 style="color: #003366; margin-top: 30px; font-weight: 600; border-bottom: 1px dashed #ccc; padding-bottom: 5px;">Detail Pembahasan:</h5>
               <table style="width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 10pt;">
                 <thead>
                   <tr style="background-color: #003366; color: white;">
                     <th style="border: 1px solid #003366; padding: 10px; text-align: center; width: 5%;">No</th>
-                    <th style="border: 1px solid #003366; padding: 10px; width: 20%;">Topik</th>
-                    <th style="border: 1px solid #003366; padding: 10px; width: 35%;">Pembahasan</th>
-                    <th style="border: 1px solid #003366; padding: 10px; width: 25%;">Tindak Lanjut</th>
-                    <th style="border: 1px solid #003366; padding: 10px; width: 15%;">PIC</th>
+                    <th style="border: 1px solid #003366; padding: 10px; text-align: center; width: 20%;">Topik</th>
+                    <th style="border: 1px solid #003366; padding: 10px; text-align: center; width: 35%;">Pembahasan</th>
+                    <th style="border: 1px solid #003366; padding: 10px; text-align: center; width: 25%;">Tindak Lanjut</th>
+                    <th style="border: 1px solid #003366; padding: 10px; text-align: center; width: 15%;">PIC</th>
                   </tr>
                 </thead>
                 <tbody>${data.pembahasan.map((p,i)=>`
@@ -913,7 +974,7 @@ if(btnEditModal) {
                 </tbody>
               </table>
 
-              <h4 style="color: #003366; margin-top: 30px; font-weight: 600; border-bottom: 1px dashed #ccc; padding-bottom: 5px;">Catatan Tambahan:</h4>
+              <h5 style="color: #003366; margin-top: 30px; font-weight: 600; border-bottom: 1px dashed #ccc; padding-bottom: 5px;">Catatan Tambahan:</h5>
               <ul style="list-style-type: disc; margin-left: -20px; padding-left: 20px;">
                 ${data.catatan.map(c=>`<li style="margin-bottom: 5px;">${c}</li>`).join("")}
               </ul>
@@ -994,6 +1055,96 @@ if(btnEditModal) {
             window.history.replaceState({}, document.title, window.location.pathname);
         });
     }
+
+    const inputPeserta = document.getElementById('inputPesertaEdit');
+    const suggestionBox = document.getElementById('suggestionBoxEdit');
+    
+    inputPeserta.addEventListener('input', function() {
+    const keyword = this.value;
+    
+    if (keyword.length < 1) {
+        suggestionBox.style.display = 'none';
+        return;
+    }
+
+    fetch(`get_users.php?q=${encodeURIComponent(keyword)}`)
+        .then(response => response.json())
+        .then(data => {
+            suggestionBox.innerHTML = '';
+            if (data.length > 0) {
+                data.forEach(user => {
+                    const item = document.createElement('a');
+                    item.href = '#';
+                    item.className = 'list-group-item list-group-item-action py-2';
+                    item.innerHTML = `<strong>${user.nama_lengkap}</strong> <br> <small class="text-muted">${user.email}</small>`;
+                    
+                    item.onclick = (e) => {
+                        e.preventDefault();
+                        tambahTagPeserta(user.nama_lengkap);
+                        inputPeserta.value = '';
+                        suggestionBox.style.display = 'none';
+                    };
+                    suggestionBox.appendChild(item);
+                });
+                suggestionBox.style.display = 'block';
+            } else {
+                suggestionBox.style.display = 'none';
+            }
+        });
+});
+
+function tambahTagPeserta(nama) {
+    const wrapper = document.getElementById("wrapperPesertaEdit");
+    
+    const existing = Array.from(wrapper.querySelectorAll('input')).map(i => i.value);
+    if (existing.includes(nama)) return;
+
+    const span = document.createElement("span");
+    span.className = "badge bg-primary badge-peserta p-2";
+    span.innerHTML = `
+        <span>${nama}</span>
+        <input type="hidden" name="peserta[]" value="${nama}"> 
+        <i class="bi bi-x-circle ms-2 cursor-pointer" onclick="this.parentElement.remove(); updateCount();"></i>
+    `;
+    
+    wrapper.appendChild(span);
+    updateCount();
+}
+
+function updateCount() {
+    const count = document.querySelectorAll('#wrapperPesertaEdit input[name="peserta[]"]').length;
+    document.getElementById("pesertaCount").innerText = count;
+    
+    const wrapper = document.getElementById("wrapperPesertaEdit");
+    if (count > 20) {
+        wrapper.style.columnCount = "3";
+    } else {
+        wrapper.style.columnCount = "2";
+    }
+}
+
+document.addEventListener('click', function(e) {
+    if (!inputPeserta.contains(e.target) && !suggestionBox.contains(e.target)) {
+        suggestionBox.style.display = 'none';
+    }
+});
+
+function tambahBarisPembahasan(no = '', t = '', p = '', tl = '', pic = '') {
+    const tbody = document.querySelector("#tabelEditPembahasan tbody");
+    const rowCount = tbody.rows.length + 1;
+    const row = document.createElement("tr");
+    row.innerHTML = `
+        <td class="text-center">${no || rowCount}</td>
+        <td><input type="text" name="topik[]" class="form-control" value="${t}" placeholder="Masukkan Topik"></td>
+        <td><textarea name="pembahasan[]" class="form-control" rows="1" placeholder="Masukkan Pembahasan">${p}</textarea></td>
+        <td><textarea name="tindak_lanjut[]" class="form-control" rows="1" placeholder="Masukkan Tindak Lanjut">${tl}</textarea></td>
+        <td><input type="text" name="pic[]" class="form-control" value="${pic}" placeholder="Masukkan PIC"></td>
+        <td class="text-center"><button type="button" class="btn btn-danger btn-sm" onclick="this.closest('tr').remove()">Hapus</button></td>
+    `;
+    tbody.appendChild(row);
+}
+
+document.getElementById("btnTambahBarisEdit").addEventListener("click", () => tambahBarisPembahasan());
 </script>
 </body>
 </html>
