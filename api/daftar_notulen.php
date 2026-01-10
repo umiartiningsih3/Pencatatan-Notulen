@@ -948,9 +948,9 @@
               </table>
 
               <p style="font-weight: 600; color: #003366; margin-top: 15px;">Data Kehadiran:</p>
-<p style="margin-left: 0; padding-left: 0;">
-  Total Peserta: <strong>${data.peserta.length} orang</strong>
-</p>
+              <p style="margin-left: 0; padding-left: 0;">
+              Total Peserta: <strong>${data.peserta.length} orang</strong>
+              </p>
               
               <h5 style="color: #003366; margin-top: 30px; font-weight: 600; border-bottom: 1px dashed #ccc; padding-bottom: 5px;">Detail Pembahasan:</h5>
               <table style="width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 10pt;">
