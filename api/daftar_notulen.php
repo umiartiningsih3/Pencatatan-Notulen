@@ -798,14 +798,16 @@
             
             const isOwner = (data.notulis === userName);
             const canEdit = (userRole === "admin" || (userRole === "notulis" && isOwner));
-
+            
             let actionButtons = "";
             if (canEdit || userRole === "notulis") {
-                actionButtons = `<div class="text-end mb-3" id="modalTopActions">`;
-                if (canEdit) {
-                    actionButtons += `<button class="btn btn-success btn-sm me-2" id="btnEdit" data-rapat-id="${rapatId}"><i class="bi bi-pencil-square"></i> Edit</button>`;
-                }
-                actionButtons += `<button class="btn btn-secondary btn-sm" id="btnShare" data-rapat-judul="${data.judul}"><i class="bi bi-share"></i> Bagikan</button></div>`;
+              actionButtons = `<div class="text-end mb-3" id="modalTopActions">`;
+              
+              if (canEdit) {
+                actionButtons += `<button class="btn btn-success btn-sm me-2" id="btnEdit" data-rapat-id="${rapatId}"><i class="bi bi-pencil-square"></i> Edit</button>`;
+              }
+              
+              actionButtons += `</div>`;
             }
 
             const content = `
@@ -842,11 +844,11 @@
                     </thead>
                     <tbody>${data.pembahasan.map((p,i)=>`
                         <tr>
-                            <td style="padding: 8px; text-align: center; background-color: ${i % 2 === 0 ? '#ffffff' : '#f4f4f4'}; border: 1px solid #ddd;">${i+1}</td>
-                            <td style="padding: 8px; border: 1px solid #ddd;">${p[0]}</td>
-                            <td style="padding: 8px; border: 1px solid #ddd;">${p[1]}</td>
-                            <td style="padding: 8px; border: 1px solid #ddd;">${p[2]}</td>
-                            <td style="padding: 8px; border: 1px solid #ddd;">${p[3]}</td>
+                        <td style="border: 1px solid #ddd; padding: 8px; text-align: center; background-color: ${i % 2 === 0 ? '#ffffff' : '#f4f4f4'};">${i+1}</td>
+                        <td style="border: 1px solid #ddd; padding: 8px; background-color: ${i % 2 === 0 ? '#ffffff' : '#f4f4f4'};">${p[0]}</td>
+                        <td style="border: 1px solid #ddd; padding: 8px; background-color: ${i % 2 === 0 ? '#ffffff' : '#f4f4f4'};">${p[1]}</td>
+                        <td style="border: 1px solid #ddd; padding: 8px; background-color: ${i % 2 === 0 ? '#ffffff' : '#f4f4f4'};">${p[2]}</td>
+                        <td style="border: 1px solid #ddd; padding: 8px; text-align: center; background-color: ${i % 2 === 0 ? '#ffffff' : '#f4f4f4'};">${p[3]}</td>
                         </tr>`).join("")}
                     </tbody>
                 </table>
@@ -908,17 +910,6 @@
     });
 }
 
-            const btnShareModal = document.getElementById("btnShare");
-            if(btnShareModal) {
-                btnShareModal.addEventListener("click", () => {
-                    if (navigator.share) {
-                        navigator.share({ title: "Notulen: " + data.judul, url: window.location.href });
-                    } else {
-                        alert('Share tidak didukung browser ini.');
-                    }
-                });
-            }
-
             new bootstrap.Modal(document.getElementById("detailModal")).show();
         });
     });
@@ -949,18 +940,17 @@
 
               <p style="font-weight: 600; color: #003366; margin-top: 15px;">Data Kehadiran:</p>
               <p style="margin-left: 0; padding-left: 0;">
-              Total Peserta: <strong>${data.peserta.length} orang</strong>
-              </p>
+              Total Peserta: <strong>${data.peserta.length} orang</strong></p>
               
               <h5 style="color: #003366; margin-top: 30px; font-weight: 600; border-bottom: 1px dashed #ccc; padding-bottom: 5px;">Detail Pembahasan:</h5>
-              <table style="width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 10pt;">
+              <table style="width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 10pt; border: 1px solid #ddd;">
                 <thead>
                   <tr style="background-color: #003366; color: white;">
-                    <th style="border: 1px solid #003366; padding: 10px; text-align: center; width: 5%;">No</th>
-                    <th style="border: 1px solid #003366; padding: 10px; text-align: center; width: 20%;">Topik</th>
-                    <th style="border: 1px solid #003366; padding: 10px; text-align: center; width: 35%;">Pembahasan</th>
-                    <th style="border: 1px solid #003366; padding: 10px; text-align: center; width: 25%;">Tindak Lanjut</th>
-                    <th style="border: 1px solid #003366; padding: 10px; text-align: center; width: 15%;">PIC</th>
+                    <th style="border: 1px solid #ddd; padding: 10px; text-align: center; width: 5%;">No</th>
+                    <th style="border: 1px solid #ddd; padding: 10px; text-align: center; width: 20%;">Topik</th>
+                    <th style="border: 1px solid #ddd; padding: 10px; text-align: center; width: 35%;">Pembahasan</th>
+                    <th style="border: 1px solid #ddd; padding: 10px; text-align: center; width: 25%;">Tindak Lanjut</th>
+                    <th style="border: 1px solid #ddd; padding: 10px; text-align: center; width: 15%;">PIC</th>
                   </tr>
                 </thead>
                 <tbody>${data.pembahasan.map((p,i)=>`
